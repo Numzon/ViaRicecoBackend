@@ -1,3 +1,4 @@
+using FastEndpoints.Swagger;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Serilog;
@@ -32,9 +33,7 @@ string redisConnectionString = builder.Configuration.GetConnectionStringOrThrow(
 
 builder.Services.AddInfrastructure(DiagnosticsConfig.ServiceName, databaseConnectionString, redisConnectionString);
 
-builder.Services.AddEndpointsApiExplorer();
-
-builder.Services.AddOpenApi();
+builder.Services.SwaggerDocument();
 
 builder.Services.AddHealthChecks()
     .AddNpgSql(databaseConnectionString)
@@ -52,7 +51,7 @@ app.MapFastEndpoints();
 
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.UseSwaggerGen();
 
     app.ApplyMigrations();
 }
