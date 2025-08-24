@@ -1,0 +1,39 @@
+services:
+  viariceco.api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_LOGGING__CONSOLE__DISABLECOLORS=false
+      - Serilog__MinimumLevel=Debug
+      - ConnectionStrings__DefaultConnection=Host=viariceco.database;Port=5432;Database=viariceco;Username=viariceco_user;Password=viariceco_dev_password
+      - Redis__ConnectionString=viariceco.redis:6379
+    volumes:
+      # Enable hot reload for development
+      - .:/src:ro
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.viariceco-api.rule=Host(`localhost`)"
+      - "traefik.http.services.viariceco-api.loadbalancer.server.port=8080"
+
+  viariceco.seq:
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.seq.rule=Host(`seq.localhost`)"
+      - "traefik.http.services.seq.loadbalancer.server.port=80"
+
+  viariceco.database:
+    environment:
+      - POSTGRES_DB=viariceco
+      - POSTGRES_USER=viariceco_user
+      - POSTGRES_PASSWORD=viariceco_dev_password
+    volumes:
+      # Mount initialization scripts
+      - ./database/init:/docker-entrypoint-initdb.d:ro
+    labels:
+      - "traefik.enable=false"
+
+  viariceco.redis:
+    command: redis-server --appendonly yes --requirepass dev_redis_password
+    environment:
+      - REDIS_PASSWORD=dev_redis_password
+    labels:
+      - "traefik.enable=false"

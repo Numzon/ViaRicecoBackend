@@ -1,0 +1,8 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <ItemGroup>
+      <ProjectReference Include="..\ViaRiceco.Modules.Accounting.Application\ViaRiceco.Modules.Accounting.Application.csproj" />
+      <ProjectReference Include="..\ViaRiceco.Common.Presentation\ViaRiceco.Common.Presentation.csproj" />
+    </ItemGroup>
+
+</Project>

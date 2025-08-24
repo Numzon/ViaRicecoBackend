@@ -1,0 +1,67 @@
+services:
+  viariceco.api:
+    container_name: ViaRiceco.Api
+    image: ${DOCKER_REGISTRY-}viariceco-api
+    build:
+      context: .
+      dockerfile: ViaRiceco.Api/Dockerfile
+    ports:
+      - "5000:8080"
+      - "5001:8081"
+    depends_on:
+      - viariceco.seq
+      - viariceco.database
+      - viariceco.redis
+    networks:
+      - viariceco-network
+    restart: unless-stopped
+
+  viariceco.seq:
+    container_name: ViaRiceco.Seq
+    image: datalust/seq:latest
+    environment:
+      - ACCEPT_EULA=Y
+      - SEQ_FIRSTRUN_NOAUTHENTICATION=true
+    ports:
+      - "5341:5341"
+      - "8081:80"
+    volumes:
+      - ./.containers/seq-data:/data
+    networks:
+      - viariceco-network
+    restart: unless-stopped
+
+  viariceco.database:
+    container_name: ViaRiceco.Database
+    image: postgres:latest
+    environment:
+      - POSTGRES_DB=viariceco
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./.containers/postgres-data:/var/lib/postgresql/data
+    networks:
+      - viariceco-network
+    restart: unless-stopped
+
+  viariceco.redis:
+    container_name: ViaRiceco.Redis
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./.containers/redis-data:/data
+    networks:
+      - viariceco-network
+    restart: unless-stopped
+
+volumes:
+  seq-data:
+  postgres-data:
+  redis-data:
+
+networks:
+  viariceco-network:
+    driver: bridge

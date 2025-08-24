@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "zfhoVLh3PRc=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\mlyna\\Desktop\\ViaRiceco\\Backend\\ViaRiceco.Modules.Accounting.Application\\ViaRiceco.Modules.Accounting.Application.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\mlyna\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\9.0.8\\microsoft.extensions.dependencyinjection.abstractions.9.0.8.nupkg.sha512",
+    "C:\\Users\\mlyna\\.nuget\\packages\\sonaranalyzer.csharp\\9.24.0.89429\\sonaranalyzer.csharp.9.24.0.89429.nupkg.sha512"
+  ],
+  "logs": []
+}

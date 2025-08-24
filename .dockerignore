@@ -1,0 +1,82 @@
+﻿# Git
+**/.git
+**/.gitignore
+**/.gitattributes
+
+# IDE and Editor files
+**/.vs
+**/.vscode
+**/.idea
+**/.settings
+**/*.sln.docstates
+**/*.userprefs
+**/*.DS_Store
+
+# Build outputs
+**/bin
+**/obj
+**/out
+**/TestResults
+**/AppPackages
+
+# NuGet
+**/packages
+**/.nuget
+**/nuget.exe
+
+# Node.js
+**/node_modules
+**/npm-debug.log*
+**/yarn-debug.log*
+**/yarn-error.log*
+
+# Docker
+**/Dockerfile*
+**/docker-compose*
+**/.dockerignore
+
+# Environment and config
+**/.env
+**/.env.local
+**/.env.*.local
+**/secrets.dev.yaml
+**/values.dev.yaml
+**/appsettings.Development.json
+
+# Logs
+**/logs
+**/*.log
+
+# Database
+**/*.db
+**/*.sqlite*
+
+# Documentation
+**/README.md
+**/LICENSE
+**/docs
+
+# Examples
+**/examples
+
+# Temporary files
+**/tmp
+**/temp
+**/.tmp
+**/.temp
+
+# OS specific
+**/Thumbs.db
+**/ehthumbs.db
+**/Desktop.ini
+
+# JetBrains
+**/.idea/
+**/*.sln.iml
+
+# User specific files
+**/*.rsuser
+**/*.suo
+**/*.user
+**/*.userosscache
+**/*.sln.docstates

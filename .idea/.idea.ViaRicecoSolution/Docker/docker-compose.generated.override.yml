@@ -1,0 +1,22 @@
+# This is a generated file. Not intended for manual editing.
+services:
+  viariceco.api:
+    build:
+      context: "C:\\Users\\mlyna\\Desktop\\ViaRiceco\\Backend"
+      dockerfile: "ViaRiceco.Api/Dockerfile"
+      target: "base"
+    command: []
+    entrypoint:
+    - "dotnet"
+    - "/app/bin/Debug/net9.0/ViaRiceco.Api.dll"
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+      DOTNET_USE_POLLING_FILE_WATCHER: "true"
+    image: "viariceco-api:dev"
+    ports: []
+    volumes:
+    - "C:\\Users\\mlyna\\Desktop\\ViaRiceco\\Backend\\ViaRiceco.Api:/app:rw"
+    - "C:\\Users\\mlyna\\Desktop\\ViaRiceco\\Backend:/src:rw"
+    - "C:\\Users\\mlyna\\AppData\\Roaming\\Microsoft\\UserSecrets:/home/app/.microsoft/usersecrets"
+    - "C:\\Users\\mlyna\\.nuget\\packages:/home/app/.nuget/packages"
+    working_dir: "/app"

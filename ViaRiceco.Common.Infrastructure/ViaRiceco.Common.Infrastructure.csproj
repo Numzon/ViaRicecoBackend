@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <ItemGroup>
+      <ProjectReference Include="..\ViaRiceco.Common.Application\ViaRiceco.Common.Application.csproj" />
+      <ProjectReference Include="..\ViaRiceco.Common.Presentation\ViaRiceco.Common.Presentation.csproj" />
+      
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Microsoft.Extensions.Configuration" />
+    </ItemGroup>
+
+</Project>

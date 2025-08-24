@@ -1,0 +1,80 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v9.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v9.0": {
+      "ViaRiceco.Common.Presentation/1.0.0": {
+        "dependencies": {
+          "SonarAnalyzer.CSharp": "9.24.0.89429",
+          "ViaRiceco.Common.Application": "1.0.0"
+        },
+        "runtime": {
+          "ViaRiceco.Common.Presentation.dll": {}
+        }
+      },
+      "Microsoft.Extensions.DependencyInjection.Abstractions/9.0.8": {
+        "runtime": {
+          "lib/net9.0/Microsoft.Extensions.DependencyInjection.Abstractions.dll": {
+            "assemblyVersion": "9.0.0.0",
+            "fileVersion": "9.0.825.36511"
+          }
+        }
+      },
+      "SonarAnalyzer.CSharp/9.24.0.89429": {},
+      "ViaRiceco.Common.Application/1.0.0": {
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.8",
+          "ViaRiceco.Common.Domain": "1.0.0"
+        },
+        "runtime": {
+          "ViaRiceco.Common.Application.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "ViaRiceco.Common.Domain/1.0.0": {
+        "runtime": {
+          "ViaRiceco.Common.Domain.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "ViaRiceco.Common.Presentation/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Microsoft.Extensions.DependencyInjection.Abstractions/9.0.8": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-xY3lTjj4+ZYmiKIkyWitddrp1uL5uYiweQjqo4BKBw01ZC4HhcfgLghDpPZcUlppgWAFqFy9SgkiYWOMx365pw==",
+      "path": "microsoft.extensions.dependencyinjection.abstractions/9.0.8",
+      "hashPath": "microsoft.extensions.dependencyinjection.abstractions.9.0.8.nupkg.sha512"
+    },
+    "SonarAnalyzer.CSharp/9.24.0.89429": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Ozk4LVpLNHhd+mmYKiG/WYtUUBZFknpkRy5JwTq4YfmT2wPA16vev5s/42urrN27ZV+01Kb5aYKJt3EI+5jPdw==",
+      "path": "sonaranalyzer.csharp/9.24.0.89429",
+      "hashPath": "sonaranalyzer.csharp.9.24.0.89429.nupkg.sha512"
+    },
+    "ViaRiceco.Common.Application/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "ViaRiceco.Common.Domain/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v9.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v9.0": {
+      "ViaRiceco.Common.Domain/1.0.0": {
+        "dependencies": {
+          "SonarAnalyzer.CSharp": "9.24.0.89429"
+        },
+        "runtime": {
+          "ViaRiceco.Common.Domain.dll": {}
+        }
+      },
+      "SonarAnalyzer.CSharp/9.24.0.89429": {}
+    }
+  },
+  "libraries": {
+    "ViaRiceco.Common.Domain/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "SonarAnalyzer.CSharp/9.24.0.89429": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Ozk4LVpLNHhd+mmYKiG/WYtUUBZFknpkRy5JwTq4YfmT2wPA16vev5s/42urrN27ZV+01Kb5aYKJt3EI+5jPdw==",
+      "path": "sonaranalyzer.csharp/9.24.0.89429",
+      "hashPath": "sonaranalyzer.csharp.9.24.0.89429.nupkg.sha512"
+    }
+  }
+}
