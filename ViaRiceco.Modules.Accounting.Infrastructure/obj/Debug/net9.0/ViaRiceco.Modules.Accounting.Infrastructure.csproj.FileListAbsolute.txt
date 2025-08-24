@@ -25,3 +25,4 @@ C:\Users\mlyna\Desktop\ViaRiceco\Backend\ViaRiceco.Modules.Accounting.Infrastruc
 C:\Users\mlyna\Desktop\ViaRiceco\Backend\ViaRiceco.Modules.Accounting.Infrastructure\bin\Debug\net9.0\ViaRiceco.Modules.Accounting.Domain.pdb
 C:\Users\mlyna\Desktop\ViaRiceco\Backend\ViaRiceco.Modules.Accounting.Infrastructure\obj\Debug\net9.0\ViaRiceco.Modules.Accounting.Infrastructure.csproj.AssemblyReference.cache
 C:\Users\mlyna\Desktop\ViaRiceco\Backend\ViaRiceco.Modules.Accounting.Infrastructure\obj\Debug\net9.0\ViaRicec.BA184B56.Up2Date
+C:\Users\mlyna\Desktop\ViaRiceco\Backend\ViaRiceco.Modules.Accounting.Infrastructure\obj\Debug\net9.0\ViaRiceco.Modules.Accounting.Infrastructure.sourcelink.json

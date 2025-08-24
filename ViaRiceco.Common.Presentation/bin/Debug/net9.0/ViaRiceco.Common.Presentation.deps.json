@@ -8,11 +8,52 @@
     ".NETCoreApp,Version=v9.0": {
       "ViaRiceco.Common.Presentation/1.0.0": {
         "dependencies": {
+          "FastEndpoints": "7.1.0-beta.6",
           "SonarAnalyzer.CSharp": "9.24.0.89429",
           "ViaRiceco.Common.Application": "1.0.0"
         },
         "runtime": {
           "ViaRiceco.Common.Presentation.dll": {}
+        }
+      },
+      "FastEndpoints/7.1.0-beta.6": {
+        "dependencies": {
+          "FastEndpoints.Attributes": "7.1.0-beta.6",
+          "FastEndpoints.Messaging.Core": "7.1.0-beta.6",
+          "FluentValidation": "12.0.0"
+        },
+        "runtime": {
+          "lib/net9.0/FastEndpoints.dll": {
+            "assemblyVersion": "7.1.0.0",
+            "fileVersion": "7.1.0.0"
+          }
+        }
+      },
+      "FastEndpoints.Attributes/7.1.0-beta.6": {
+        "dependencies": {
+          "Microsoft.Extensions.Primitives": "8.0.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/FastEndpoints.Attributes.dll": {
+            "assemblyVersion": "7.1.0.0",
+            "fileVersion": "7.1.0.0"
+          }
+        }
+      },
+      "FastEndpoints.Messaging.Core/7.1.0-beta.6": {
+        "runtime": {
+          "lib/netstandard2.1/FastEndpoints.Messaging.Core.dll": {
+            "assemblyVersion": "7.1.0.0",
+            "fileVersion": "7.1.0.0"
+          }
+        }
+      },
+      "FluentValidation/12.0.0": {
+        "runtime": {
+          "lib/net8.0/FluentValidation.dll": {
+            "assemblyVersion": "12.0.0.0",
+            "fileVersion": "12.0.0.0"
+          }
         }
       },
       "Microsoft.Extensions.DependencyInjection.Abstractions/9.0.8": {
@@ -23,6 +64,7 @@
           }
         }
       },
+      "Microsoft.Extensions.Primitives/8.0.0": {},
       "SonarAnalyzer.CSharp/9.24.0.89429": {},
       "ViaRiceco.Common.Application/1.0.0": {
         "dependencies": {
@@ -52,12 +94,47 @@
       "serviceable": false,
       "sha512": ""
     },
+    "FastEndpoints/7.1.0-beta.6": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-qln5e2Ckzo3wrQs7QMtcRHuYXkdyU+Iu3ao9SyB1yWLWAwoxGfyERBDIQ6ZHBfPlcCTqaPLVZEf8fHBdQALemA==",
+      "path": "fastendpoints/7.1.0-beta.6",
+      "hashPath": "fastendpoints.7.1.0-beta.6.nupkg.sha512"
+    },
+    "FastEndpoints.Attributes/7.1.0-beta.6": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Y+IZuGwvDND6+WE3EFXHJClTijBJgWnKjlOvxxK+ewp2PHjkoHvT4wEXdtY0A26UP8GtJ2ZizMQgJRkMEBv5Hg==",
+      "path": "fastendpoints.attributes/7.1.0-beta.6",
+      "hashPath": "fastendpoints.attributes.7.1.0-beta.6.nupkg.sha512"
+    },
+    "FastEndpoints.Messaging.Core/7.1.0-beta.6": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-zn4X+at8tV3uAb95XkK+kL0RYkoIr7zKUn5r/bRMgL17qmiA2Kb8TgqYjjUpyaaf4RyGwuPGGQ4CNIr/+1x8zA==",
+      "path": "fastendpoints.messaging.core/7.1.0-beta.6",
+      "hashPath": "fastendpoints.messaging.core.7.1.0-beta.6.nupkg.sha512"
+    },
+    "FluentValidation/12.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-8NVLxtMUXynRHJIX3Hn1ACovaqZIJASufXIIFkD0EUbcd5PmMsL1xUD5h548gCezJ5BzlITaR9CAMrGe29aWpA==",
+      "path": "fluentvalidation/12.0.0",
+      "hashPath": "fluentvalidation.12.0.0.nupkg.sha512"
+    },
     "Microsoft.Extensions.DependencyInjection.Abstractions/9.0.8": {
       "type": "package",
       "serviceable": true,
       "sha512": "sha512-xY3lTjj4+ZYmiKIkyWitddrp1uL5uYiweQjqo4BKBw01ZC4HhcfgLghDpPZcUlppgWAFqFy9SgkiYWOMx365pw==",
       "path": "microsoft.extensions.dependencyinjection.abstractions/9.0.8",
       "hashPath": "microsoft.extensions.dependencyinjection.abstractions.9.0.8.nupkg.sha512"
+    },
+    "Microsoft.Extensions.Primitives/8.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-bXJEZrW9ny8vjMF1JV253WeLhpEVzFo1lyaZu1vQ4ZxWUlVvknZ/+ftFgVheLubb4eZPSwwxBeqS1JkCOjxd8g==",
+      "path": "microsoft.extensions.primitives/8.0.0",
+      "hashPath": "microsoft.extensions.primitives.8.0.0.nupkg.sha512"
     },
     "SonarAnalyzer.CSharp/9.24.0.89429": {
       "type": "package",

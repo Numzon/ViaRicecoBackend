@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ViaRiceco.Common.Presentation")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ff8222f8b3a94a14312699c67f6a5cca9369b3b8")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8d5482fd2294da6988ab34e1df8f0aa45a822218")]
 [assembly: System.Reflection.AssemblyProductAttribute("ViaRiceco.Common.Presentation")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ViaRiceco.Common.Presentation")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -9,3 +9,4 @@ C:\Users\mlyna\Desktop\ViaRiceco\Backend\ViaRiceco.Common.Domain\obj\Debug\net9.
 C:\Users\mlyna\Desktop\ViaRiceco\Backend\ViaRiceco.Common.Domain\obj\Debug\net9.0\refint\ViaRiceco.Common.Domain.dll
 C:\Users\mlyna\Desktop\ViaRiceco\Backend\ViaRiceco.Common.Domain\obj\Debug\net9.0\ViaRiceco.Common.Domain.pdb
 C:\Users\mlyna\Desktop\ViaRiceco\Backend\ViaRiceco.Common.Domain\obj\Debug\net9.0\ref\ViaRiceco.Common.Domain.dll
+C:\Users\mlyna\Desktop\ViaRiceco\Backend\ViaRiceco.Common.Domain\obj\Debug\net9.0\ViaRiceco.Common.Domain.sourcelink.json

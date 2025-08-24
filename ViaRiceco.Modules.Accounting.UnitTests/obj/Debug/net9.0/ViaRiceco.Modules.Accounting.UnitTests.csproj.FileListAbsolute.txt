@@ -104,3 +104,4 @@ C:\Users\mlyna\Desktop\ViaRiceco\Backend\ViaRiceco.Modules.Accounting.UnitTests\
 C:\Users\mlyna\Desktop\ViaRiceco\Backend\ViaRiceco.Modules.Accounting.UnitTests\obj\Debug\net9.0\ViaRiceco.Modules.Accounting.UnitTests.pdb
 C:\Users\mlyna\Desktop\ViaRiceco\Backend\ViaRiceco.Modules.Accounting.UnitTests\obj\Debug\net9.0\ViaRiceco.Modules.Accounting.UnitTests.genruntimeconfig.cache
 C:\Users\mlyna\Desktop\ViaRiceco\Backend\ViaRiceco.Modules.Accounting.UnitTests\obj\Debug\net9.0\ref\ViaRiceco.Modules.Accounting.UnitTests.dll
+C:\Users\mlyna\Desktop\ViaRiceco\Backend\ViaRiceco.Modules.Accounting.UnitTests\obj\Debug\net9.0\ViaRiceco.Modules.Accounting.UnitTests.sourcelink.json

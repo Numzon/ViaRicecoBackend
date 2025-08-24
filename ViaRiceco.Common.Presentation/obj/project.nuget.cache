@@ -1,10 +1,15 @@
 {
   "version": 2,
-  "dgSpecHash": "nyeSGBeR51g=",
+  "dgSpecHash": "jhcHsIvTxAE=",
   "success": true,
   "projectFilePath": "C:\\Users\\mlyna\\Desktop\\ViaRiceco\\Backend\\ViaRiceco.Common.Presentation\\ViaRiceco.Common.Presentation.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\mlyna\\.nuget\\packages\\fastendpoints\\7.1.0-beta.6\\fastendpoints.7.1.0-beta.6.nupkg.sha512",
+    "C:\\Users\\mlyna\\.nuget\\packages\\fastendpoints.attributes\\7.1.0-beta.6\\fastendpoints.attributes.7.1.0-beta.6.nupkg.sha512",
+    "C:\\Users\\mlyna\\.nuget\\packages\\fastendpoints.messaging.core\\7.1.0-beta.6\\fastendpoints.messaging.core.7.1.0-beta.6.nupkg.sha512",
+    "C:\\Users\\mlyna\\.nuget\\packages\\fluentvalidation\\12.0.0\\fluentvalidation.12.0.0.nupkg.sha512",
     "C:\\Users\\mlyna\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\9.0.8\\microsoft.extensions.dependencyinjection.abstractions.9.0.8.nupkg.sha512",
+    "C:\\Users\\mlyna\\.nuget\\packages\\microsoft.extensions.primitives\\8.0.0\\microsoft.extensions.primitives.8.0.0.nupkg.sha512",
     "C:\\Users\\mlyna\\.nuget\\packages\\sonaranalyzer.csharp\\9.24.0.89429\\sonaranalyzer.csharp.9.24.0.89429.nupkg.sha512"
   ],
   "logs": []
