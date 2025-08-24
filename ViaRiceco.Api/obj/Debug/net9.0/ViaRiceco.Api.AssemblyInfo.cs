@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ViaRiceco.Api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ff8222f8b3a94a14312699c67f6a5cca9369b3b8")]
 [assembly: System.Reflection.AssemblyProductAttribute("ViaRiceco.Api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ViaRiceco.Api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
