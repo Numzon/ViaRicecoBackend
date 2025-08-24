@@ -56,6 +56,14 @@ services:
     networks:
       - viariceco-network
     restart: unless-stopped
+    
+  viariceco.jaeger:
+    image: jaegertracing/all-in-one:latest
+    container_name: ViaRiceco.Jaeger
+    ports:
+      - "4317:4317"
+      - "4318:4318"
+      - "16686:16686"
 
 volumes:
   seq-data:

@@ -5,8 +5,4 @@
       <ProjectReference Include="..\ViaRiceco.Common.Presentation\ViaRiceco.Common.Presentation.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Database\" />
-    </ItemGroup>
-
 </Project>

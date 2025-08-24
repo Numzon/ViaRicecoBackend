@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ViaRiceco.Modules.Accounting.UnitTests")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8d5482fd2294da6988ab34e1df8f0aa45a822218")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e9fedd0287060af6ac4bc278b50c6c2e63a0a80e")]
 [assembly: System.Reflection.AssemblyProductAttribute("ViaRiceco.Modules.Accounting.UnitTests")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ViaRiceco.Modules.Accounting.UnitTests")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

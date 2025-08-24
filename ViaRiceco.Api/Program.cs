@@ -4,29 +4,37 @@ using Serilog;
 using ViaRiceco.Api.Enumerations;
 using ViaRiceco.Api.Extensions;
 using ViaRiceco.Api.Middlewares;
+using ViaRiceco.Api.OpenTelemetry;
+using ViaRiceco.Common.Application;
+using ViaRiceco.Common.Infrastructure;
 using ViaRiceco.Common.Infrastructure.Configuration;
 using ViaRiceco.Common.Infrastructure.Enumerations;
 using ViaRiceco.Common.Presentation;
 using ViaRiceco.Modules.Accounting.Infrastructure;
-using ViaRiceco.Modules.Accounting.Presentation;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 builder.Host.UseSerilog((context, loggerConfig) => loggerConfig.ReadFrom.Configuration(context.Configuration));
 
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
+
 builder.Services.AddPresentation([
     ViaRiceco.Modules.Accounting.Presentation.AssemblyReference.Assembly,
 ]);
 
-builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
-builder.Services.AddProblemDetails();
+builder.Services.AddApplication([
+    ViaRiceco.Modules.Accounting.Application.AssemblyReference.Assembly,
+]);
+
+string databaseConnectionString = builder.Configuration.GetConnectionStringOrThrow(ConnectionStrings.Database);
+string redisConnectionString = builder.Configuration.GetConnectionStringOrThrow(ConnectionStrings.Cache);
+
+builder.Services.AddInfrastructure(DiagnosticsConfig.ServiceName, databaseConnectionString, redisConnectionString);
 
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddOpenApi();
-
-string databaseConnectionString = builder.Configuration.GetConnectionStringOrThrow(ConnectionStrings.Database);
-string redisConnectionString = builder.Configuration.GetConnectionStringOrThrow(ConnectionStrings.Cache);
 
 builder.Services.AddHealthChecks()
     .AddNpgSql(databaseConnectionString)
@@ -45,7 +53,7 @@ app.MapFastEndpoints();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
-    
+
     app.ApplyMigrations();
 }
 
@@ -54,7 +62,11 @@ app.MapHealthChecks("health", new HealthCheckOptions
     ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
 });
 
+app.UseLogContext();
+
 app.UseSerilogRequestLogging();
+
+app.UseExceptionHandler();
 
 app.UseHttpsRedirection();
 
