@@ -12,7 +12,7 @@ internal sealed class ExceptionHandlingPipelineBehavior<TRequest, TResponse>(ILo
     {
         try
         {
-            return await next(cancellationToken);
+            return await next();
         }
         catch (Exception exception)
         {

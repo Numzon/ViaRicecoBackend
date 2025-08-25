@@ -19,6 +19,7 @@ internal sealed class CreateTaxTypeEndpoint(ISender sender) : Ep.Req<CreateTaxTy
     {
         Post("/accounting/tax-types");
         Tags("TaxTypes");
+        AllowAnonymous();
     }
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
