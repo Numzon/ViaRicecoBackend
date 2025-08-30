@@ -2,6 +2,9 @@
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using ViaRiceco.Common.Application.Behaviors;
+using ViaRiceco.Common.Application.Services;
+using ViaRiceco.Common.Application.Services.DataShapers;
+using ViaRiceco.Common.Application.Services.Hyperlinks;
 
 namespace ViaRiceco.Common.Application;
 
@@ -19,6 +22,9 @@ public static class ApplicationConfiguration
         });
 
         services.AddValidatorsFromAssemblies(assemblies);
+        
+        services.AddTransient<IDataShapingService, DataShapingService>();
+        services.AddTransient<IHyperlinkService, HyperlinkService>();
 
         return services;
     }

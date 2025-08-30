@@ -11,13 +11,28 @@ internal sealed class TaxTypeRepository(AccountingDbContext context) : ITaxTypeR
         return context.TaxTypes.FirstOrDefaultAsync(t => t.Id == id, cancellationToken);
     }
 
+    public async Task<IReadOnlyCollection<TaxType>> GetAllAsync(CancellationToken cancellationToken = default)
+    {
+        return await context.TaxTypes.ToListAsync(cancellationToken);
+    }
+
     public Task<bool> ExistsByNameAsync(string name, CancellationToken cancellationToken = default)
     {
         return context.TaxTypes.AnyAsync(t => t.Name == name, cancellationToken);
     }
 
+    public Task<bool> ExistsByNameAsync(string name, string excludeId, CancellationToken cancellationToken = default)
+    {
+        return context.TaxTypes.AnyAsync(t => t.Name == name && t.Id != excludeId, cancellationToken);
+    }
+
     public void Insert(TaxType taxType)
     {
         context.TaxTypes.Add(taxType);
+    }
+
+    public void Delete(TaxType taxType)
+    {
+        context.TaxTypes.Remove(taxType);
     }
 }

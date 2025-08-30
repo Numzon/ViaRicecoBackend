@@ -45,6 +45,8 @@ builder.Configuration.AddModuleConfiguration([
 
 builder.Services.AddAccountingModule(builder.Configuration);
 
+builder.Services.AddHttpContextAccessor();
+
 WebApplication app = builder.Build();
 
 app.MapFastEndpoints();

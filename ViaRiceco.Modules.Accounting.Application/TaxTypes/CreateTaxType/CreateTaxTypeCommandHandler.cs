@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using System.Dynamic;
+using FluentValidation;
 using JetBrains.Annotations;
 using ViaRiceco.Common.Application.Abstractions;
 using ViaRiceco.Common.Application.Extensions;
@@ -11,7 +12,10 @@ namespace ViaRiceco.Modules.Accounting.Application.TaxTypes.CreateTaxType;
 
 public sealed record CreateTaxTypeCommand(string Name) : ICommand<TaxTypeDto>;
 
-internal sealed class CreateTaxTypeCommandHandler(ITaxTypeRepository repository, IUnitOfWork unitOfWork, TimeProvider timeProvider) 
+internal sealed class CreateTaxTypeCommandHandler(
+    ITaxTypeRepository repository,
+    IUnitOfWork unitOfWork,
+    TimeProvider timeProvider)
     : ICommandHandler<CreateTaxTypeCommand, TaxTypeDto>
 {
     public async Task<Result<TaxTypeDto>> Handle(CreateTaxTypeCommand request, CancellationToken cancellationToken)
@@ -21,15 +25,15 @@ internal sealed class CreateTaxTypeCommandHandler(ITaxTypeRepository repository,
         {
             return Result.Failure<TaxTypeDto>(TaxTypeErrors.NameNotUnique(request.Name));
         }
-        
+
         var taxType = TaxType.Create(request.Name, timeProvider.UtcNow());
-        
+
         repository.Insert(taxType);
-        
+
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        TaxTypeDto taxTypeDto = new(taxType.Id, taxType.Name);
-        
+        var taxTypeDto = new TaxTypeDto(taxType.Id, taxType.Name);
+
         return taxTypeDto;
     }
 }
@@ -39,6 +43,6 @@ internal sealed class CreateTaxTypeCommandValidator : AbstractValidator<CreateTa
 {
     public CreateTaxTypeCommandValidator()
     {
-        RuleFor(x => x.Name).NotEmpty();       
+        RuleFor(x => x.Name).NotEmpty();
     }
 }
