@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ViaRiceco.Modules.Accounting.Domain.TaxTypes;
 using ViaRiceco.Modules.Accounting.Infrastructure.Database;
+using System.Linq.Dynamic.Core;
 
 namespace ViaRiceco.Modules.Accounting.Infrastructure.TaxTypes;
 
@@ -11,9 +12,16 @@ internal sealed class TaxTypeRepository(AccountingDbContext context) : ITaxTypeR
         return context.TaxTypes.FirstOrDefaultAsync(t => t.Id == id, cancellationToken);
     }
 
-    public async Task<IReadOnlyCollection<TaxType>> GetAllAsync(CancellationToken cancellationToken = default)
+    public async Task<IReadOnlyCollection<TaxType>> GetPageAsync(string? search, string orderBy, int page, int pageSize,
+        CancellationToken cancellationToken = default)
     {
-        return await context.TaxTypes.ToListAsync(cancellationToken);
+        string? cleanedSearch = search?.Trim().ToLowerInvariant();
+        
+        return await context.TaxTypes
+            .Where(h => cleanedSearch == null || EF.Functions.ILike(h.Name, $"%{cleanedSearch}%"))
+            .OrderBy(orderBy)
+            .Skip((page - 1) * pageSize).Take(pageSize)
+            .ToListAsync(cancellationToken);
     }
 
     public Task<bool> ExistsByNameAsync(string name, CancellationToken cancellationToken = default)
@@ -24,6 +32,11 @@ internal sealed class TaxTypeRepository(AccountingDbContext context) : ITaxTypeR
     public Task<bool> ExistsByNameAsync(string name, string excludeId, CancellationToken cancellationToken = default)
     {
         return context.TaxTypes.AnyAsync(t => t.Name == name && t.Id != excludeId, cancellationToken);
+    }
+
+    public Task<int> CountAsync(CancellationToken cancellationToken = default)
+    {
+        return context.TaxTypes.CountAsync(cancellationToken);
     }
 
     public void Insert(TaxType taxType)

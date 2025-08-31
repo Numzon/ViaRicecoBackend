@@ -9,7 +9,7 @@ namespace ViaRiceco.Common.Application.Services.Hyperlinks;
 public class HyperlinkService(IHttpContextAccessor httpContextAccessor, LinkGenerator linkGenerator) 
     : IHyperlinkService
 {
-    public Hyperlink Create(string endpointName, string rel, string method, object? values = null)
+    public Hyperlink Create(string endpointName, string relationship, string method, object? values = null)
     {
         HttpContext httpContext = httpContextAccessor.HttpContext 
             ?? throw new InvalidOperationException("HttpContext is not available");
@@ -20,7 +20,7 @@ public class HyperlinkService(IHttpContextAccessor httpContextAccessor, LinkGene
         return new Hyperlink
         {
             Href = url ?? throw new InvalidOperationException($"Could not generate URL for endpoint '{endpointName}'"),
-            Rel = rel,
+            Rel = relationship,
             Method = method
         };
     }

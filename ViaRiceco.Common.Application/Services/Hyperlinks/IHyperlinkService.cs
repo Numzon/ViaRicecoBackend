@@ -6,6 +6,6 @@ namespace ViaRiceco.Common.Application.Services.Hyperlinks;
 
 public interface IHyperlinkService
 {
-    Hyperlink Create(string endpointName, string rel, string method, object? values = null);
+    Hyperlink Create(string endpointName, string relationship, string method, object? values = null);
     Result<ExpandoObject> AddHyperlinks(Result<ExpandoObject> result, Hyperlink[] hyperlinks);
 }

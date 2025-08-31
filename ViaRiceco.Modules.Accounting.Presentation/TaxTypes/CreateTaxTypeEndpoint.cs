@@ -40,7 +40,7 @@ internal sealed class CreateTaxTypeEndpoint(ISender sender, IHyperlinkService hy
         }
         
         Hyperlink[] links = GetLinks(result.Value.Id);
-        ExpandoObject shapedObject = dataShapingService.ShapeData(result.Value, links);
+        ExpandoObject shapedObject = dataShapingService.ShapeData(result.Value, hyperlinks: links);
         
         await Send.ResultAsync(Results.CreatedAtRoute(
             nameof(GetTaxTypeEndpoint), 
