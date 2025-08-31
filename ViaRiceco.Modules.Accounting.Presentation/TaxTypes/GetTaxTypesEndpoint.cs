@@ -12,6 +12,7 @@ using ViaRiceco.Common.Domain.Models;
 using ViaRiceco.Common.Presentation.Results;
 using ViaRiceco.Modules.Accounting.Application.TaxTypes.GetTaxTypes;
 using ViaRiceco.Modules.Accounting.Presentation.Enumerations;
+using ViaRiceco.Modules.Accounting.Presentation.TaxTypes.Hyperlinks;
 
 namespace ViaRiceco.Modules.Accounting.Presentation.TaxTypes;
 

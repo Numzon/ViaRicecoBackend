@@ -4,7 +4,7 @@ using ViaRiceco.Common.Application.Services.Hyperlinks;
 using ViaRiceco.Common.Application.Services.Hyperlinks.Models;
 using ViaRiceco.Common.Domain.Enumerations;
 
-namespace ViaRiceco.Modules.Accounting.Presentation.TaxTypes;
+namespace ViaRiceco.Modules.Accounting.Presentation.TaxTypes.Hyperlinks;
 
 public static class TaxTypesHyperlinks
 {
