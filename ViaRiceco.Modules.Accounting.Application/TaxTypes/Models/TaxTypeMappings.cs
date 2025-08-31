@@ -1,4 +1,5 @@
 ﻿using ViaRiceco.Common.Application.Services.Sorting;
+using ViaRiceco.Common.Application.Services.Sorting.Models;
 using ViaRiceco.Modules.Accounting.Domain.TaxTypes;
 
 namespace ViaRiceco.Modules.Accounting.Application.TaxTypes.Models;

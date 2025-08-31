@@ -27,6 +27,7 @@ public static class ApplicationConfiguration
         services.AddTransient<IDataShapingService, DataShapingService>();
         services.AddTransient<IHyperlinkService, HyperlinkService>();
         services.AddTransient<ISortMappingProvider, SortMappingProvider>();
+        services.AddTransient<ISortingService, SortingService>();
 
         return services;
     }

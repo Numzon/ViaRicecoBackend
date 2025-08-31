@@ -12,19 +12,18 @@ public sealed record GetTaxTypesQuery(string? Search, string? Sort, int Page, in
 
 public sealed record GetTaxTypesQueryResponse(IReadOnlyCollection<TaxTypeDto> Items, int TotalCount);
 
-internal sealed class GetTaxTypesQueryHandler(ITaxTypeRepository repository, ISortMappingProvider sortMappingProvider)
+internal sealed class GetTaxTypesQueryHandler(ITaxTypeRepository repository, ISortingService sortingService)
     : IQueryHandler<GetTaxTypesQuery, GetTaxTypesQueryResponse>
 {
     public async Task<Result<GetTaxTypesQueryResponse>> Handle(GetTaxTypesQuery request,
         CancellationToken cancellationToken)
     {
-        if (!sortMappingProvider.ValidateMappings<TaxTypeDto, TaxType>(request.Sort))
+        if (!sortingService.ValidateSortParameters<TaxTypeDto, TaxType>(request.Sort))
         {
-            return Result.Failure<GetTaxTypesQueryResponse>(new Error("","",ErrorType.Conflict));
+            return Result.Failure<GetTaxTypesQueryResponse>(TaxTypeErrors.InvalidSortParameter(request.Sort));
         }
         
-        SortMapping[] sortMappings = sortMappingProvider.GetMappings<TaxTypeDto, TaxType>();
-        string orderBy = QueryableExtensions.ApplySort(request.Sort, sortMappings);
+        string orderBy = sortingService.GenerateOrderByClause<TaxTypeDto, TaxType>(request.Sort);
         
         IReadOnlyCollection<TaxType> taxTypes = await repository.GetPageAsync(request.Search, orderBy,
             request.Page, request.PageSize, cancellationToken);

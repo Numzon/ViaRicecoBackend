@@ -9,4 +9,7 @@ public static class TaxTypeErrors
     
     public static Error NameNotUnique(string name) =>
         Error.Conflict("TaxType.NameNotUnique", $"The tax type with the name {name} already exists");
+    
+    public static Error InvalidSortParameter(string? sortParameter) =>
+        Error.Validation("TaxType.InvalidSortParameter", $"The sort parameter '{sortParameter}' is not valid for tax types");
 }
