@@ -6,6 +6,7 @@ using ViaRiceco.Common.Application.Services;
 using ViaRiceco.Common.Application.Services.DataShapers;
 using ViaRiceco.Common.Application.Services.Hyperlinks;
 using ViaRiceco.Common.Application.Services.Sorting;
+using ViaRiceco.Common.Application.Services.Sorting.Extensions;
 
 namespace ViaRiceco.Common.Application;
 
@@ -28,6 +29,8 @@ public static class ApplicationConfiguration
         services.AddTransient<IHyperlinkService, HyperlinkService>();
         services.AddTransient<ISortMappingProvider, SortMappingProvider>();
         services.AddTransient<ISortingService, SortingService>();
+
+        services.AddSortMappings(assemblies);
 
         return services;
     }

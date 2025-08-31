@@ -6,14 +6,17 @@ public sealed class SortMappingProvider(IEnumerable<ISortMappingDefinition> sort
 {
     public SortMapping[] GetMappings<TSource, TDestination>()
     {
-        SortMappingDefinition<TSource, TDestination>? definition = sortMappingDefinitions
-            .OfType<SortMappingDefinition<TSource, TDestination>>()
-            .FirstOrDefault();
+        string sourceType = typeof(TSource).Name;
+        string destinationType = typeof(TDestination).Name;
+        
+        ISortMappingDefinition? definition = sortMappingDefinitions
+            .FirstOrDefault(x => x.SourceType == sourceType && x.DestinationType == destinationType);
 
         if (definition is null)
         {
-            throw new InvalidOperationException($"No sort mapping definition found for {typeof(TSource).Name} to {typeof(TDestination).Name}");
+            throw new InvalidOperationException($"No sort mapping definition found for {sourceType} to {destinationType}");
         }
+        
         return definition.Mappings;
     }
 }
