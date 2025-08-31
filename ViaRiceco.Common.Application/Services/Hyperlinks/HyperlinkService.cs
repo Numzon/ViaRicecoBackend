@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using ViaRiceco.Common.Application.Services.Hyperlinks.Models;
+using ViaRiceco.Common.Domain.Enumerations;
 using ViaRiceco.Common.Domain.Models;
 
 namespace ViaRiceco.Common.Application.Services.Hyperlinks;
@@ -23,17 +24,5 @@ public class HyperlinkService(IHttpContextAccessor httpContextAccessor, LinkGene
             Rel = relationship,
             Method = method
         };
-    }
-
-    public Result<ExpandoObject> AddHyperlinks(Result<ExpandoObject> result, Hyperlink[] hyperlinks)
-    {
-        if (!result.IsSuccess)
-        {
-            return result;
-        }
-        
-        result.Value.TryAdd("links", hyperlinks);
-        
-        return result;
     }
 }

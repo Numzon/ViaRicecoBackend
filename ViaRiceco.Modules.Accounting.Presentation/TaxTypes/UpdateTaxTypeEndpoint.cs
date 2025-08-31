@@ -9,10 +9,12 @@ using Microsoft.AspNetCore.Mvc;
 using ViaRiceco.Common.Application.Services.DataShapers;
 using ViaRiceco.Common.Application.Services.Hyperlinks;
 using ViaRiceco.Common.Application.Services.Hyperlinks.Models;
+using ViaRiceco.Common.Domain.Enumerations;
 using ViaRiceco.Common.Domain.Models;
 using ViaRiceco.Common.Presentation.Results;
 using ViaRiceco.Modules.Accounting.Application.TaxTypes.Models;
 using ViaRiceco.Modules.Accounting.Application.TaxTypes.UpdateTaxType;
+using ViaRiceco.Modules.Accounting.Presentation.Enumerations;
 
 namespace ViaRiceco.Modules.Accounting.Presentation.TaxTypes;
 
@@ -25,7 +27,7 @@ internal sealed class UpdateTaxTypeEndpoint(ISender sender, IHyperlinkService hy
     public override void Configure()
     {
         Put("/accounting/tax-types/{id}");
-        Tags("TaxTypes");
+        Tags(EndpointTags.TaxTypes);
         AllowAnonymous();
         Description(d => d.WithName(nameof(UpdateTaxTypeEndpoint)));
     }
@@ -41,20 +43,9 @@ internal sealed class UpdateTaxTypeEndpoint(ISender sender, IHyperlinkService hy
             return;
         }
         
-        Hyperlink[] links = GetLinks(result.Value.Id);
+        Hyperlink[] links = TaxTypesHyperlinks.CreateTaxTypeItemLinks(hyperlinkService, result.Value.Id);
         ExpandoObject shapedObject = dataShapingService.ShapeData(result.Value, hyperlinks: links);
         
         await Send.ResultAsync(Results.Ok(shapedObject));
-    }
-
-    private Hyperlink[] GetLinks(string id)
-    {
-        return
-        [
-            hyperlinkService.Create(nameof(GetTaxTypeEndpoint), "self", HttpMethods.Get, new { id }),
-            hyperlinkService.Create(nameof(UpdateTaxTypeEndpoint), "update", HttpMethods.Put, new { id }),
-            hyperlinkService.Create(nameof(DeleteTaxTypeEndpoint), "delete", HttpMethods.Delete, new { id }),
-            hyperlinkService.Create(nameof(GetTaxTypesEndpoint), "collection", HttpMethods.Get)
-        ];
     }
 }
