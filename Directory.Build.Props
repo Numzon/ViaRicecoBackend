@@ -8,6 +8,11 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <CodeAnalysisTreatWarningsAsErrors>true</CodeAnalysisTreatWarningsAsErrors>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    
+    <!-- Suppress runtime identifier warnings for modern .NET -->
+    <NoWarn>$(NoWarn);NETSDK1206</NoWarn>
+    <!-- Explicitly support modern runtime identifiers -->
+    <RestoreRuntimeIdentifiers>win-x64;linux-x64;osx-x64</RestoreRuntimeIdentifiers>
   </PropertyGroup>
 
   <ItemGroup Condition="'$(MSBuildProjectExtension)' != '.dcproj'">

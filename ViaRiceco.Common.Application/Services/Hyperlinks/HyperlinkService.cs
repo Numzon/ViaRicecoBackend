@@ -15,7 +15,6 @@ public class HyperlinkService(IHttpContextAccessor httpContextAccessor, LinkGene
         HttpContext httpContext = httpContextAccessor.HttpContext 
             ?? throw new InvalidOperationException("HttpContext is not available");
 
-        // Generate absolute URL
         string? url = linkGenerator.GetUriByName(httpContext, endpointName, values);
         
         return new Hyperlink

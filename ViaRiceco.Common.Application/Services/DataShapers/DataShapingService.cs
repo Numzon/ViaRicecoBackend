@@ -1,93 +1,55 @@
-﻿using System.Collections.Concurrent;
-using System.Dynamic;
-using System.Reflection;
-using ViaRiceco.Common.Application.Abstractions.Collections;
+﻿using System.Dynamic;
+using ViaRiceco.Common.Application.Services.DataShapers.Helpers;
 using ViaRiceco.Common.Application.Services.Hyperlinks.Models;
 
 namespace ViaRiceco.Common.Application.Services.DataShapers;
 
+/// <summary>
+/// High-performance data shaping service with compiled property access and optimized caching
+/// </summary>
 public sealed class DataShapingService : IDataShapingService
 {
-    private static readonly ConcurrentDictionary<Type, PropertyInfo[]> _propertyCache = new();
-    
     public ExpandoObject ShapeData<T>(T entity, string? fields = null, Hyperlink[]? hyperlinks = null)
     {
-        HashSet<string> fieldsSet = fields?
-            .Split(',')
-            .Select(f => f.Trim())
-            .ToHashSet(StringComparer.OrdinalIgnoreCase) ?? [];
+        // Parse and cache field filtering
+        HashSet<string> requestedFields = FieldParser.ParseFields(fields);
         
-        PropertyInfo[] propertyInfos = _propertyCache.GetOrAdd(typeof(T),
-            t => t.GetProperties(BindingFlags.Public | BindingFlags.Instance));
-
-        if (fieldsSet.Any())
-        {
-            propertyInfos = [.. propertyInfos.Where(p => fieldsSet.Contains(p.Name))];
-        }
+        // Get compiled property accessors (cached per type)
+        PropertyAccessor<T>[] allAccessors = PropertyAccessor<T>.GetAccessors();
+        PropertyAccessor<T>[] filteredAccessors = PropertyAccessor<T>.FilterAccessors(allAccessors, requestedFields);
         
-        IDictionary<string, object?> shapedObject = new ExpandoObject();
-        
-        foreach (PropertyInfo propertyInfo in propertyInfos)
-        {
-            shapedObject[propertyInfo.Name] = propertyInfo.GetValue(entity);
-        }
-        
-        shapedObject["_links"] = hyperlinks;
-        
-        return (ExpandoObject)shapedObject;
+        // Shape entity using optimized core logic
+        return DataShaper<T>.ShapeEntity(entity, filteredAccessors, hyperlinks);
     }
     
     public IReadOnlyCollection<ExpandoObject> ShapeCollectionData<T>(IReadOnlyCollection<T> entities, string? fields = null, Func<T, Hyperlink[]>? generateLinks = null)
     {
-        HashSet<string> fieldsSet = fields?
-            .Split(',')
-            .Select(f => f.Trim())
-            .ToHashSet(StringComparer.OrdinalIgnoreCase) ?? [];
-        
-        PropertyInfo[] propertyInfos = _propertyCache.GetOrAdd(typeof(T),
-            t => t.GetProperties(BindingFlags.Public | BindingFlags.Instance));
-        
-        if (fieldsSet.Any())
+        // Early return for empty collections
+        if (entities.Count == 0)
         {
-            propertyInfos = [.. propertyInfos.Where(p => fieldsSet.Contains(p.Name))];
+            return [];
         }
 
-        List<ExpandoObject> shapedObjects = [];
-        foreach (T entity in entities)
-        {
-            IDictionary<string, object?> shapedObject = new ExpandoObject();
+        // Parse and cache field filtering (shared across all entities)
+        HashSet<string> requestedFields = FieldParser.ParseFields(fields);
         
-            foreach (PropertyInfo propertyInfo in propertyInfos)
-            {
-                shapedObject[propertyInfo.Name] = propertyInfo.GetValue(entity);
-            }
+        // Get compiled property accessors (cached per type, computed once per collection)
+        PropertyAccessor<T>[] allAccessors = PropertyAccessor<T>.GetAccessors();
+        PropertyAccessor<T>[] filteredAccessors = PropertyAccessor<T>.FilterAccessors(allAccessors, requestedFields);
         
-            if (generateLinks is not null)
-            {
-                shapedObject["_links"] = generateLinks(entity);
-            }
-            
-            shapedObjects.Add((ExpandoObject)shapedObject);
-        }
-        
-        return shapedObjects;
+        // Shape collection using optimized core logic with pre-allocated capacity
+        return DataShaper<T>.ShapeCollection(entities, filteredAccessors, generateLinks);
     }
 
     public bool Validate<T>(string? fields)
     {
-        if (string.IsNullOrWhiteSpace(fields))
-        {
-            return true;
-        }
-
-        var fieldsSet = fields
-            .Split(',', StringSplitOptions.RemoveEmptyEntries)
-            .Select(f => f.Trim())
-            .ToHashSet(StringComparer.OrdinalIgnoreCase);
-
-        PropertyInfo[] propertyInfos = _propertyCache.GetOrAdd(typeof(T),
-            t => t.GetProperties(BindingFlags.Public | BindingFlags.Instance));
-
-        return fieldsSet.All(f => propertyInfos.Any(p => p.Name.Equals(f, StringComparison.OrdinalIgnoreCase)));
+        // Parse fields using cached parser
+        HashSet<string> requestedFields = FieldParser.ParseFields(fields);
+        
+        // Get property accessors for validation
+        PropertyAccessor<T>[] accessors = PropertyAccessor<T>.GetAccessors();
+        
+        // Use optimized validation logic
+        return FieldParser.ValidateFields(requestedFields, accessors);
     }
 }
