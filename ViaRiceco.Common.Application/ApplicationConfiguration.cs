@@ -23,7 +23,7 @@ public static class ApplicationConfiguration
             config.AddOpenBehavior(typeof(ValidationPipelineBehavior<,>));
         });
 
-        services.AddValidatorsFromAssemblies(assemblies);
+        services.AddValidatorsFromAssemblies(assemblies, includeInternalTypes: true);
         
         services.AddTransient<IDataShapingService, DataShapingService>();
         services.AddTransient<IHyperlinkService, HyperlinkService>();
