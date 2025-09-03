@@ -7,7 +7,7 @@ using ViaRiceco.Modules.Accounting.IntegrationTests.Abstractions;
 
 namespace ViaRiceco.Modules.Accounting.IntegrationTests.TaxTypes;
 
-public sealed class CreateCategoryTests(IntegrationTestWebAppFactory factory) : BaseIntegrationTest(factory)
+public sealed class CreateTaxTypeTests(IntegrationTestWebAppFactory factory) : BaseIntegrationTest(factory)
 {
     [Fact]
     public async Task Should_CreateCategory_WhenCommandIsValid()
