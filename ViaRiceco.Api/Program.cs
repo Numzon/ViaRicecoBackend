@@ -12,6 +12,7 @@ using ViaRiceco.Common.Infrastructure.Configuration;
 using ViaRiceco.Common.Infrastructure.Enumerations;
 using ViaRiceco.Common.Presentation;
 using ViaRiceco.Modules.Accounting.Infrastructure;
+using ViaRiceco.Modules.Portfolios.Infrastructure;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -22,10 +23,12 @@ builder.Services.AddProblemDetails();
 
 builder.Services.AddPresentation([
     ViaRiceco.Modules.Accounting.Presentation.AssemblyReference.Assembly,
+    ViaRiceco.Modules.Portfolios.Presentation.AssemblyReference.Assembly,
 ]);
 
 builder.Services.AddApplication([
     ViaRiceco.Modules.Accounting.Application.AssemblyReference.Assembly,
+    ViaRiceco.Modules.Portfolios.Application.AssemblyReference.Assembly,
 ]);
 
 string databaseConnectionString = builder.Configuration.GetConnectionStringOrThrow(ConnectionStrings.Database);
@@ -40,10 +43,12 @@ builder.Services.AddHealthChecks()
     .AddRedis(redisConnectionString);
 
 builder.Configuration.AddModuleConfiguration([
-    Modules.Accounting
+    Modules.Accounting,
+    Modules.Portfolios
 ]);
 
 builder.Services.AddAccountingModule(builder.Configuration);
+builder.Services.AddPortfoliosModule(builder.Configuration);
 
 builder.Services.AddHttpContextAccessor();
 

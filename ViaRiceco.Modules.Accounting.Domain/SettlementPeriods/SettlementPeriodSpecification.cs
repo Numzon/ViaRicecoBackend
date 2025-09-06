@@ -13,7 +13,7 @@ public static class SettlementPeriodSpecification
     /// <summary>
     /// Determines whether the settlement period already has a tax for the specified tax type
     /// </summary>
-    public static bool HasTaxTypeAlready(SettlementPeriod settlementPeriod, string taxTypeId)
+    public static bool TaxTypeAlreadyExists(SettlementPeriod settlementPeriod, string taxTypeId)
     {
         return settlementPeriod.Taxes.Any(t => t.TaxTypeId == taxTypeId);
     }

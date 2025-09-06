@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <ItemGroup>
+      <ProjectReference Include="..\ViaRiceco.Modules.Portfolios.Domain\ViaRiceco.Modules.Portfolios.Domain.csproj" />
+      <ProjectReference Include="..\ViaRiceco.Common.Application\ViaRiceco.Common.Application.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+            <_Parameter1>ViaRiceco.Modules.Portfolios.UnitTests</_Parameter1>
+        </AssemblyAttribute>
+    </ItemGroup>
+    
+</Project>

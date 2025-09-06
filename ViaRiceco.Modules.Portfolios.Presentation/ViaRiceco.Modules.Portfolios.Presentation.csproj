@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <ItemGroup>
+      <ProjectReference Include="..\ViaRiceco.Modules.Portfolios.Application\ViaRiceco.Modules.Portfolios.Application.csproj" />
+      <ProjectReference Include="..\ViaRiceco.Common.Presentation\ViaRiceco.Common.Presentation.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="FastEndpoints.AspVersioning" />
+    </ItemGroup>
+
+</Project>

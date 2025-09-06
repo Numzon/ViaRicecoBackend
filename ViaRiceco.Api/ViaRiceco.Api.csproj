@@ -28,5 +28,6 @@
     </ItemGroup>
     <ItemGroup>
       <ProjectReference Include="..\ViaRiceco.Modules.Accounting.Infrastructure\ViaRiceco.Modules.Accounting.Infrastructure.csproj" />
+      <ProjectReference Include="..\ViaRiceco.Modules.Portfolios.Infrastructure\ViaRiceco.Modules.Portfolios.Infrastructure.csproj" />
     </ItemGroup>
 </Project>

@@ -56,7 +56,7 @@ public sealed class SettlementPeriod : Entity
 
     public Result AddTax(decimal value, string taxTypeId, DateTime createdAtUtc)
     {
-        if (SettlementPeriodSpecification.HasTaxTypeAlready(this, taxTypeId))
+        if (SettlementPeriodSpecification.TaxTypeAlreadyExists(this, taxTypeId))
         {
             return Result.Failure(SettlementPeriodErrors.TaxTypeAlreadyExists(taxTypeId));
         }
