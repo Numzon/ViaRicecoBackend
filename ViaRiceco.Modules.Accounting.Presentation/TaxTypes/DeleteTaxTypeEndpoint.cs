@@ -1,5 +1,6 @@
 using System.Dynamic;
 using FastEndpoints;
+using FastEndpoints.AspVersioning;
 using JetBrains.Annotations;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
@@ -8,6 +9,7 @@ using ViaRiceco.Common.Application.Services.DataShapers;
 using ViaRiceco.Common.Application.Services.Hyperlinks;
 using ViaRiceco.Common.Application.Services.Hyperlinks.Models;
 using ViaRiceco.Common.Domain.Models;
+using ViaRiceco.Common.Presentation.Enumerations;
 using ViaRiceco.Common.Presentation.Results;
 using ViaRiceco.Modules.Accounting.Application.TaxTypes.DeleteTaxType;
 using ViaRiceco.Modules.Accounting.Presentation.Enumerations;
@@ -26,6 +28,10 @@ internal sealed class DeleteTaxTypeEndpoint(ISender sender)
         Tags(EndpointTags.TaxTypes);
         AllowAnonymous();
         Description(d => d.WithName(nameof(DeleteTaxTypeEndpoint)));
+        
+        Options(x => x
+            .WithVersionSet(CustomVersionSets.TaxTypes)
+            .MapToApiVersion(1.0));
     }
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
