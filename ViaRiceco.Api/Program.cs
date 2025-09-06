@@ -72,3 +72,7 @@ app.UseExceptionHandler();
 app.UseHttpsRedirection();
 
 await app.RunAsync();
+
+#pragma warning disable CA1515
+// ReSharper disable once ClassNeverInstantiated.Global
+public partial class Program;

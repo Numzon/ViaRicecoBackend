@@ -1,16 +1,18 @@
 using System.Dynamic;
 using FastEndpoints;
+using FastEndpoints.AspVersioning;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
-using ViaRiceco.Common.Application.Abstractions.Collections;
 using ViaRiceco.Common.Application.Services.DataShapers;
 using ViaRiceco.Common.Application.Services.Hyperlinks;
 using ViaRiceco.Common.Application.Services.Hyperlinks.Models;
-using ViaRiceco.Common.Domain.Enumerations;
 using ViaRiceco.Common.Domain.Models;
+using ViaRiceco.Common.Presentation.Abstractions.Collections;
+using ViaRiceco.Common.Presentation.Enumerations;
 using ViaRiceco.Common.Presentation.Results;
 using ViaRiceco.Modules.Accounting.Application.TaxTypes.GetTaxTypes;
+using ViaRiceco.Modules.Accounting.Application.TaxTypes.Models;
 using ViaRiceco.Modules.Accounting.Presentation.Enumerations;
 using ViaRiceco.Modules.Accounting.Presentation.TaxTypes.Hyperlinks;
 
@@ -28,6 +30,10 @@ internal sealed class GetTaxTypesEndpoint(
         Tags(EndpointTags.TaxTypes);
         AllowAnonymous();
         Description(d => d.WithName(nameof(GetTaxTypesEndpoint)));
+        
+        Options(x => x
+            .WithVersionSet(CustomVersionSets.TaxTypes)
+            .MapToApiVersion(1.0));
     }
 
     public override async Task HandleAsync(ViaRicecoCollectionQueryParameters collectionQuery, CancellationToken ct)
@@ -41,10 +47,8 @@ internal sealed class GetTaxTypesEndpoint(
             await Send.ResultAsync(ApiResults.Problem(result));
             return;
         }
-
-        IReadOnlyCollection<ExpandoObject> shapedCollection =
-            dataShapingService.ShapeCollectionData(result.Value.Items, collectionQuery.Fields,
-                x => TaxTypesHyperlinks.CreateTaxTypeItemLinks(hyperlinkService, x.Id));
+        
+        IReadOnlyCollection<ExpandoObject> shapedCollection = ShapeCollectionData(result.Value.Items, collectionQuery.Fields, collectionQuery.IncludeLinks);
 
         var collectionResponse = new ViaRicecoCollectionResponse
         {
@@ -54,12 +58,26 @@ internal sealed class GetTaxTypesEndpoint(
             PageSize = collectionQuery.PageSize,
         };
 
-        Hyperlink[] links = TaxTypesHyperlinks.CreateTaxTypeCollectionLinks(hyperlinkService, collectionQuery,
-            collectionResponse.HasNextPage,
-            collectionResponse.HasPreviousPage);
+        if (collectionQuery.IncludeLinks)
+        {
+            Hyperlink[] links = TaxTypesHyperlinks.CreateTaxTypeCollectionLinks(hyperlinkService, collectionQuery,
+                collectionResponse.HasNextPage,
+                collectionResponse.HasPreviousPage);
 
-        collectionResponse.Links = links;
-
+            collectionResponse.Links = links;    
+        }
+        
         await Send.ResultAsync(Results.Ok(collectionResponse));
+    }
+
+    private IReadOnlyCollection<ExpandoObject> ShapeCollectionData(IReadOnlyCollection<TaxTypeDto> items, string? fields, bool includeLinks)
+    {
+        if (includeLinks)
+        {
+            return dataShapingService.ShapeCollectionData(items, fields,
+                    x => TaxTypesHyperlinks.CreateTaxTypeItemLinks(hyperlinkService, x.Id));    
+        }
+        
+        return dataShapingService.ShapeCollectionData(items, fields);
     }
 }

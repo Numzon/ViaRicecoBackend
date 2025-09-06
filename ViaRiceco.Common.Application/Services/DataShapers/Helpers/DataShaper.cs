@@ -1,5 +1,6 @@
 using System.Dynamic;
 using ViaRiceco.Common.Application.Services.Hyperlinks.Models;
+using ViaRiceco.Common.Domain.Enumerations;
 
 namespace ViaRiceco.Common.Application.Services.DataShapers.Helpers;
 
@@ -15,9 +16,9 @@ internal static class DataShaper<T>
             dictionary[accessor.PropertyName] = accessor.GetValue(entity);
         }
         
-        if (hyperlinks is not null)
+        if (hyperlinks is not null && hyperlinks.Length > 0)
         {
-            dictionary["_links"] = hyperlinks;
+            dictionary[CustomProperties.Links] = hyperlinks;
         }
 
         return shapedObject;
@@ -32,7 +33,7 @@ internal static class DataShaper<T>
 
         foreach (T entity in entities)
         {
-            Hyperlink[]? hyperlinks = generateLinks?.Invoke(entity);
+            Hyperlink[] hyperlinks = generateLinks?.Invoke(entity) ?? [];
             shapedObjects.Add(ShapeEntity(entity, accessors, hyperlinks));
         }
 
