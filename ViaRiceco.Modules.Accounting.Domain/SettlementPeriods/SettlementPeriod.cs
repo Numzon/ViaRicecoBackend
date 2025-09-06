@@ -43,19 +43,20 @@ public sealed class SettlementPeriod : Entity
         return period;
     }
 
-    public void AddIncome(decimal value, DateTime createdAtUtc)
+    public Income AddIncome(decimal value, DateTime createdAtUtc)
     {
         var income = Income.Create(value, Id, createdAtUtc);
         _incomes.Add(income);
 
         Raise(new IncomeAddedToSettlementPeriodDomainEvent(Id, income.Id, value, createdAtUtc));
         RaiseNetAmountRecalculatedEvent(createdAtUtc);
+        
+        return income;
     }
 
     public Result AddTax(decimal value, string taxTypeId, DateTime createdAtUtc)
     {
-        // Business rule: Only one tax per tax type per settlement period
-        if (_taxes.Any(t => t.TaxTypeId == taxTypeId))
+        if (SettlementPeriodSpecification.HasTaxTypeAlready(this, taxTypeId))
         {
             return Result.Failure(SettlementPeriodErrors.TaxTypeAlreadyExists(taxTypeId));
         }
@@ -103,12 +104,12 @@ public sealed class SettlementPeriod : Entity
         return Result.Success();
     }
 
-    public Result UpdateIncome(string incomeId, decimal value, DateTime updatedAtUtc)
+    public Result<Income> UpdateIncome(string incomeId, decimal value, DateTime updatedAtUtc)
     {
         Income income = _incomes.Find(i => i.Id == incomeId);
         if (income == null)
         {
-            return Result.Failure(IncomeErrors.NotFound(incomeId));
+            return Result.Failure<Income>(IncomeErrors.NotFound(incomeId));
         }
 
         income.Update(value, updatedAtUtc);
@@ -116,15 +117,15 @@ public sealed class SettlementPeriod : Entity
 
         RaiseNetAmountRecalculatedEvent(updatedAtUtc);
 
-        return Result.Success();
+        return Result.Success(income);
     }
 
-    public Result UpdateTax(string taxId, decimal value, DateTime updatedAtUtc)
+    public Result<Tax> UpdateTax(string taxId, decimal value, DateTime updatedAtUtc)
     {
         Tax tax = _taxes.Find(t => t.Id == taxId);
         if (tax == null)
         {
-            return Result.Failure(TaxErrors.NotFound(taxId));
+            return Result.Failure<Tax>(TaxErrors.NotFound(taxId));
         }
 
         tax.Update(value, updatedAtUtc);
@@ -132,7 +133,7 @@ public sealed class SettlementPeriod : Entity
 
         RaiseNetAmountRecalculatedEvent(updatedAtUtc);
 
-        return Result.Success();
+        return Result.Success(tax);
     }
 
     /// <summary>
