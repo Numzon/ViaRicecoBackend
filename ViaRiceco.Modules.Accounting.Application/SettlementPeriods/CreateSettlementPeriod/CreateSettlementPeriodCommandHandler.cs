@@ -1,0 +1,79 @@
+using FluentValidation;
+using JetBrains.Annotations;
+using ViaRiceco.Common.Application.Abstractions;
+using ViaRiceco.Common.Application.Extensions;
+using ViaRiceco.Common.Domain.Models;
+using ViaRiceco.Modules.Accounting.Application.Abstractions.Data;
+using ViaRiceco.Modules.Accounting.Application.SettlementPeriods.Models;
+using ViaRiceco.Modules.Accounting.Domain.SettlementPeriods;
+
+namespace ViaRiceco.Modules.Accounting.Application.SettlementPeriods.CreateSettlementPeriod;
+
+public sealed record CreateSettlementPeriodCommand(int Month, int Year) : ICommand<SettlementPeriodDto>;
+
+internal sealed class CreateSettlementPeriodCommandHandler(
+    ISettlementPeriodRepository repository,
+    IUnitOfWork unitOfWork,
+    TimeProvider timeProvider)
+    : ICommandHandler<CreateSettlementPeriodCommand, SettlementPeriodDto>
+{
+    public async Task<Result<SettlementPeriodDto>> Handle(CreateSettlementPeriodCommand request,
+        CancellationToken cancellationToken)
+    {
+        if (request.Month is < 1 or > 12)
+        {
+            return Result.Failure<SettlementPeriodDto>(SettlementPeriodErrors.InvalidMonth(request.Month));
+        }
+
+        bool exists = await repository.ExistsByMonthAndYearAsync(request.Month, request.Year, cancellationToken);
+        if (exists)
+        {
+            return Result.Failure<SettlementPeriodDto>(
+                SettlementPeriodErrors.AlreadyExists(request.Month, request.Year));
+        }
+
+        var settlementPeriod = SettlementPeriod.Create(request.Month, request.Year, timeProvider.UtcNow());
+
+        repository.Insert(settlementPeriod);
+
+        await unitOfWork.SaveChangesAsync(cancellationToken);
+
+        IReadOnlyCollection<IncomeDto> incomes =
+            [.. settlementPeriod.Incomes.Select(i => new IncomeDto(i.Id, i.Value, i.CreatedAtUtc, i.UpdatedAtUtc))];
+
+        IReadOnlyCollection<TaxDto> taxes =
+        [
+            .. settlementPeriod.Taxes.Select(t =>
+                new TaxDto(t.Id, t.Value, t.TaxTypeId, t.CreatedAtUtc, t.UpdatedAtUtc))
+        ];
+
+        var settlementPeriodDto = new SettlementPeriodDto(
+            settlementPeriod.Id,
+            settlementPeriod.Month,
+            settlementPeriod.Year,
+            settlementPeriod.TotalIncome,
+            settlementPeriod.TotalTaxes,
+            settlementPeriod.NetAmount,
+            settlementPeriod.CreatedAtUtc,
+            settlementPeriod.UpdatedAtUtc,
+            incomes,
+            taxes);
+
+        return settlementPeriodDto;
+    }
+}
+
+[UsedImplicitly]
+internal sealed class CreateSettlementPeriodCommandValidator : AbstractValidator<CreateSettlementPeriodCommand>
+{
+    public CreateSettlementPeriodCommandValidator()
+    {
+        RuleFor(x => x.Month)
+            .InclusiveBetween(1, 12)
+            .WithMessage("Month must be between 1 and 12");
+
+        RuleFor(x => x.Year)
+            .GreaterThan(1900)
+            .WithMessage("Year must be greater than 1900");
+    }
+}

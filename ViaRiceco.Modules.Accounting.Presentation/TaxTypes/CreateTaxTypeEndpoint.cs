@@ -1,14 +1,15 @@
 ﻿using System.Dynamic;
 using FastEndpoints;
+using FastEndpoints.AspVersioning;
 using JetBrains.Annotations;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using ViaRiceco.Common.Application.Services.DataShapers;
 using ViaRiceco.Common.Application.Services.Hyperlinks;
-using ViaRiceco.Common.Application.Services.Hyperlinks.Models;
-using ViaRiceco.Common.Domain.Enumerations;
 using ViaRiceco.Common.Domain.Models;
+using ViaRiceco.Common.Presentation.Abstractions.Headers;
+using ViaRiceco.Common.Presentation.Enumerations;
 using ViaRiceco.Common.Presentation.Results;
 using ViaRiceco.Modules.Accounting.Application.TaxTypes.CreateTaxType;
 using ViaRiceco.Modules.Accounting.Application.TaxTypes.Models;
@@ -21,7 +22,10 @@ internal sealed class CreateTaxTypeEndpoint(ISender sender, IHyperlinkService hy
     : Ep.Req<CreateTaxTypeEndpoint.Request>.Res<Result<TaxTypeDto>>
 {
     [UsedImplicitly]
-    internal sealed record Request(string Name);
+    internal sealed class Request : BaseAcceptHeader
+    {
+        public string Name { get; init; }
+    }
 
     public override void Configure()
     {
@@ -29,6 +33,10 @@ internal sealed class CreateTaxTypeEndpoint(ISender sender, IHyperlinkService hy
         Tags(EndpointTags.TaxTypes);
         AllowAnonymous();
         Description(d => d.WithName(nameof(CreateTaxTypeEndpoint)));
+        
+        Options(x => x
+            .WithVersionSet(CustomVersionSets.TaxTypes)
+            .MapToApiVersion(1.0));
     }
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
@@ -42,12 +50,18 @@ internal sealed class CreateTaxTypeEndpoint(ISender sender, IHyperlinkService hy
             return;
         }
         
-        Hyperlink[] links = TaxTypesHyperlinks.CreateTaxTypeItemLinks(hyperlinkService, result.Value.Id);
-        ExpandoObject shapedObject = dataShapingService.ShapeData(result.Value, hyperlinks: links);
+        ExpandoObject shapedObject = ShapeDataWithConditionalLinks(result.Value, req.IncludeLinks, result.Value.Id);
         
         await Send.ResultAsync(Results.CreatedAtRoute(
             nameof(GetTaxTypeEndpoint), 
             new { id = result.Value.Id },   
             shapedObject));
+    }
+
+    private ExpandoObject ShapeDataWithConditionalLinks(TaxTypeDto data, bool includeLinks, string taxTypeId, string? fields = null)
+    {
+        return includeLinks
+            ? dataShapingService.ShapeData(data, fields, TaxTypesHyperlinks.CreateTaxTypeItemLinks(hyperlinkService, taxTypeId))
+            : dataShapingService.ShapeData(data, fields);
     }
 }

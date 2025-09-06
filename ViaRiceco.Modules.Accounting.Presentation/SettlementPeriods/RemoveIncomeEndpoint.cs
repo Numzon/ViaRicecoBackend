@@ -1,42 +1,38 @@
-using System.Dynamic;
 using FastEndpoints;
 using FastEndpoints.AspVersioning;
 using JetBrains.Annotations;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
-using ViaRiceco.Common.Application.Services.DataShapers;
-using ViaRiceco.Common.Application.Services.Hyperlinks;
-using ViaRiceco.Common.Application.Services.Hyperlinks.Models;
 using ViaRiceco.Common.Domain.Models;
 using ViaRiceco.Common.Presentation.Enumerations;
 using ViaRiceco.Common.Presentation.Results;
-using ViaRiceco.Modules.Accounting.Application.TaxTypes.DeleteTaxType;
+using ViaRiceco.Modules.Accounting.Application.SettlementPeriods.RemoveIncome;
 using ViaRiceco.Modules.Accounting.Presentation.Enumerations;
 
-namespace ViaRiceco.Modules.Accounting.Presentation.TaxTypes;
+namespace ViaRiceco.Modules.Accounting.Presentation.SettlementPeriods;
 
-internal sealed class DeleteTaxTypeEndpoint(ISender sender)
-    : Ep.Req<DeleteTaxTypeEndpoint.Request>.Res<Result>
+internal sealed class RemoveIncomeEndpoint(ISender sender)
+    : Ep.Req<RemoveIncomeEndpoint.Request>.Res<Result>
 {
     [UsedImplicitly]
-    internal sealed record Request(string Id);
+    internal sealed record Request(string SettlementPeriodId, string IncomeId);
 
     public override void Configure()
     {
-        Delete("/accounting/tax-types/{id}");
-        Tags(EndpointTags.TaxTypes);
+        Delete("/accounting/settlement-periods/{settlementPeriodId}/incomes/{incomeId}");
+        Tags(EndpointTags.SettlementPeriods);
         AllowAnonymous();
-        Description(d => d.WithName(nameof(DeleteTaxTypeEndpoint)));
+        Description(d => d.WithName(nameof(RemoveIncomeEndpoint)));
         
         Options(x => x
-            .WithVersionSet(CustomVersionSets.TaxTypes)
+            .WithVersionSet(CustomVersionSets.SettlementPeriods)
             .MapToApiVersion(1.0));
     }
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-        var command = new DeleteTaxTypeCommand(req.Id);
+        var command = new RemoveIncomeCommand(req.SettlementPeriodId, req.IncomeId);
         Result result = await sender.Send(command, ct);
 
         await Send.ResultAsync(result.Match(Results.NoContent, ApiResults.Problem));

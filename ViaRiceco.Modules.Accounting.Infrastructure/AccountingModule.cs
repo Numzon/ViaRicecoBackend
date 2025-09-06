@@ -4,8 +4,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ViaRiceco.Common.Infrastructure.Enumerations;
 using ViaRiceco.Modules.Accounting.Application.Abstractions.Data;
+using ViaRiceco.Modules.Accounting.Domain.SettlementPeriods;
 using ViaRiceco.Modules.Accounting.Domain.TaxTypes;
 using ViaRiceco.Modules.Accounting.Infrastructure.Database;
+using ViaRiceco.Modules.Accounting.Infrastructure.SettlementPeriods;
 using ViaRiceco.Modules.Accounting.Infrastructure.TaxTypes;
 
 namespace ViaRiceco.Modules.Accounting.Infrastructure;
@@ -30,6 +32,7 @@ public static class AccountingModule
         });
 
         services.AddScoped<ITaxTypeRepository, TaxTypeRepository>();
+        services.AddScoped<ISettlementPeriodRepository, SettlementPeriodRepository>();
         
         services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<AccountingDbContext>());
         

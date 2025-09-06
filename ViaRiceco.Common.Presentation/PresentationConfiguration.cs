@@ -35,8 +35,10 @@ public static class PresentationConfiguration
         });
 
         VersionSets.CreateApi(CustomVersionSets.TaxTypes, v => v
-            .HasApiVersion(1.0)
-            .HasApiVersion(2.0));
+            .HasApiVersion(1.0));
+        
+        VersionSets.CreateApi(CustomVersionSets.SettlementPeriods, v => v
+            .HasApiVersion(1.0));
         
         return services;
     }
