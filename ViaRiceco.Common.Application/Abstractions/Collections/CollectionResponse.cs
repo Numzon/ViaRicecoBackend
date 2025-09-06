@@ -1,6 +1,7 @@
 ﻿using System.Dynamic;
 using System.Text.Json.Serialization;
 using ViaRiceco.Common.Application.Services.Hyperlinks.Models;
+using ViaRiceco.Common.Domain.Enumerations;
 
 namespace ViaRiceco.Common.Application.Abstractions.Collections;
 
@@ -11,7 +12,8 @@ public abstract class CollectionResponse<T> : ICollectionResponse<T>
     public int PageSize { get; init; }
     public int TotalCount { get; init; }
     
-    [JsonPropertyName("_links")]
+    [JsonPropertyName(CustomProperties.Links)]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public IReadOnlyCollection<Hyperlink> Links { get; set; }
     
     public int TotalPages => (int)Math.Ceiling(TotalCount / (double)PageSize);

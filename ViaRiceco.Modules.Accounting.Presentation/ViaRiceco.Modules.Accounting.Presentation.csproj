@@ -5,4 +5,8 @@
       <ProjectReference Include="..\ViaRiceco.Common.Presentation\ViaRiceco.Common.Presentation.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="FastEndpoints.AspVersioning" />
+    </ItemGroup>
+
 </Project>

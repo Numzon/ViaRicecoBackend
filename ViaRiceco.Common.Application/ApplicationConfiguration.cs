@@ -3,6 +3,7 @@ using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using ViaRiceco.Common.Application.Behaviors;
 using ViaRiceco.Common.Application.Services;
+using ViaRiceco.Common.Application.Services.ContentType;
 using ViaRiceco.Common.Application.Services.DataShapers;
 using ViaRiceco.Common.Application.Services.Hyperlinks;
 using ViaRiceco.Common.Application.Services.Sorting;
@@ -12,7 +13,7 @@ namespace ViaRiceco.Common.Application;
 
 public static class ApplicationConfiguration
 {
-    public static IServiceCollection AddApplication(this IServiceCollection services, Assembly[] assemblies)
+    public static IServiceCollection AddApplication(this IServiceCollection services, Assembly[] assemblies) 
     {
         services.AddMediatR(config =>
         {
@@ -25,6 +26,7 @@ public static class ApplicationConfiguration
 
         services.AddValidatorsFromAssemblies(assemblies, includeInternalTypes: true);
         
+        services.AddTransient<IContentTypeService, ContentTypeService>();
         services.AddTransient<IDataShapingService, DataShapingService>();
         services.AddTransient<IHyperlinkService, HyperlinkService>();
         services.AddTransient<ISortMappingProvider, SortMappingProvider>();
