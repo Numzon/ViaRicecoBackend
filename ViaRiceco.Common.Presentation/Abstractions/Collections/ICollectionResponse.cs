@@ -1,6 +1,6 @@
 ﻿using ViaRiceco.Common.Application.Services.Hyperlinks.Models;
 
-namespace ViaRiceco.Common.Application.Abstractions.Collections;
+namespace ViaRiceco.Common.Presentation.Abstractions.Collections;
 
 public interface ICollectionResponse<T>
 {

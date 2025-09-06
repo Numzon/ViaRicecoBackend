@@ -22,8 +22,16 @@ public static class PresentationConfiguration
         {
             options.DefaultApiVersion = new ApiVersion(1.0);
             options.AssumeDefaultVersionWhenUnspecified = true;
-            options.ApiVersionReader = new MediaTypeApiVersionReader("v");
             options.UnsupportedApiVersionStatusCode = 406; 
+            options.ReportApiVersions = true;
+            options.ApiVersionSelector = new DefaultApiVersionSelector(options);
+            
+            options.ApiVersionReader = ApiVersionReader.Combine(
+                new MediaTypeApiVersionReader(),
+                new MediaTypeApiVersionReaderBuilder()
+                    .Template("application/vnd.via-riceco.hateoas.{version}+json")
+                    .Build());
+            
         });
 
         VersionSets.CreateApi(CustomVersionSets.TaxTypes, v => v

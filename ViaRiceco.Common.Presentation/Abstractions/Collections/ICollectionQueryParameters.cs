@@ -1,4 +1,4 @@
-﻿namespace ViaRiceco.Common.Application.Abstractions.Collections;
+﻿namespace ViaRiceco.Common.Presentation.Abstractions.Collections;
 
 public interface ICollectionQueryParameters
 {

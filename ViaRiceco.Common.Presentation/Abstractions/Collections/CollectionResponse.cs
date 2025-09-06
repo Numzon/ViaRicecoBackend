@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 using ViaRiceco.Common.Application.Services.Hyperlinks.Models;
 using ViaRiceco.Common.Domain.Enumerations;
 
-namespace ViaRiceco.Common.Application.Abstractions.Collections;
+namespace ViaRiceco.Common.Presentation.Abstractions.Collections;
 
 public abstract class CollectionResponse<T> : ICollectionResponse<T>
 {

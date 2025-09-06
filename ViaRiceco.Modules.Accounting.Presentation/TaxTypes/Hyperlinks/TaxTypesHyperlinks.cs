@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
-using ViaRiceco.Common.Application.Abstractions.Collections;
 using ViaRiceco.Common.Application.Services.Hyperlinks;
 using ViaRiceco.Common.Application.Services.Hyperlinks.Models;
 using ViaRiceco.Common.Domain.Enumerations;
+using ViaRiceco.Common.Presentation.Abstractions.Collections;
 
 namespace ViaRiceco.Modules.Accounting.Presentation.TaxTypes.Hyperlinks;
 
