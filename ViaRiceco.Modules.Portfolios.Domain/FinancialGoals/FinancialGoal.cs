@@ -13,7 +13,7 @@ public sealed class FinancialGoal : Entity
 
     public static Result<FinancialGoal> Create(string name, string? parentId, DateTime createdAtUtc)
     {
-        if (string.IsNullOrWhiteSpace(name))
+        if (!FinancialGoalSpecification.IsValidName(name))
         {
             return Result.Failure<FinancialGoal>(Error.Validation("FinancialGoal.InvalidName", "Financial goal name cannot be empty."));
         }
@@ -33,7 +33,7 @@ public sealed class FinancialGoal : Entity
 
     public Result Update(string name, string? parentId, DateTime updatedAtUtc)
     {
-        if (string.IsNullOrWhiteSpace(name))
+        if (!FinancialGoalSpecification.AreUpdateParametersValid(Id, name, parentId))
         {
             return Result.Failure(Error.Validation("FinancialGoal.InvalidName", "Financial goal name cannot be empty."));
         }

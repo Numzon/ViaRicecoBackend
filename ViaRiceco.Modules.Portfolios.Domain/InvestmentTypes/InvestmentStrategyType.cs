@@ -12,7 +12,7 @@ public sealed class InvestmentStrategyType : Entity
 
     public static Result<InvestmentStrategyType> Create(string name, DateTime createdAtUtc)
     {
-        if (string.IsNullOrWhiteSpace(name))
+        if (!InvestmentStrategyTypeSpecification.IsValidName(name))
         {
             return Result.Failure<InvestmentStrategyType>(InvestmentStrategyTypeErrors.InvalidName(name));
         }
@@ -31,7 +31,7 @@ public sealed class InvestmentStrategyType : Entity
 
     public Result Update(string name, DateTime updatedAtUtc)
     {
-        if (string.IsNullOrWhiteSpace(name))
+        if (!InvestmentStrategyTypeSpecification.IsValidName(name))
         {
             return Result.Failure(InvestmentStrategyTypeErrors.InvalidName(name));
         }

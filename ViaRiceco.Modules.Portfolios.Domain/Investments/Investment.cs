@@ -119,12 +119,12 @@ public sealed class Investment : Entity
 
     public Result RemovePurchaseRecord(string purchaseRecordId, DateTime updatedAtUtc)
     {
-        PurchaseRecord? purchaseRecord = _purchaseRecords.Find(pr => pr.Id == purchaseRecordId);
-        if (purchaseRecord == null)
+        if (!InvestmentSpecification.PurchaseRecordExists(this, purchaseRecordId))
         {
             return Result.Failure(InvestmentErrors.PurchaseRecordNotFound(purchaseRecordId));
         }
 
+        PurchaseRecord purchaseRecord = _purchaseRecords.First(pr => pr.Id == purchaseRecordId);
         _purchaseRecords.Remove(purchaseRecord);
         UpdatedAtUtc = updatedAtUtc;
 

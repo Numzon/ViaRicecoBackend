@@ -98,27 +98,27 @@ public sealed class PurchaseRecord : Entity
         string currencyId, 
         string investmentId)
     {
-        if (amount <= 0)
+        if (!PurchaseRecordSpecification.IsValidAmount(amount))
         {
             return Result.Failure(PurchaseRecordErrors.InvalidAmount(amount));
         }
         
-        if (pricePerUnit <= 0)
+        if (!PurchaseRecordSpecification.IsValidPricePerUnit(pricePerUnit))
         {
             return Result.Failure(PurchaseRecordErrors.InvalidPricePerUnit(pricePerUnit));
         }
         
-        if (purchaseDate > DateTime.UtcNow)
+        if (!PurchaseRecordSpecification.IsValidPurchaseDate(purchaseDate))
         {
             return Result.Failure(PurchaseRecordErrors.FuturePurchaseDate(purchaseDate));
         }
         
-        if (string.IsNullOrWhiteSpace(currencyId))
+        if (!PurchaseRecordSpecification.IsValidCurrencyId(currencyId))
         {
             return Result.Failure(PurchaseRecordErrors.InvalidCurrency(currencyId));
         }
         
-        if (string.IsNullOrWhiteSpace(investmentId))
+        if (!PurchaseRecordSpecification.IsValidInvestmentId(investmentId))
         {
             return Result.Failure(PurchaseRecordErrors.InvalidInvestment(investmentId));
         }
@@ -132,22 +132,22 @@ public sealed class PurchaseRecord : Entity
         decimal pricePerUnit, 
         string currencyId)
     {
-        if (amount <= 0)
+        if (!PurchaseRecordSpecification.IsValidAmount(amount))
         {
             return Result.Failure(PurchaseRecordErrors.InvalidAmount(amount));
         }
         
-        if (pricePerUnit <= 0)
+        if (!PurchaseRecordSpecification.IsValidPricePerUnit(pricePerUnit))
         {
             return Result.Failure(PurchaseRecordErrors.InvalidPricePerUnit(pricePerUnit));
         }
         
-        if (purchaseDate > DateTime.UtcNow)
+        if (!PurchaseRecordSpecification.IsValidPurchaseDate(purchaseDate))
         {
             return Result.Failure(PurchaseRecordErrors.FuturePurchaseDate(purchaseDate));
         }
         
-        if (string.IsNullOrWhiteSpace(currencyId))
+        if (!PurchaseRecordSpecification.IsValidCurrencyId(currencyId))
         {
             return Result.Failure(PurchaseRecordErrors.InvalidCurrency(currencyId));
         }

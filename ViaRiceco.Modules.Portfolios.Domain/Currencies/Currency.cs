@@ -13,13 +13,13 @@ public sealed class Currency : Entity
 
     public static Result<Currency> Create(string name, string code, DateTime createdAtUtc)
     {
-        if (string.IsNullOrWhiteSpace(name))
+        if (!CurrencySpecification.AreCreateParametersValid(name, code))
         {
-            return Result.Failure<Currency>(CurrencyErrors.InvalidName());
-        }
-
-        if (string.IsNullOrWhiteSpace(code) || code.Length != 3 || !code.All(char.IsLetter))
-        {
+            if (!CurrencySpecification.IsValidName(name))
+            {
+                return Result.Failure<Currency>(CurrencyErrors.InvalidName());
+            }
+            
             return Result.Failure<Currency>(CurrencyErrors.InvalidCode());
         }
 
@@ -27,7 +27,7 @@ public sealed class Currency : Entity
         {
             Id = $"c_{Guid.NewGuid()}",
             Name = name,
-            Code = code.ToUpperInvariant(), // Currency codes are typically uppercase (USD, EUR, etc.)
+            Code = CurrencySpecification.NormalizeCode(code),
             CreatedAtUtc = createdAtUtc
         };
 
@@ -38,17 +38,17 @@ public sealed class Currency : Entity
 
     public Result Update(string name, string code, DateTime updatedAtUtc)
     {
-        if (string.IsNullOrWhiteSpace(name))
+        if (!CurrencySpecification.AreUpdateParametersValid(name, code))
         {
-            return Result.Failure(CurrencyErrors.InvalidName());
-        }
-
-        if (string.IsNullOrWhiteSpace(code) || code.Length != 3 || !code.All(char.IsLetter))
-        {
+            if (!CurrencySpecification.IsValidName(name))
+            {
+                return Result.Failure(CurrencyErrors.InvalidName());
+            }
+            
             return Result.Failure(CurrencyErrors.InvalidCode());
         }
 
-        string normalizedCode = code.ToUpperInvariant();
+        string normalizedCode = CurrencySpecification.NormalizeCode(code);
         
         if (Name == name && Code == normalizedCode)
         {

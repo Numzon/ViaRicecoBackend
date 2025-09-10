@@ -55,16 +55,14 @@ public sealed class InvestmentStrategy : Entity
         Raise(new InvestmentStrategyUninvestedAmountUpdatedDomainEvent(Id, UninvestedAmount, updatedAtUtc));
     }
 
-    public Investment AddInvestment(
+    public Result<Investment> AddInvestment(
         string name, 
         decimal modelPortfolioPercentage, 
         DateTime createdAtUtc)
     {
-        // Check if adding this investment would exceed 100%
-        decimal totalModelPercentage = _investments.Sum(i => i.ModelPortfolioPercentage) + modelPortfolioPercentage;
-        if (totalModelPercentage > 100)
+        if (InvestmentStrategySpecification.WouldModelPortfolioPercentageExceed100(this, modelPortfolioPercentage))
         {
-            throw new InvalidOperationException($"Total model portfolio percentage cannot exceed 100%. Current: {_investments.Sum(i => i.ModelPortfolioPercentage)}, Adding: {modelPortfolioPercentage}");
+            return Result.Failure<Investment>(InvestmentStrategyErrors.ModelPortfolioPercentageExceeds100());
         }
 
         var investment = Investment.Create(name, Id, modelPortfolioPercentage, createdAtUtc);
@@ -75,17 +73,17 @@ public sealed class InvestmentStrategy : Entity
 
         Raise(new InvestmentAddedToStrategyDomainEvent(Id, createdAtUtc));
 
-        return investment;
+        return Result.Success(investment);
     }
 
     public Result RemoveInvestment(string investmentId, DateTime updatedAtUtc)
     {
-        Investment? investment = _investments.Find(i => i.Id == investmentId);
-        if (investment == null)
+        if (!InvestmentStrategySpecification.InvestmentExists(this, investmentId))
         {
             return Result.Failure(InvestmentStrategyErrors.InvestmentNotFound(investmentId));
         }
 
+        Investment investment = _investments.First(i => i.Id == investmentId);
         _investments.Remove(investment);
         UpdatedAtUtc = updatedAtUtc;
 
@@ -100,19 +98,16 @@ public sealed class InvestmentStrategy : Entity
         Dictionary<string, decimal> investmentPercentages, 
         DateTime updatedAtUtc)
     {
-        // Validate that all investments exist
-        var existingIds = _investments.Select(i => i.Id).ToHashSet();
-        var missingIds = investmentPercentages.Keys.Except(existingIds).ToList();
-        if (missingIds.Count != 0)
+        if (!InvestmentStrategySpecification.AllInvestmentsExist(this, investmentPercentages.Keys))
         {
+            var existingIds = _investments.Select(i => i.Id).ToHashSet();
+            var missingIds = investmentPercentages.Keys.Except(existingIds).ToList();
             return Result.Failure(InvestmentStrategyErrors.InvestmentNotFound(missingIds[0]));
         }
 
-        // Validate total percentage
-        decimal totalPercentage = investmentPercentages.Values.Sum();
-        if (totalPercentage > 100)
+        if (InvestmentStrategySpecification.WouldModelPortfolioPercentagesExceed100(investmentPercentages))
         {
-            return Result.Failure(InvestmentStrategyErrors.ModelPortfolioPercentageExceeds100(totalPercentage));
+            return Result.Failure(InvestmentStrategyErrors.ModelPortfolioPercentageExceeds100());
         }
 
         // Update investments
