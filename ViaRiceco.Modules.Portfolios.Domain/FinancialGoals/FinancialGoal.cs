@@ -31,19 +31,20 @@ public sealed class FinancialGoal : Entity
         return Result.Success(goal);
     }
 
-    public Result Update(string name, DateTime updatedAtUtc)
+    public Result Update(string name, string? parentId, DateTime updatedAtUtc)
     {
         if (string.IsNullOrWhiteSpace(name))
         {
             return Result.Failure(Error.Validation("FinancialGoal.InvalidName", "Financial goal name cannot be empty."));
         }
 
-        if (Name == name)
+        if (Name == name && ParentId == parentId)
         {
             return Result.Success();
         }
 
         Name = name;
+        ParentId = parentId;
         UpdatedAtUtc = updatedAtUtc;
 
         Raise(new FinancialGoalUpdatedDomainEvent(Id, Name, updatedAtUtc));

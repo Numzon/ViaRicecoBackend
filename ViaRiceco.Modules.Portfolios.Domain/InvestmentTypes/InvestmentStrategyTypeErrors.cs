@@ -15,4 +15,8 @@ public static class InvestmentStrategyTypeErrors
     public static Error InvalidName(string name) => Error.Validation(
         "InvestmentStrategyType.InvalidName", 
         $"Investment strategy type name '{name}' is invalid. Name cannot be empty.");
+
+    public static Error InvalidSortParameter(string? sort) => Error.Validation(
+        "InvestmentStrategyType.InvalidSortParameter", 
+        $"Invalid sort parameter: '{sort}'");
 }

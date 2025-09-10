@@ -19,4 +19,8 @@ public static class CurrencyErrors
     public static Error InvalidCode() => Error.Validation(
         "Currency.InvalidCode", 
         "Currency code must be exactly 3 letters.");
+
+    public static Error InvalidSortParameter(string? sort) => Error.Validation(
+        "Currency.InvalidSortParameter", 
+        $"Invalid sort parameter: '{sort}'");
 }

@@ -19,4 +19,8 @@ public static class FinancialGoalErrors
     public static Error CannotDeleteGoalWithChildren(string goalId) => Error.Conflict(
         "FinancialGoal.CannotDeleteGoalWithChildren", 
         $"Cannot delete financial goal '{goalId}' because it has child goals. Please delete or reassign child goals first.");
+
+    public static Error InvalidSortParameter(string? sort) => Error.Validation(
+        "FinancialGoal.InvalidSortParameter", 
+        $"Invalid sort parameter: '{sort}'");
 }

@@ -27,4 +27,8 @@ public static class PurchaseRecordErrors
     public static Error InvalidInvestment(string investmentId) => Error.Validation(
         "PurchaseRecord.InvalidInvestment", 
         $"Investment Id '{investmentId}' is required and cannot be empty.");
+
+    public static Error InvalidSortParameter(string? sort) => Error.Validation(
+        "PurchaseRecord.InvalidSortParameter", 
+        $"Invalid sort parameter: '{sort}'");
 }

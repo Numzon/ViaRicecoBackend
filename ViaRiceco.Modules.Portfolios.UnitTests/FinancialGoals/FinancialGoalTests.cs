@@ -113,7 +113,7 @@ public sealed class FinancialGoalTests : BaseTest
         FinancialGoal goal = createResult.Value;
 
         // Act
-        Result result = goal.Update(newName, updatedAtUtc);
+        Result result = goal.Update(newName, null, updatedAtUtc);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -134,7 +134,7 @@ public sealed class FinancialGoalTests : BaseTest
         FinancialGoal goal = createResult.Value;
 
         // Act
-        Result result = goal.Update(newName, updatedAtUtc);
+        Result result = goal.Update(newName, null, updatedAtUtc);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -156,7 +156,7 @@ public sealed class FinancialGoalTests : BaseTest
         FinancialGoal goal = createResult.Value;
 
         // Act
-        Result result = goal.Update(name, updatedAtUtc);
+        Result result = goal.Update(name, null, updatedAtUtc);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -179,7 +179,7 @@ public sealed class FinancialGoalTests : BaseTest
         FinancialGoal goal = createResult.Value;
 
         // Act
-        Result result = goal.Update(invalidName!, updatedAtUtc);
+        Result result = goal.Update(invalidName!, null, updatedAtUtc);
 
         // Assert
         result.IsFailure.Should().BeTrue();
@@ -252,8 +252,8 @@ public sealed class FinancialGoalTests : BaseTest
         FinancialGoal goal = createResult.Value;
 
         // Act
-        Result result1 = goal.Update(secondName, firstUpdateUtc);
-        Result result2 = goal.Update(finalName, secondUpdateUtc);
+        Result result1 = goal.Update(secondName, null, firstUpdateUtc);
+        Result result2 = goal.Update(finalName, null, secondUpdateUtc);
 
         // Assert
         result1.IsSuccess.Should().BeTrue();
@@ -295,7 +295,7 @@ public sealed class FinancialGoalTests : BaseTest
         FinancialGoal goal = createResult.Value;
 
         // Act
-        Result result = goal.Update(newName, updatedAtUtc);
+        Result result = goal.Update(newName, null, updatedAtUtc);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
