@@ -1,8 +1,51 @@
-﻿namespace ViaRiceco.Modules.Portfolios.Domain.InvestmentTypes;
+﻿using ViaRiceco.Common.Domain.Models;
 
-public sealed class InvestmentStrategyType
+namespace ViaRiceco.Modules.Portfolios.Domain.InvestmentTypes;
+
+public sealed class InvestmentStrategyType : Entity
 {
-    //It would work as a lookup that helps to filter investments - like I only want to see emergency func
-    
-    //Name - Short-term, Long-term, Emergency-fund
+    private InvestmentStrategyType()
+    {
+    }
+
+    public string Name { get; private set; } = string.Empty;
+
+    public static Result<InvestmentStrategyType> Create(string name, DateTime createdAtUtc)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            return Result.Failure<InvestmentStrategyType>(InvestmentStrategyTypeErrors.InvalidName(name));
+        }
+
+        var strategyType = new InvestmentStrategyType
+        {
+            Id = $"ist_{Guid.NewGuid()}",
+            Name = name,
+            CreatedAtUtc = createdAtUtc
+        };
+
+        strategyType.Raise(new InvestmentStrategyTypeCreatedDomainEvent(strategyType.Id, createdAtUtc));
+
+        return Result.Success(strategyType);
+    }
+
+    public Result Update(string name, DateTime updatedAtUtc)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            return Result.Failure(InvestmentStrategyTypeErrors.InvalidName(name));
+        }
+
+        if (Name == name)
+        {
+            return Result.Success();
+        }
+
+        Name = name;
+        UpdatedAtUtc = updatedAtUtc;
+
+        Raise(new InvestmentStrategyTypeUpdatedDomainEvent(Id, Name, updatedAtUtc));
+        
+        return Result.Success();
+    }
 }

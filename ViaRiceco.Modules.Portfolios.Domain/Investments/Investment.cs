@@ -1,19 +1,135 @@
-﻿namespace ViaRiceco.Modules.Portfolios.Domain.Investments;
+﻿using ViaRiceco.Common.Domain.Models;
+using ViaRiceco.Modules.Portfolios.Domain.PurchaseRecords;
 
-public sealed class Investment
+namespace ViaRiceco.Modules.Portfolios.Domain.Investments;
+
+public sealed class Investment : Entity
 {
-    // investments are part of investment strategy - every Investment stategy can have multiple investments 
-    // name - string name
-    // ModelPortfolioPercentage - percentage
-    // InvestedAmount - decimal (money) - sum of PurchaseRecords
+    private readonly List<PurchaseRecord> _purchaseRecords = [];
+
+    private Investment()
+    {
+    }
+
+    public string Name { get; private set; } = string.Empty;
+    public string InvestmentStrategyId { get; private set; } = string.Empty;
+    public decimal ModelPortfolioPercentage { get; private set; }
+    public decimal CurrentAmount { get; private set; }
+    public decimal RealPortfolioPercentage { get; private set; }
+
+    public IReadOnlyCollection<PurchaseRecord> PurchaseRecords => _purchaseRecords.AsReadOnly();
     
-    // PurchaseRecords - list of purchases that builds investedAmount - recalculate every time it hanges and change invested amount by summing up values 
+    // Calculated property: sum of PurchaseRecords total prices
+    public decimal InvestedAmount => _purchaseRecords.Sum(pr => pr.TotalPrice);
     
-    // currentAmount - decimal (money)
-    
-    // CurrentInvestedDifference - property that calculates difference based on invested and current
-    
-    // RealPortfolioPercentage - stores percentages taht are calculated by receiving new totalCurrentAmount, 
-    // then it is calculated by taking current amount and checking what kind of percent of totalCurrentAmount it is
-    // and we save real percent that this asset is taking in our portfolio in this field  
+    // Calculated property: difference between current and invested amounts
+    public decimal CurrentInvestedDifference => CurrentAmount - InvestedAmount;
+
+    public static Investment Create(
+        string name, 
+        string investmentStrategyId, 
+        decimal modelPortfolioPercentage, 
+        DateTime createdAtUtc)
+    {
+        var investment = new Investment
+        {
+            Id = $"inv_{Guid.NewGuid()}",
+            Name = name,
+            InvestmentStrategyId = investmentStrategyId,
+            ModelPortfolioPercentage = modelPortfolioPercentage,
+            CurrentAmount = 0,
+            RealPortfolioPercentage = 0,
+            CreatedAtUtc = createdAtUtc
+        };
+
+        investment.Raise(new InvestmentCreatedDomainEvent(investment.Id, createdAtUtc));
+
+        return investment;
+    }
+
+    public void Update(string name, decimal modelPortfolioPercentage, DateTime updatedAtUtc)
+    {
+        if (Name == name && ModelPortfolioPercentage == modelPortfolioPercentage)
+        {
+            return;
+        }
+
+        Name = name;
+        ModelPortfolioPercentage = modelPortfolioPercentage;
+        UpdatedAtUtc = updatedAtUtc;
+
+        Raise(new InvestmentUpdatedDomainEvent(Id, Name, ModelPortfolioPercentage, updatedAtUtc));
+    }
+
+    public void UpdateCurrentAmount(decimal currentAmount, DateTime updatedAtUtc)
+    {
+        if (CurrentAmount == currentAmount)
+        {
+            return;
+        }
+
+        CurrentAmount = currentAmount;
+        UpdatedAtUtc = updatedAtUtc;
+
+        Raise(new InvestmentCurrentAmountUpdatedDomainEvent(Id, CurrentAmount, CurrentInvestedDifference, updatedAtUtc));
+    }
+
+    public void UpdateRealPortfolioPercentage(decimal realPortfolioPercentage, DateTime updatedAtUtc)
+    {
+        if (RealPortfolioPercentage == realPortfolioPercentage)
+        {
+            return;
+        }
+
+        RealPortfolioPercentage = realPortfolioPercentage;
+        UpdatedAtUtc = updatedAtUtc;
+
+        Raise(new InvestmentRealPortfolioPercentageUpdatedDomainEvent(Id, RealPortfolioPercentage, updatedAtUtc));
+    }
+
+    public Result<PurchaseRecord> AddPurchaseRecord(
+        DateTime purchaseDate, 
+        decimal amount, 
+        decimal pricePerUnit, 
+        string currencyId, 
+        DateTime createdAtUtc)
+    {
+        Result<PurchaseRecord> createResult = PurchaseRecord.Create(
+            purchaseDate, 
+            amount, 
+            pricePerUnit, 
+            currencyId, 
+            Id, 
+            createdAtUtc);
+
+        if (createResult.IsFailure)
+        {
+            return createResult;
+        }
+
+        PurchaseRecord purchaseRecord = createResult.Value;
+        _purchaseRecords.Add(purchaseRecord);
+        UpdatedAtUtc = createdAtUtc;
+
+        // Raise domain event about purchase record being added to investment
+        Raise(new PurchaseRecordAddedToInvestmentDomainEvent(Id, createdAtUtc));
+
+        return Result.Success(purchaseRecord);
+    }
+
+    public Result RemovePurchaseRecord(string purchaseRecordId, DateTime updatedAtUtc)
+    {
+        PurchaseRecord? purchaseRecord = _purchaseRecords.Find(pr => pr.Id == purchaseRecordId);
+        if (purchaseRecord == null)
+        {
+            return Result.Failure(InvestmentErrors.PurchaseRecordNotFound(purchaseRecordId));
+        }
+
+        _purchaseRecords.Remove(purchaseRecord);
+        UpdatedAtUtc = updatedAtUtc;
+
+        Raise(new PurchaseRecordRemovedFromInvestmentDomainEvent(Id, updatedAtUtc));
+
+        return Result.Success();
+    }
 }
