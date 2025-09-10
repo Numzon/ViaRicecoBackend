@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ViaRiceco.Modules.Accounting.Infrastructure.Database;
+using ViaRiceco.Modules.Portfolios.Infrastructure.Database;
 
 namespace ViaRiceco.Api.Extensions;
 
@@ -10,6 +11,7 @@ internal static class MigrationExtensions
         using IServiceScope scope = builder.ApplicationServices.CreateScope();
         
         ApplyMigrations<AccountingDbContext>(scope);
+        ApplyMigrations<PortfoliosDbContext>(scope);
     }
     
     private static void ApplyMigrations<TDbContext>(IServiceScope serviceScope)

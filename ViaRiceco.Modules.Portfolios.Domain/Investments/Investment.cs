@@ -33,7 +33,7 @@ public sealed class Investment : Entity
     {
         var investment = new Investment
         {
-            Id = $"inv_{Guid.NewGuid()}",
+            Id = $"i_{Guid.NewGuid()}",
             Name = name,
             InvestmentStrategyId = investmentStrategyId,
             ModelPortfolioPercentage = modelPortfolioPercentage,

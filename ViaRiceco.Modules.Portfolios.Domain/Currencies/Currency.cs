@@ -13,14 +13,19 @@ public sealed class Currency : Entity
 
     public static Result<Currency> Create(string name, string code, DateTime createdAtUtc)
     {
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            return Result.Failure<Currency>(CurrencyErrors.InvalidName());
+        }
+
         if (string.IsNullOrWhiteSpace(code) || code.Length != 3 || !code.All(char.IsLetter))
         {
-            return Result.Failure<Currency>(CurrencyErrors.InvalidCode(code));
+            return Result.Failure<Currency>(CurrencyErrors.InvalidCode());
         }
 
         var currency = new Currency
         {
-            Id = $"cur_{Guid.NewGuid()}",
+            Id = $"c_{Guid.NewGuid()}",
             Name = name,
             Code = code.ToUpperInvariant(), // Currency codes are typically uppercase (USD, EUR, etc.)
             CreatedAtUtc = createdAtUtc
@@ -33,9 +38,14 @@ public sealed class Currency : Entity
 
     public Result Update(string name, string code, DateTime updatedAtUtc)
     {
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            return Result.Failure(CurrencyErrors.InvalidName());
+        }
+
         if (string.IsNullOrWhiteSpace(code) || code.Length != 3 || !code.All(char.IsLetter))
         {
-            return Result.Failure(CurrencyErrors.InvalidCode(code));
+            return Result.Failure(CurrencyErrors.InvalidCode());
         }
 
         string normalizedCode = code.ToUpperInvariant();

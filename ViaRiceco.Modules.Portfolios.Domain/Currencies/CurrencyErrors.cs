@@ -12,7 +12,11 @@ public static class CurrencyErrors
         "Currency.DuplicateCode", 
         $"Currency with code '{code}' already exists.");
     
-    public static Error InvalidCode(string code) => Error.Validation(
+    public static Error InvalidName() => Error.Validation(
+        "Currency.InvalidName",
+        "Currency name cannot be empty.");
+
+    public static Error InvalidCode() => Error.Validation(
         "Currency.InvalidCode", 
-        $"Currency code '{code}' is invalid. Currency codes must be 3 characters long and contain only letters.");
+        "Currency code must be exactly 3 letters.");
 }
