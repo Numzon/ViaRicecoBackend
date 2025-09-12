@@ -28,7 +28,6 @@ public sealed class Investment : Entity
     public static Investment Create(
         string name, 
         string investmentStrategyId, 
-        decimal modelPortfolioPercentage, 
         DateTime createdAtUtc)
     {
         var investment = new Investment
@@ -36,7 +35,7 @@ public sealed class Investment : Entity
             Id = $"i_{Guid.NewGuid()}",
             Name = name,
             InvestmentStrategyId = investmentStrategyId,
-            ModelPortfolioPercentage = modelPortfolioPercentage,
+            ModelPortfolioPercentage = 0, // Default to 0%, set later via UpdateInvestmentsModelPercentages
             CurrentAmount = 0,
             RealPortfolioPercentage = 0,
             CreatedAtUtc = createdAtUtc

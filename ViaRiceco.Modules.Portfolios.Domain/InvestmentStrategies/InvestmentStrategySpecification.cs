@@ -22,6 +22,16 @@ public static class InvestmentStrategySpecification
     {
         return investmentPercentages.Values.Sum() > 100;
     }
+    
+    /// <summary>
+    /// Determines whether the model portfolio percentages sum to exactly 100% (with small tolerance for rounding)
+    /// </summary>
+    public static bool DoModelPortfolioPercentagesSumTo100(Dictionary<string, decimal> investmentPercentages)
+    {
+        decimal total = investmentPercentages.Values.Sum();
+        // Allow small tolerance for decimal rounding issues (e.g., 99.99% or 100.01% is acceptable)
+        return Math.Abs(total - 100m) < 0.01m;
+    }
 
     /// <summary>
     /// Determines whether all specified investment IDs exist in the strategy

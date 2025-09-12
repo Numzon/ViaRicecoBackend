@@ -14,18 +14,17 @@ public sealed class InvestmentTests : BaseTest
         // Arrange
         string name = "Apple Inc.";
         string investmentStrategyId = $"is_{Guid.NewGuid()}";
-        decimal modelPortfolioPercentage = 25.5m;
         DateTime createdAtUtc = Faker.Date.RecentOffset().UtcDateTime;
 
         // Act
-        var investment = Investment.Create(name, investmentStrategyId, modelPortfolioPercentage, createdAtUtc);
+        var investment = Investment.Create(name, investmentStrategyId, createdAtUtc);
 
         // Assert
         investment.Should().NotBeNull();
         investment.Id.Should().StartWith("i_");
         investment.Name.Should().Be(name);
         investment.InvestmentStrategyId.Should().Be(investmentStrategyId);
-        investment.ModelPortfolioPercentage.Should().Be(modelPortfolioPercentage);
+        investment.ModelPortfolioPercentage.Should().Be(0m); // Investments are created with 0% by default
         investment.RealPortfolioPercentage.Should().Be(0m);
         investment.CurrentAmount.Should().Be(0m);
         investment.CreatedAtUtc.Should().Be(createdAtUtc);
@@ -41,12 +40,11 @@ public sealed class InvestmentTests : BaseTest
         // Arrange
         string name = "Apple Inc.";
         string investmentStrategyId = $"is_{Guid.NewGuid()}";
-        decimal modelPortfolioPercentage = 25.5m;
         DateTime createdAtUtc = Faker.Date.RecentOffset().UtcDateTime;
 
         // Act
-        var investment1 = Investment.Create(name, investmentStrategyId, modelPortfolioPercentage, createdAtUtc);
-        var investment2 = Investment.Create(name, investmentStrategyId, modelPortfolioPercentage, createdAtUtc);
+        var investment1 = Investment.Create(name, investmentStrategyId, createdAtUtc);
+        var investment2 = Investment.Create(name, investmentStrategyId, createdAtUtc);
 
         // Assert
         investment1.Id.Should().NotBe(investment2.Id);
@@ -60,11 +58,10 @@ public sealed class InvestmentTests : BaseTest
         // Arrange
         string name = "Apple Inc.";
         string investmentStrategyId = $"is_{Guid.NewGuid()}";
-        decimal modelPortfolioPercentage = 25.5m;
         DateTime createdAtUtc = Faker.Date.RecentOffset().UtcDateTime;
 
         // Act
-        var investment = Investment.Create(name, investmentStrategyId, modelPortfolioPercentage, createdAtUtc);
+        var investment = Investment.Create(name, investmentStrategyId, createdAtUtc);
 
         // Assert
         InvestmentCreatedDomainEvent domainEvent = AssertDomainEventWasPublished<InvestmentCreatedDomainEvent>(investment);
@@ -78,13 +75,12 @@ public sealed class InvestmentTests : BaseTest
         // Arrange
         string originalName = "Apple Inc.";
         string newName = "Apple Inc. (AAPL)";
-        decimal originalPercentage = 25.5m;
         decimal newPercentage = 30.0m;
         string investmentStrategyId = $"is_{Guid.NewGuid()}";
         DateTime createdAtUtc = Faker.Date.PastOffset().UtcDateTime;
         DateTime updatedAtUtc = Faker.Date.RecentOffset().UtcDateTime;
 
-        var investment = Investment.Create(originalName, investmentStrategyId, originalPercentage, createdAtUtc);
+        var investment = Investment.Create(originalName, investmentStrategyId, createdAtUtc);
 
         // Act
         investment.Update(newName, newPercentage, updatedAtUtc);
@@ -101,13 +97,12 @@ public sealed class InvestmentTests : BaseTest
         // Arrange
         string originalName = "Apple Inc.";
         string newName = "Apple Inc. (AAPL)";
-        decimal originalPercentage = 25.5m;
         decimal newPercentage = 30.0m;
         string investmentStrategyId = $"is_{Guid.NewGuid()}";
         DateTime createdAtUtc = Faker.Date.PastOffset().UtcDateTime;
         DateTime updatedAtUtc = Faker.Date.RecentOffset().UtcDateTime;
 
-        var investment = Investment.Create(originalName, investmentStrategyId, originalPercentage, createdAtUtc);
+        var investment = Investment.Create(originalName, investmentStrategyId, createdAtUtc);
 
         // Act
         investment.Update(newName, newPercentage, updatedAtUtc);
@@ -126,12 +121,11 @@ public sealed class InvestmentTests : BaseTest
         // Arrange
         string name = "Apple Inc.";
         string investmentStrategyId = $"is_{Guid.NewGuid()}";
-        decimal modelPortfolioPercentage = 25.5m;
         decimal newCurrentAmount = 5000m;
         DateTime createdAtUtc = Faker.Date.PastOffset().UtcDateTime;
         DateTime updatedAtUtc = Faker.Date.RecentOffset().UtcDateTime;
 
-        var investment = Investment.Create(name, investmentStrategyId, modelPortfolioPercentage, createdAtUtc);
+        var investment = Investment.Create(name, investmentStrategyId, createdAtUtc);
 
         // Act
         investment.UpdateCurrentAmount(newCurrentAmount, updatedAtUtc);
@@ -153,12 +147,11 @@ public sealed class InvestmentTests : BaseTest
         // Arrange
         string name = "Apple Inc.";
         string investmentStrategyId = $"is_{Guid.NewGuid()}";
-        decimal modelPortfolioPercentage = 25.5m;
         decimal realPercentage = 28.3m;
         DateTime createdAtUtc = Faker.Date.PastOffset().UtcDateTime;
         DateTime updatedAtUtc = Faker.Date.RecentOffset().UtcDateTime;
 
-        var investment = Investment.Create(name, investmentStrategyId, modelPortfolioPercentage, createdAtUtc);
+        var investment = Investment.Create(name, investmentStrategyId, createdAtUtc);
 
         // Act
         investment.UpdateRealPortfolioPercentage(realPercentage, updatedAtUtc);
@@ -179,7 +172,6 @@ public sealed class InvestmentTests : BaseTest
         // Arrange
         string name = "Apple Inc.";
         string investmentStrategyId = $"is_{Guid.NewGuid()}";
-        decimal modelPortfolioPercentage = 25.5m;
         DateTime createdAtUtc = Faker.Date.PastOffset().UtcDateTime;
 
         DateTime purchaseDate = Faker.Date.PastOffset().UtcDateTime;
@@ -188,7 +180,7 @@ public sealed class InvestmentTests : BaseTest
         string currencyId = $"c_{Guid.NewGuid()}";
         DateTime purchaseCreatedAtUtc = Faker.Date.RecentOffset().UtcDateTime;
 
-        var investment = Investment.Create(name, investmentStrategyId, modelPortfolioPercentage, createdAtUtc);
+        var investment = Investment.Create(name, investmentStrategyId, createdAtUtc);
 
         // Act
         Result<PurchaseRecord> result = investment.AddPurchaseRecord(purchaseDate, amount, pricePerUnit, currencyId, purchaseCreatedAtUtc);
@@ -210,7 +202,6 @@ public sealed class InvestmentTests : BaseTest
         // Arrange
         string name = "Apple Inc.";
         string investmentStrategyId = $"is_{Guid.NewGuid()}";
-        decimal modelPortfolioPercentage = 25.5m;
         DateTime createdAtUtc = Faker.Date.PastOffset().UtcDateTime;
 
         DateTime purchaseDate = Faker.Date.PastOffset().UtcDateTime;
@@ -219,7 +210,7 @@ public sealed class InvestmentTests : BaseTest
         string currencyId = $"c_{Guid.NewGuid()}";
         DateTime purchaseCreatedAtUtc = Faker.Date.RecentOffset().UtcDateTime;
 
-        var investment = Investment.Create(name, investmentStrategyId, modelPortfolioPercentage, createdAtUtc);
+        var investment = Investment.Create(name, investmentStrategyId, createdAtUtc);
 
         // Act
         Result<PurchaseRecord> result = investment.AddPurchaseRecord(purchaseDate, amount, pricePerUnit, currencyId, purchaseCreatedAtUtc);
@@ -237,7 +228,6 @@ public sealed class InvestmentTests : BaseTest
         // Arrange
         string name = "Apple Inc.";
         string investmentStrategyId = $"is_{Guid.NewGuid()}";
-        decimal modelPortfolioPercentage = 25.5m;
         DateTime createdAtUtc = Faker.Date.PastOffset().UtcDateTime;
 
         DateTime purchaseDate = Faker.Date.PastOffset().UtcDateTime;
@@ -247,7 +237,7 @@ public sealed class InvestmentTests : BaseTest
         DateTime purchaseCreatedAtUtc = Faker.Date.PastOffset().UtcDateTime;
         DateTime updatedAtUtc = Faker.Date.RecentOffset().UtcDateTime;
 
-        var investment = Investment.Create(name, investmentStrategyId, modelPortfolioPercentage, createdAtUtc);
+        var investment = Investment.Create(name, investmentStrategyId, createdAtUtc);
         Result<PurchaseRecord> addResult = investment.AddPurchaseRecord(purchaseDate, amount, pricePerUnit, currencyId, purchaseCreatedAtUtc);
         PurchaseRecord record = addResult.Value;
 
@@ -267,13 +257,12 @@ public sealed class InvestmentTests : BaseTest
         // Arrange
         string name = "Apple Inc.";
         string investmentStrategyId = $"is_{Guid.NewGuid()}";
-        decimal modelPortfolioPercentage = 25.5m;
         DateTime createdAtUtc = Faker.Date.PastOffset().UtcDateTime;
         DateTime updatedAtUtc = Faker.Date.RecentOffset().UtcDateTime;
 
         string nonExistentRecordId = $"pr_{Guid.NewGuid()}";
 
-        var investment = Investment.Create(name, investmentStrategyId, modelPortfolioPercentage, createdAtUtc);
+        var investment = Investment.Create(name, investmentStrategyId, createdAtUtc);
 
         // Act
         Result result = investment.RemovePurchaseRecord(nonExistentRecordId, updatedAtUtc);
@@ -289,7 +278,6 @@ public sealed class InvestmentTests : BaseTest
         // Arrange
         string name = "Apple Inc.";
         string investmentStrategyId = $"is_{Guid.NewGuid()}";
-        decimal modelPortfolioPercentage = 25.5m;
         DateTime createdAtUtc = Faker.Date.PastOffset().UtcDateTime;
 
         DateTime purchaseDate = Faker.Date.PastOffset().UtcDateTime;
@@ -299,7 +287,7 @@ public sealed class InvestmentTests : BaseTest
         DateTime purchaseCreatedAtUtc = Faker.Date.PastOffset().UtcDateTime;
         DateTime updatedAtUtc = Faker.Date.RecentOffset().UtcDateTime;
 
-        var investment = Investment.Create(name, investmentStrategyId, modelPortfolioPercentage, createdAtUtc);
+        var investment = Investment.Create(name, investmentStrategyId, createdAtUtc);
         Result<PurchaseRecord> addResult = investment.AddPurchaseRecord(purchaseDate, amount, pricePerUnit, currencyId, purchaseCreatedAtUtc);
         PurchaseRecord record = addResult.Value;
 
@@ -319,13 +307,12 @@ public sealed class InvestmentTests : BaseTest
         // Arrange
         string name = "Apple Inc.";
         string investmentStrategyId = $"is_{Guid.NewGuid()}";
-        decimal modelPortfolioPercentage = 25.5m;
         DateTime createdAtUtc = Faker.Date.PastOffset().UtcDateTime;
 
         string currencyId = $"c_{Guid.NewGuid()}";
         DateTime purchaseCreatedAtUtc = Faker.Date.RecentOffset().UtcDateTime;
 
-        var investment = Investment.Create(name, investmentStrategyId, modelPortfolioPercentage, createdAtUtc);
+        var investment = Investment.Create(name, investmentStrategyId, createdAtUtc);
 
         // Act - Add multiple purchase records
         investment.AddPurchaseRecord(Faker.Date.PastOffset().UtcDateTime, 100m, 150m, currencyId, purchaseCreatedAtUtc).IsSuccess.Should().BeTrue(); // 15,000
@@ -343,14 +330,13 @@ public sealed class InvestmentTests : BaseTest
         // Arrange
         string name = "Apple Inc.";
         string investmentStrategyId = $"is_{Guid.NewGuid()}";
-        decimal modelPortfolioPercentage = 25.5m;
         DateTime createdAtUtc = Faker.Date.PastOffset().UtcDateTime;
 
         string currencyId = $"c_{Guid.NewGuid()}";
         DateTime purchaseCreatedAtUtc = Faker.Date.PastOffset().UtcDateTime;
         DateTime updatedAtUtc = Faker.Date.RecentOffset().UtcDateTime;
 
-        var investment = Investment.Create(name, investmentStrategyId, modelPortfolioPercentage, createdAtUtc);
+        var investment = Investment.Create(name, investmentStrategyId, createdAtUtc);
 
         // Act
         investment.AddPurchaseRecord(Faker.Date.PastOffset().UtcDateTime, 100m, 150m, currencyId, purchaseCreatedAtUtc); // Invested: 15,000
@@ -368,14 +354,13 @@ public sealed class InvestmentTests : BaseTest
         // Arrange
         string name = "Apple Inc.";
         string investmentStrategyId = $"is_{Guid.NewGuid()}";
-        decimal modelPortfolioPercentage = 25.5m;
         DateTime createdAtUtc = Faker.Date.PastOffset().UtcDateTime;
 
         string currencyId = $"c_{Guid.NewGuid()}";
         DateTime purchaseCreatedAtUtc = Faker.Date.PastOffset().UtcDateTime;
         DateTime updatedAtUtc = Faker.Date.RecentOffset().UtcDateTime;
 
-        var investment = Investment.Create(name, investmentStrategyId, modelPortfolioPercentage, createdAtUtc);
+        var investment = Investment.Create(name, investmentStrategyId, createdAtUtc);
 
         // Act
         investment.AddPurchaseRecord(Faker.Date.PastOffset().UtcDateTime, 100m, 150m, currencyId, purchaseCreatedAtUtc); // Invested: 15,000
@@ -397,11 +382,10 @@ public sealed class InvestmentTests : BaseTest
     {
         // Arrange
         string investmentStrategyId = $"is_{Guid.NewGuid()}";
-        decimal modelPortfolioPercentage = 20m;
         DateTime createdAtUtc = Faker.Date.RecentOffset().UtcDateTime;
 
         // Act
-        var investment = Investment.Create(investmentName, investmentStrategyId, modelPortfolioPercentage, createdAtUtc);
+        var investment = Investment.Create(investmentName, investmentStrategyId, createdAtUtc);
 
         // Assert
         investment.Name.Should().Be(investmentName);
@@ -420,7 +404,7 @@ public sealed class InvestmentTests : BaseTest
         DateTime createdAtUtc = Faker.Date.RecentOffset().UtcDateTime;
 
         // Act
-        var investment = Investment.Create(name, investmentStrategyId, percentage, createdAtUtc);
+        var investment = Investment.Create(name, investmentStrategyId, createdAtUtc);
 
         // Assert
         investment.ModelPortfolioPercentage.Should().Be(percentage);
@@ -432,14 +416,13 @@ public sealed class InvestmentTests : BaseTest
         // Arrange
         string name = "Apple Inc.";
         string investmentStrategyId = $"is_{Guid.NewGuid()}";
-        decimal modelPortfolioPercentage = 25.5m;
         DateTime createdAtUtc = Faker.Date.PastOffset().UtcDateTime;
 
         DateTime samePurchaseDate = Faker.Date.PastOffset().UtcDateTime;
         string currencyId = $"c_{Guid.NewGuid()}";
         DateTime purchaseCreatedAtUtc = Faker.Date.RecentOffset().UtcDateTime;
 
-        var investment = Investment.Create(name, investmentStrategyId, modelPortfolioPercentage, createdAtUtc);
+        var investment = Investment.Create(name, investmentStrategyId, createdAtUtc);
 
         // Act - Add multiple purchases on same day
         Result<PurchaseRecord> result1 = investment.AddPurchaseRecord(samePurchaseDate, 50m, 150m, currencyId, purchaseCreatedAtUtc);

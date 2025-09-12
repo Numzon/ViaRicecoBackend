@@ -11,6 +11,14 @@ public static class InvestmentStrategyErrors
     public static Error ModelPortfolioPercentageExceeds100() => Error.Validation(
         "InvestmentStrategy.ModelPortfolioPercentageExceeds100", 
         "Total model portfolio percentage cannot exceed 100%.");
+    
+    public static Error ModelPortfolioPercentageMustBeBetween0And100() => Error.Validation(
+        "InvestmentStrategy.ModelPortfolioPercentageMustBeBetween0And100",
+        "Individual investment model portfolio percentage must be between 0% and 100%.");
+    
+    public static Error ModelPortfolioPercentagesMustSumTo100() => Error.Validation(
+        "InvestmentStrategy.ModelPortfolioPercentagesMustSumTo100",
+        "The total of all investment model portfolio percentages must equal 100%.");
 
     public static Error NotFound(string strategyId) => Error.NotFound(
         "InvestmentStrategy.NotFound", 

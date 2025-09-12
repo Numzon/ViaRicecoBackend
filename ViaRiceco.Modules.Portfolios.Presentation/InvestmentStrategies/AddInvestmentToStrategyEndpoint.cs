@@ -26,7 +26,6 @@ internal sealed class AddInvestmentToStrategyEndpoint(ISender sender, IHyperlink
     {
         public string Id { get; init; }
         public string InvestmentName { get; init; }
-        public decimal ModelPortfolioPercentage { get; init; }
     }
 
     public override void Configure()
@@ -43,7 +42,7 @@ internal sealed class AddInvestmentToStrategyEndpoint(ISender sender, IHyperlink
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-        var command = new AddInvestmentToStrategyCommand(req.Id, req.InvestmentName, req.ModelPortfolioPercentage);
+        var command = new AddInvestmentToStrategyCommand(req.Id, req.InvestmentName);
         Result<InvestmentStrategyDto> result = await sender.Send(command, ct);
 
         if (!result.IsSuccess)

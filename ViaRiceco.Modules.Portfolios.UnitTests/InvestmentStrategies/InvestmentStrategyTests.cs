@@ -146,13 +146,12 @@ public sealed class InvestmentStrategyTests : BaseTest
         DateTime createdAtUtc = Faker.Date.PastOffset().UtcDateTime;
 
         string investmentName = "Apple Inc.";
-        decimal modelPortfolioPercentage = 30m;
         DateTime investmentCreatedAtUtc = Faker.Date.RecentOffset().UtcDateTime;
 
         var strategy = InvestmentStrategy.Create(financialGoalId, investmentStrategyTypeId, uninvestedAmount, createdAtUtc);
 
         // Act
-        Result<Investment> addResult = strategy.AddInvestment(investmentName, modelPortfolioPercentage, investmentCreatedAtUtc);
+        Result<Investment> addResult = strategy.AddInvestment(investmentName, investmentCreatedAtUtc);
         addResult.IsSuccess.Should().BeTrue();
         Investment investment = addResult.Value;
 
@@ -174,13 +173,12 @@ public sealed class InvestmentStrategyTests : BaseTest
         DateTime createdAtUtc = Faker.Date.PastOffset().UtcDateTime;
 
         string investmentName = "Apple Inc.";
-        decimal modelPortfolioPercentage = 30m;
         DateTime investmentCreatedAtUtc = Faker.Date.RecentOffset().UtcDateTime;
 
         var strategy = InvestmentStrategy.Create(financialGoalId, investmentStrategyTypeId, uninvestedAmount, createdAtUtc);
 
         // Act
-        strategy.AddInvestment(investmentName, modelPortfolioPercentage, investmentCreatedAtUtc);
+        strategy.AddInvestment(investmentName, investmentCreatedAtUtc);
 
         // Assert
         InvestmentAddedToStrategyDomainEvent domainEvent = AssertDomainEventWasPublished<InvestmentAddedToStrategyDomainEvent>(strategy);
@@ -201,14 +199,14 @@ public sealed class InvestmentStrategyTests : BaseTest
         var strategy = InvestmentStrategy.Create(financialGoalId, investmentStrategyTypeId, uninvestedAmount, createdAtUtc);
 
         // Add investments up to 70%
-        Result<Investment> result1 = strategy.AddInvestment("Apple Inc.", 40m, investmentCreatedAtUtc);
-        Result<Investment> result2 = strategy.AddInvestment("Microsoft", 30m, investmentCreatedAtUtc);
+        Result<Investment> result1 = strategy.AddInvestment("Apple Inc.", investmentCreatedAtUtc);
+        Result<Investment> result2 = strategy.AddInvestment("Microsoft", investmentCreatedAtUtc);
         
         result1.IsSuccess.Should().BeTrue();
         result2.IsSuccess.Should().BeTrue();
 
         // Act - Adding 40% more should exceed 100%
-        Result<Investment> result = strategy.AddInvestment("Google", 40m, investmentCreatedAtUtc);
+        Result<Investment> result = strategy.AddInvestment("Google", investmentCreatedAtUtc);
         
         // Assert
         result.IsFailure.Should().BeTrue();
@@ -227,7 +225,7 @@ public sealed class InvestmentStrategyTests : BaseTest
         DateTime updatedAtUtc = Faker.Date.RecentOffset().UtcDateTime;
 
         var strategy = InvestmentStrategy.Create(financialGoalId, investmentStrategyTypeId, uninvestedAmount, createdAtUtc);
-        Result<Investment> addResult = strategy.AddInvestment("Apple Inc.", 30m, investmentCreatedAtUtc);
+        Result<Investment> addResult = strategy.AddInvestment("Apple Inc.", investmentCreatedAtUtc);
         addResult.IsSuccess.Should().BeTrue();
         Investment investment = addResult.Value;
 
@@ -274,7 +272,7 @@ public sealed class InvestmentStrategyTests : BaseTest
         DateTime updatedAtUtc = Faker.Date.RecentOffset().UtcDateTime;
 
         var strategy = InvestmentStrategy.Create(financialGoalId, investmentStrategyTypeId, uninvestedAmount, createdAtUtc);
-        Result<Investment> addResult = strategy.AddInvestment("Apple Inc.", 30m, investmentCreatedAtUtc);
+        Result<Investment> addResult = strategy.AddInvestment("Apple Inc.", investmentCreatedAtUtc);
         addResult.IsSuccess.Should().BeTrue();
         Investment investment = addResult.Value;
 
@@ -300,8 +298,8 @@ public sealed class InvestmentStrategyTests : BaseTest
         DateTime updatedAtUtc = Faker.Date.RecentOffset().UtcDateTime;
 
         var strategy = InvestmentStrategy.Create(financialGoalId, investmentStrategyTypeId, uninvestedAmount, createdAtUtc);
-        Result<Investment> addResult1 = strategy.AddInvestment("Apple Inc.", 30m, investmentCreatedAtUtc);
-        Result<Investment> addResult2 = strategy.AddInvestment("Microsoft", 25m, investmentCreatedAtUtc);
+        Result<Investment> addResult1 = strategy.AddInvestment("Apple Inc.", investmentCreatedAtUtc);
+        Result<Investment> addResult2 = strategy.AddInvestment("Microsoft", investmentCreatedAtUtc);
         addResult1.IsSuccess.Should().BeTrue();
         addResult2.IsSuccess.Should().BeTrue();
         Investment investment1 = addResult1.Value;
@@ -361,8 +359,8 @@ public sealed class InvestmentStrategyTests : BaseTest
         DateTime updatedAtUtc = Faker.Date.RecentOffset().UtcDateTime;
 
         var strategy = InvestmentStrategy.Create(financialGoalId, investmentStrategyTypeId, uninvestedAmount, createdAtUtc);
-        Result<Investment> addResult1 = strategy.AddInvestment("Apple Inc.", 30m, investmentCreatedAtUtc);
-        Result<Investment> addResult2 = strategy.AddInvestment("Microsoft", 25m, investmentCreatedAtUtc);
+        Result<Investment> addResult1 = strategy.AddInvestment("Apple Inc.", investmentCreatedAtUtc);
+        Result<Investment> addResult2 = strategy.AddInvestment("Microsoft", investmentCreatedAtUtc);
         addResult1.IsSuccess.Should().BeTrue();
         addResult2.IsSuccess.Should().BeTrue();
         Investment investment1 = addResult1.Value;
@@ -394,8 +392,8 @@ public sealed class InvestmentStrategyTests : BaseTest
         DateTime updatedAtUtc = Faker.Date.RecentOffset().UtcDateTime;
 
         var strategy = InvestmentStrategy.Create(financialGoalId, investmentStrategyTypeId, uninvestedAmount, createdAtUtc);
-        Result<Investment> addResult1 = strategy.AddInvestment("Apple Inc.", 30m, investmentCreatedAtUtc);
-        Result<Investment> addResult2 = strategy.AddInvestment("Microsoft", 25m, investmentCreatedAtUtc);
+        Result<Investment> addResult1 = strategy.AddInvestment("Apple Inc.", investmentCreatedAtUtc);
+        Result<Investment> addResult2 = strategy.AddInvestment("Microsoft", investmentCreatedAtUtc);
         addResult1.IsSuccess.Should().BeTrue();
         addResult2.IsSuccess.Should().BeTrue();
         Investment investment1 = addResult1.Value;
@@ -430,7 +428,7 @@ public sealed class InvestmentStrategyTests : BaseTest
         DateTime updatedAtUtc = Faker.Date.RecentOffset().UtcDateTime;
 
         var strategy = InvestmentStrategy.Create(financialGoalId, investmentStrategyTypeId, uninvestedAmount, createdAtUtc);
-        Result<Investment> addResult = strategy.AddInvestment("Apple Inc.", 30m, investmentCreatedAtUtc);
+        Result<Investment> addResult = strategy.AddInvestment("Apple Inc.", investmentCreatedAtUtc);
         addResult.IsSuccess.Should().BeTrue();
         Investment investment = addResult.Value;
 
@@ -464,8 +462,8 @@ public sealed class InvestmentStrategyTests : BaseTest
         DateTime purchaseCreatedAtUtc = Faker.Date.RecentOffset().UtcDateTime;
 
         var strategy = InvestmentStrategy.Create(financialGoalId, investmentStrategyTypeId, uninvestedAmount, createdAtUtc);
-        Result<Investment> addResult1 = strategy.AddInvestment("Apple Inc.", 30m, investmentCreatedAtUtc);
-        Result<Investment> addResult2 = strategy.AddInvestment("Microsoft", 25m, investmentCreatedAtUtc);
+        Result<Investment> addResult1 = strategy.AddInvestment("Apple Inc.", investmentCreatedAtUtc);
+        Result<Investment> addResult2 = strategy.AddInvestment("Microsoft", investmentCreatedAtUtc);
         addResult1.IsSuccess.Should().BeTrue();
         addResult2.IsSuccess.Should().BeTrue();
         Investment investment1 = addResult1.Value;
@@ -491,8 +489,8 @@ public sealed class InvestmentStrategyTests : BaseTest
         DateTime updatedAtUtc = Faker.Date.RecentOffset().UtcDateTime;
 
         var strategy = InvestmentStrategy.Create(financialGoalId, investmentStrategyTypeId, uninvestedAmount, createdAtUtc);
-        Result<Investment> addResult1 = strategy.AddInvestment("Apple Inc.", 30m, investmentCreatedAtUtc);
-        Result<Investment> addResult2 = strategy.AddInvestment("Microsoft", 25m, investmentCreatedAtUtc);
+        Result<Investment> addResult1 = strategy.AddInvestment("Apple Inc.", investmentCreatedAtUtc);
+        Result<Investment> addResult2 = strategy.AddInvestment("Microsoft", investmentCreatedAtUtc);
         addResult1.IsSuccess.Should().BeTrue();
         addResult2.IsSuccess.Should().BeTrue();
         Investment investment1 = addResult1.Value;
@@ -519,7 +517,7 @@ public sealed class InvestmentStrategyTests : BaseTest
         DateTime updatedAtUtc = Faker.Date.RecentOffset().UtcDateTime;
 
         var strategy = InvestmentStrategy.Create(financialGoalId, investmentStrategyTypeId, uninvestedAmount, createdAtUtc);
-        Result<Investment> addResult = strategy.AddInvestment("Apple Inc.", 30m, investmentCreatedAtUtc);
+        Result<Investment> addResult = strategy.AddInvestment("Apple Inc.", investmentCreatedAtUtc);
         addResult.IsSuccess.Should().BeTrue();
         Investment investment = addResult.Value;
 
@@ -544,8 +542,8 @@ public sealed class InvestmentStrategyTests : BaseTest
         DateTime updatedAtUtc = Faker.Date.RecentOffset().UtcDateTime;
 
         var strategy = InvestmentStrategy.Create(financialGoalId, investmentStrategyTypeId, uninvestedAmount, createdAtUtc);
-        Result<Investment> addResult1 = strategy.AddInvestment("Apple Inc.", 30m, investmentCreatedAtUtc);    // Model: 30%
-        Result<Investment> addResult2 = strategy.AddInvestment("Microsoft", 25m, investmentCreatedAtUtc);     // Model: 25%
+        Result<Investment> addResult1 = strategy.AddInvestment("Apple Inc.", investmentCreatedAtUtc);    // Model: 30%
+        Result<Investment> addResult2 = strategy.AddInvestment("Microsoft", investmentCreatedAtUtc);     // Model: 25%
         addResult1.IsSuccess.Should().BeTrue();
         addResult2.IsSuccess.Should().BeTrue();
         Investment investment1 = addResult1.Value;
@@ -578,8 +576,8 @@ public sealed class InvestmentStrategyTests : BaseTest
         DateTime updatedAtUtc = Faker.Date.RecentOffset().UtcDateTime;
 
         var strategy = InvestmentStrategy.Create(financialGoalId, investmentStrategyTypeId, uninvestedAmount, createdAtUtc);
-        Result<Investment> addResult1 = strategy.AddInvestment("Apple Inc.", 30m, investmentCreatedAtUtc);
-        Result<Investment> addResult2 = strategy.AddInvestment("Microsoft", 25m, investmentCreatedAtUtc);
+        Result<Investment> addResult1 = strategy.AddInvestment("Apple Inc.", investmentCreatedAtUtc);
+        Result<Investment> addResult2 = strategy.AddInvestment("Microsoft", investmentCreatedAtUtc);
         addResult1.IsSuccess.Should().BeTrue();
         addResult2.IsSuccess.Should().BeTrue();
         Investment investment1 = addResult1.Value;

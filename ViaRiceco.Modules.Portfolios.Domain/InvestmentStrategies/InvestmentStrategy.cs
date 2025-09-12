@@ -57,15 +57,11 @@ public sealed class InvestmentStrategy : Entity
 
     public Result<Investment> AddInvestment(
         string name, 
-        decimal modelPortfolioPercentage, 
         DateTime createdAtUtc)
     {
-        if (InvestmentStrategySpecification.WouldModelPortfolioPercentageExceed100(this, modelPortfolioPercentage))
-        {
-            return Result.Failure<Investment>(InvestmentStrategyErrors.ModelPortfolioPercentageExceeds100());
-        }
-
-        var investment = Investment.Create(name, Id, modelPortfolioPercentage, createdAtUtc);
+        // Business rule: Investments are created with 0% model portfolio percentage
+        // The actual percentages are set later via UpdateInvestmentsModelPercentages
+        var investment = Investment.Create(name, Id, createdAtUtc);
         _investments.Add(investment);
         UpdatedAtUtc = createdAtUtc;
 
@@ -105,9 +101,16 @@ public sealed class InvestmentStrategy : Entity
             return Result.Failure(InvestmentStrategyErrors.InvestmentNotFound(missingIds[0]));
         }
 
-        if (InvestmentStrategySpecification.WouldModelPortfolioPercentagesExceed100(investmentPercentages))
+        // Validate individual percentages are between 0-100%
+        if (investmentPercentages.Values.Any(percentage => percentage < 0 || percentage > 100))
         {
-            return Result.Failure(InvestmentStrategyErrors.ModelPortfolioPercentageExceeds100());
+            return Result.Failure(InvestmentStrategyErrors.ModelPortfolioPercentageMustBeBetween0And100());
+        }
+
+        // Business rule: Portfolio model percentages must sum to exactly 100%
+        if (!InvestmentStrategySpecification.DoModelPortfolioPercentagesSumTo100(investmentPercentages))
+        {
+            return Result.Failure(InvestmentStrategyErrors.ModelPortfolioPercentagesMustSumTo100());
         }
 
         // Update investments

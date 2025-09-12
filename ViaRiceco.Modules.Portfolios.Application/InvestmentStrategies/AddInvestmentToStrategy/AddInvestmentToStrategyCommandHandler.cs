@@ -12,8 +12,7 @@ namespace ViaRiceco.Modules.Portfolios.Application.InvestmentStrategies.AddInves
 
 public sealed record AddInvestmentToStrategyCommand(
     string InvestmentStrategyId,
-    string InvestmentName,
-    decimal ModelPortfolioPercentage) : ICommand<InvestmentStrategyDto>;
+    string InvestmentName) : ICommand<InvestmentStrategyDto>;
 
 internal sealed class AddInvestmentToStrategyCommandHandler(
     IInvestmentStrategyRepository repository,
@@ -32,7 +31,6 @@ internal sealed class AddInvestmentToStrategyCommandHandler(
 
         Result<Investment> addResult = strategy.AddInvestment(
             request.InvestmentName,
-            request.ModelPortfolioPercentage,
             timeProvider.UtcNow());
 
         if (addResult.IsFailure)
@@ -74,9 +72,5 @@ internal sealed class AddInvestmentToStrategyCommandValidator : AbstractValidato
         RuleFor(x => x.InvestmentName)
             .NotEmpty()
             .WithMessage("Investment name is required");
-
-        RuleFor(x => x.ModelPortfolioPercentage)
-            .InclusiveBetween(0, 100)
-            .WithMessage("Model portfolio percentage must be between 0 and 100");
     }
 }
