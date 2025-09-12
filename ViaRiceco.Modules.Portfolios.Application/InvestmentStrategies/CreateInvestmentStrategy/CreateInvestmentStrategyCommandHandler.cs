@@ -33,6 +33,12 @@ internal sealed class CreateInvestmentStrategyCommandHandler(
             return Result.Failure<InvestmentStrategyDto>(FinancialGoalErrors.NotFound(request.FinancialGoalId));
         }
 
+        // Validate FinancialGoal is eligible for investment strategies (business rule: must be root goal)
+        if (!InvestmentStrategySpecification.CanCreateInvestmentStrategyForFinancialGoal(financialGoal))
+        {
+            return Result.Failure<InvestmentStrategyDto>(InvestmentStrategyErrors.FinancialGoalMustBeRoot(request.FinancialGoalId));
+        }
+
         // Validate InvestmentStrategyType exists
         InvestmentStrategyType? strategyType = await investmentStrategyTypeRepository.GetAsync(request.InvestmentStrategyTypeId, cancellationToken);
         if (strategyType is null)

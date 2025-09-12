@@ -1,3 +1,5 @@
+using ViaRiceco.Modules.Portfolios.Domain.FinancialGoals;
+
 namespace ViaRiceco.Modules.Portfolios.Domain.InvestmentStrategies;
 
 public static class InvestmentStrategySpecification
@@ -44,6 +46,14 @@ public static class InvestmentStrategySpecification
     public static bool HasInvestments(InvestmentStrategy investmentStrategy)
     {
         return investmentStrategy.Investments.Count > 0;
+    }
+
+    /// <summary>
+    /// Determines whether a financial goal is eligible for investment strategies (must be root goal)
+    /// </summary>
+    public static bool CanCreateInvestmentStrategyForFinancialGoal(FinancialGoal financialGoal)
+    {
+        return FinancialGoalSpecification.IsRootGoal(financialGoal);
     }
 
     /// <summary>

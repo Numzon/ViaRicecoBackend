@@ -40,6 +40,22 @@ public static class PresentationConfiguration
         VersionSets.CreateApi(CustomVersionSets.SettlementPeriods, v => v
             .HasApiVersion(1.0));
         
+        // Portfolios module version sets
+        VersionSets.CreateApi(CustomVersionSets.Currencies, v => v
+            .HasApiVersion(1.0));
+        
+        VersionSets.CreateApi(CustomVersionSets.FinancialGoals, v => v
+            .HasApiVersion(1.0));
+        
+        VersionSets.CreateApi(CustomVersionSets.InvestmentStrategies, v => v
+            .HasApiVersion(1.0));
+        
+        VersionSets.CreateApi(CustomVersionSets.InvestmentTypes, v => v
+            .HasApiVersion(1.0));
+        
+        VersionSets.CreateApi(CustomVersionSets.PurchaseRecords, v => v
+            .HasApiVersion(1.0));
+        
         return services;
     }
 

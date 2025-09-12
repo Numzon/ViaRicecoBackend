@@ -23,4 +23,8 @@ public static class InvestmentStrategyErrors
     public static Error InvalidSortParameter(string? sort) => Error.Validation(
         "InvestmentStrategy.InvalidSortParameter", 
         $"Invalid sort parameter: '{sort}'");
+    
+    public static Error FinancialGoalMustBeRoot(string financialGoalId) => Error.Validation(
+        "InvestmentStrategy.FinancialGoalMustBeRoot",
+        $"Investment strategy can only be created for root financial goals. The financial goal '{financialGoalId}' has a parent and cannot be used for investment strategies.");
 }
