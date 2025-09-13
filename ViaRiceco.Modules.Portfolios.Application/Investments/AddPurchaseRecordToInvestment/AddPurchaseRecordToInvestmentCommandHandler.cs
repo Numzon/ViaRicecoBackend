@@ -30,14 +30,12 @@ internal sealed class AddPurchaseRecordToInvestmentCommandHandler(
 {
     public async Task<Result<PurchaseRecordDto>> Handle(AddPurchaseRecordToInvestmentCommand request, CancellationToken cancellationToken)
     {
-        // Step 1: Validate investment strategy exists
         InvestmentStrategy? investmentStrategy = await investmentStrategyRepository.GetAsync(request.InvestmentStrategyId, cancellationToken);
         if (investmentStrategy is null)
         {
             return Result.Failure<PurchaseRecordDto>(InvestmentStrategyErrors.NotFound(request.InvestmentStrategyId));
         }
 
-        // Step 2: Validate investment exists and belongs to the investment strategy
         Investment? investment = await investmentRepository.GetAsync(request.InvestmentId, cancellationToken);
         if (investment is null)
         {
