@@ -24,6 +24,8 @@ internal sealed class UpdatePurchaseRecordEndpoint(ISender sender, IHyperlinkSer
     [UsedImplicitly]
     internal sealed class Request : BaseAcceptHeader
     {
+        public string InvestmentStrategyId { get; init; }
+        public string InvestmentId { get; init; }
         public string Id { get; init; }
         public DateTime PurchaseDate { get; init; }
         public decimal Amount { get; init; }
@@ -33,7 +35,7 @@ internal sealed class UpdatePurchaseRecordEndpoint(ISender sender, IHyperlinkSer
 
     public override void Configure()
     {
-        Put("/portfolios/purchase-records/{id}");
+        Put("/portfolios/investment-strategies/{investmentStrategyId}/investments/{investmentId}/purchase-records/{id}");
         AllowAnonymous();
         Description(d => d.WithName(nameof(UpdatePurchaseRecordEndpoint)));
         
@@ -45,10 +47,12 @@ internal sealed class UpdatePurchaseRecordEndpoint(ISender sender, IHyperlinkSer
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
         var command = new UpdatePurchaseRecordCommand(
-            req.Id, 
-            req.PurchaseDate, 
-            req.Amount, 
-            req.PricePerUnit, 
+            req.InvestmentStrategyId,
+            req.InvestmentId,
+            req.Id,
+            req.PurchaseDate,
+            req.Amount,
+            req.PricePerUnit,
             req.CurrencyId);
             
         Result<PurchaseRecordDto> result = await sender.Send(command, ct);
@@ -59,15 +63,15 @@ internal sealed class UpdatePurchaseRecordEndpoint(ISender sender, IHyperlinkSer
             return;
         }
         
-        ExpandoObject shapedObject = ShapeDataWithConditionalLinks(result.Value, req.IncludeLinks, result.Value.Id);
+        ExpandoObject shapedObject = ShapeDataWithConditionalLinks(result.Value, req.IncludeLinks, result.Value.Id, req.InvestmentId, req.InvestmentStrategyId);
         
         await Send.ResultAsync(Results.Ok(shapedObject));
     }
 
-    private ExpandoObject ShapeDataWithConditionalLinks(PurchaseRecordDto data, bool includeLinks, string purchaseRecordId, string? fields = null)
+    private ExpandoObject ShapeDataWithConditionalLinks(PurchaseRecordDto data, bool includeLinks, string purchaseRecordId, string investmentId, string investmentStrategyId, string? fields = null)
     {
         return includeLinks
-            ? dataShapingService.ShapeData(data, fields, PurchaseRecordsHyperlinks.CreatePurchaseRecordItemLinks(hyperlinkService, purchaseRecordId))
+            ? dataShapingService.ShapeData(data, fields, PurchaseRecordsHyperlinks.CreatePurchaseRecordItemLinks(hyperlinkService, purchaseRecordId, investmentId, investmentStrategyId))
             : dataShapingService.ShapeData(data, fields);
     }
 }

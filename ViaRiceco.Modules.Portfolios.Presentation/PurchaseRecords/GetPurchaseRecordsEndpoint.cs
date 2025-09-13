@@ -27,7 +27,7 @@ internal sealed class GetPurchaseRecordsEndpoint(
 {
     public override void Configure()
     {
-        Get("/portfolios/purchase-records");
+        Get("/portfolios/investment-strategies/{investmentStrategyId}/investments/{investmentId}/purchase-records");
         AllowAnonymous();
         Description(d => d.WithName(nameof(GetPurchaseRecordsEndpoint)));
         
@@ -39,7 +39,8 @@ internal sealed class GetPurchaseRecordsEndpoint(
     [UsedImplicitly]
     internal sealed class Request : CollectionQueryParameters
     {
-        public string? InvestmentId { get; init; }
+        public string InvestmentStrategyId { get; init; }
+        public string InvestmentId { get; init; }
         public string? CurrencyId { get; init; }
         public DateTime? FromDate { get; init; }
         public DateTime? ToDate { get; init; }
@@ -52,7 +53,8 @@ internal sealed class GetPurchaseRecordsEndpoint(
             collectionQuery.Sort, 
             collectionQuery.Page,
             collectionQuery.PageSize, 
-            collectionQuery.InvestmentId, 
+            collectionQuery.InvestmentStrategyId,
+            collectionQuery.InvestmentId,
             collectionQuery.CurrencyId, 
             collectionQuery.FromDate, 
             collectionQuery.ToDate);
@@ -64,7 +66,7 @@ internal sealed class GetPurchaseRecordsEndpoint(
             return;
         }
         
-        IReadOnlyCollection<ExpandoObject> shapedCollection = ShapeCollectionData(result.Value.Items, collectionQuery.Fields, collectionQuery.IncludeLinks);
+        IReadOnlyCollection<ExpandoObject> shapedCollection = ShapeCollectionData(result.Value.Items, collectionQuery.Fields, collectionQuery.IncludeLinks, collectionQuery.InvestmentId, collectionQuery.InvestmentStrategyId);
 
         var collectionResponse = new ViaRicecoCollectionResponse
         {
@@ -86,6 +88,7 @@ internal sealed class GetPurchaseRecordsEndpoint(
             };
             
             Hyperlink[] links = PurchaseRecordsHyperlinks.CreatePurchaseRecordCollectionLinks(hyperlinkService, queryParameters,
+                collectionQuery.InvestmentId, collectionQuery.InvestmentStrategyId,
                 collectionResponse.HasNextPage,
                 collectionResponse.HasPreviousPage);
 
@@ -95,12 +98,12 @@ internal sealed class GetPurchaseRecordsEndpoint(
         await Send.ResultAsync(Results.Ok(collectionResponse));
     }
 
-    private IReadOnlyCollection<ExpandoObject> ShapeCollectionData(IReadOnlyCollection<PurchaseRecordDto> items, string? fields, bool includeLinks)
+    private IReadOnlyCollection<ExpandoObject> ShapeCollectionData(IReadOnlyCollection<PurchaseRecordDto> items, string? fields, bool includeLinks, string investmentId, string investmentStrategyId)
     {
         if (includeLinks)
         {
             return dataShapingService.ShapeCollectionData(items, fields,
-                    x => PurchaseRecordsHyperlinks.CreatePurchaseRecordItemLinks(hyperlinkService, x.Id));    
+                    x => PurchaseRecordsHyperlinks.CreatePurchaseRecordItemLinks(hyperlinkService, x.Id, investmentId, investmentStrategyId));    
         }
         
         return dataShapingService.ShapeCollectionData(items, fields);

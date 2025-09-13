@@ -1,15 +1,20 @@
 using FluentValidation;
 using JetBrains.Annotations;
 using ViaRiceco.Common.Application.Abstractions;
+using ViaRiceco.Common.Application.Extensions;
 using ViaRiceco.Common.Domain.Models;
 using ViaRiceco.Modules.Portfolios.Application.Abstractions.Data;
 using ViaRiceco.Modules.Portfolios.Application.PurchaseRecords.Models;
 using ViaRiceco.Modules.Portfolios.Domain.Currencies;
 using ViaRiceco.Modules.Portfolios.Domain.PurchaseRecords;
+using ViaRiceco.Modules.Portfolios.Domain.InvestmentStrategies;
+using ViaRiceco.Modules.Portfolios.Domain.Investments;
 
 namespace ViaRiceco.Modules.Portfolios.Application.PurchaseRecords.UpdatePurchaseRecord;
 
 public sealed record UpdatePurchaseRecordCommand(
+    string InvestmentStrategyId,
+    string InvestmentId,
     string Id,
     DateTime PurchaseDate,
     decimal Amount,
@@ -18,6 +23,8 @@ public sealed record UpdatePurchaseRecordCommand(
 
 internal sealed class UpdatePurchaseRecordCommandHandler(
     IPurchaseRecordRepository repository,
+    IInvestmentStrategyRepository investmentStrategyRepository,
+    IInvestmentRepository investmentRepository,
     ICurrencyRepository currencyRepository,
     IUnitOfWork unitOfWork,
     TimeProvider timeProvider)
@@ -25,9 +32,30 @@ internal sealed class UpdatePurchaseRecordCommandHandler(
 {
     public async Task<Result<PurchaseRecordDto>> Handle(UpdatePurchaseRecordCommand request, CancellationToken cancellationToken)
     {
-        PurchaseRecord? purchaseRecord = await repository.GetAsync(request.Id, cancellationToken);
+        InvestmentStrategy? investmentStrategy = await investmentStrategyRepository.GetAsync(request.InvestmentStrategyId, cancellationToken);
+        if (investmentStrategy is null)
+        {
+            return Result.Failure<PurchaseRecordDto>(InvestmentStrategyErrors.NotFound(request.InvestmentStrategyId));
+        }
 
+        Investment? investment = await investmentRepository.GetAsync(request.InvestmentId, cancellationToken);
+        if (investment is null)
+        {
+            return Result.Failure<PurchaseRecordDto>(InvestmentErrors.NotFound(request.InvestmentId));
+        }
+
+        if (investment.InvestmentStrategyId != request.InvestmentStrategyId)
+        {
+            return Result.Failure<PurchaseRecordDto>(InvestmentErrors.NotFound(request.InvestmentId));
+        }
+
+        PurchaseRecord? purchaseRecord = await repository.GetAsync(request.Id, cancellationToken);
         if (purchaseRecord is null)
+        {
+            return Result.Failure<PurchaseRecordDto>(PurchaseRecordErrors.NotFound(request.Id));
+        }
+
+        if (purchaseRecord.InvestmentId != request.InvestmentId)
         {
             return Result.Failure<PurchaseRecordDto>(PurchaseRecordErrors.NotFound(request.Id));
         }
@@ -44,7 +72,7 @@ internal sealed class UpdatePurchaseRecordCommandHandler(
             request.Amount,
             request.PricePerUnit,
             request.CurrencyId,
-            timeProvider.GetUtcNow().DateTime);
+            timeProvider.UtcNow());
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 

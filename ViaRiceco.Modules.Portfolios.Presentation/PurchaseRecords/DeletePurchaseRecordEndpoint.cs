@@ -17,13 +17,14 @@ internal sealed class DeletePurchaseRecordEndpoint(ISender sender)
     [UsedImplicitly]
     internal sealed class Request
     {
-        public string Id { get; init; }
+        public string InvestmentStrategyId { get; init; }
         public string InvestmentId { get; init; }
+        public string Id { get; init; }
     }
 
     public override void Configure()
     {
-        Delete("/portfolios/purchase-records/{id}");
+        Delete("/portfolios/investment-strategies/{investmentStrategyId}/investments/{investmentId}/purchase-records/{id}");
         AllowAnonymous();
         Description(d => d.WithName(nameof(DeletePurchaseRecordEndpoint)));
         
@@ -34,7 +35,7 @@ internal sealed class DeletePurchaseRecordEndpoint(ISender sender)
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-        var command = new RemovePurchaseRecordFromInvestmentCommand(req.InvestmentId, req.Id);
+        var command = new RemovePurchaseRecordFromInvestmentCommand(req.InvestmentStrategyId, req.InvestmentId, req.Id);
         Result result = await sender.Send(command, ct);
 
         if (!result.IsSuccess)

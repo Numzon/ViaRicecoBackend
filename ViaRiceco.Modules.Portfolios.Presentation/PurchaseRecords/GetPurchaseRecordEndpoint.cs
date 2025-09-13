@@ -24,12 +24,14 @@ internal sealed class GetPurchaseRecordEndpoint(ISender sender, IHyperlinkServic
     [UsedImplicitly]
     internal sealed class Request : BaseAcceptHeader
     {
+        public string InvestmentStrategyId { get; init; }
+        public string InvestmentId { get; init; }
         public string Id { get; init; }
     }
 
     public override void Configure()
     {
-        Get("/portfolios/purchase-records/{id}");
+        Get("/portfolios/investment-strategies/{investmentStrategyId}/investments/{investmentId}/purchase-records/{id}");
         AllowAnonymous();
         Description(d => d.WithName(nameof(GetPurchaseRecordEndpoint)));
         
@@ -40,7 +42,7 @@ internal sealed class GetPurchaseRecordEndpoint(ISender sender, IHyperlinkServic
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-        var query = new GetPurchaseRecordQuery(req.Id);
+        var query = new GetPurchaseRecordQuery(req.InvestmentStrategyId, req.InvestmentId, req.Id);
         Result<PurchaseRecordDto> result = await sender.Send(query, ct);
 
         if (!result.IsSuccess)
@@ -49,15 +51,15 @@ internal sealed class GetPurchaseRecordEndpoint(ISender sender, IHyperlinkServic
             return;
         }
         
-        ExpandoObject shapedObject = ShapeDataWithConditionalLinks(result.Value, req.IncludeLinks, result.Value.Id);
+        ExpandoObject shapedObject = ShapeDataWithConditionalLinks(result.Value, req.IncludeLinks, result.Value.Id, req.InvestmentId, req.InvestmentStrategyId);
         
         await Send.ResultAsync(Results.Ok(shapedObject));
     }
 
-    private ExpandoObject ShapeDataWithConditionalLinks(PurchaseRecordDto data, bool includeLinks, string purchaseRecordId, string? fields = null)
+    private ExpandoObject ShapeDataWithConditionalLinks(PurchaseRecordDto data, bool includeLinks, string purchaseRecordId, string investmentId, string investmentStrategyId, string? fields = null)
     {
         return includeLinks
-            ? dataShapingService.ShapeData(data, fields, PurchaseRecordsHyperlinks.CreatePurchaseRecordItemLinks(hyperlinkService, purchaseRecordId))
+            ? dataShapingService.ShapeData(data, fields, PurchaseRecordsHyperlinks.CreatePurchaseRecordItemLinks(hyperlinkService, purchaseRecordId, investmentId, investmentStrategyId))
             : dataShapingService.ShapeData(data, fields);
     }
 }

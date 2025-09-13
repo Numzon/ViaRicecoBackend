@@ -23,7 +23,8 @@ internal sealed class AddPurchaseRecordToInvestmentEndpoint(ISender sender, IHyp
     [UsedImplicitly]
     internal sealed class Request : BaseAcceptHeader
     {
-        public string Id { get; init; }
+        public string InvestmentStrategyId { get; init; }
+        public string InvestmentId { get; init; }
         public DateTime PurchaseDate { get; init; }
         public decimal Amount { get; init; }
         public decimal PricePerUnit { get; init; }
@@ -32,19 +33,20 @@ internal sealed class AddPurchaseRecordToInvestmentEndpoint(ISender sender, IHyp
 
     public override void Configure()
     {
-        Post("/portfolios/investments/{id}/purchase-records");
+        Post("/portfolios/investment-strategies/{investmentStrategyId}/investments/{investmentId}/purchase-records");
         AllowAnonymous();
         Description(d => d.WithName(nameof(AddPurchaseRecordToInvestmentEndpoint)));
         
         Options(x => x
-            .WithVersionSet(CustomVersionSets.Investments)
+            .WithVersionSet(CustomVersionSets.PurchaseRecords)
             .MapToApiVersion(1.0));
     }
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
         var command = new AddPurchaseRecordToInvestmentCommand(
-            req.Id, 
+            req.InvestmentStrategyId,
+            req.InvestmentId, 
             req.PurchaseDate, 
             req.Amount, 
             req.PricePerUnit, 
@@ -58,15 +60,15 @@ internal sealed class AddPurchaseRecordToInvestmentEndpoint(ISender sender, IHyp
             return;
         }
         
-        ExpandoObject shapedObject = ShapeDataWithConditionalLinks(result.Value, req.IncludeLinks, result.Value.Id);
+        ExpandoObject shapedObject = ShapeDataWithConditionalLinks(result.Value, req.IncludeLinks, result.Value.Id, req.InvestmentId, req.InvestmentStrategyId);
         
-        await Send.ResultAsync(Results.Created($"/portfolios/purchase-records/{result.Value.Id}", shapedObject));
+        await Send.ResultAsync(Results.Created($"/portfolios/investment-strategies/{req.InvestmentStrategyId}/investments/{req.InvestmentId}/purchase-records/{result.Value.Id}", shapedObject));
     }
 
-    private ExpandoObject ShapeDataWithConditionalLinks(PurchaseRecordDto data, bool includeLinks, string purchaseRecordId, string? fields = null)
+    private ExpandoObject ShapeDataWithConditionalLinks(PurchaseRecordDto data, bool includeLinks, string purchaseRecordId, string investmentId, string investmentStrategyId, string? fields = null)
     {
         return includeLinks
-            ? dataShapingService.ShapeData(data, fields, PurchaseRecordsHyperlinks.CreatePurchaseRecordItemLinks(hyperlinkService, purchaseRecordId))
+            ? dataShapingService.ShapeData(data, fields, PurchaseRecordsHyperlinks.CreatePurchaseRecordItemLinks(hyperlinkService, purchaseRecordId, investmentId, investmentStrategyId))
             : dataShapingService.ShapeData(data, fields);
     }
 }

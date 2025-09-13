@@ -13,6 +13,7 @@ using ViaRiceco.Modules.Portfolios.Domain.PurchaseRecords;
 namespace ViaRiceco.Modules.Portfolios.Application.Investments.AddPurchaseRecordToInvestment;
 
 public sealed record AddPurchaseRecordToInvestmentCommand(
+    string InvestmentStrategyId,
     string InvestmentId,
     DateTime PurchaseDate,
     decimal Amount,
@@ -29,9 +30,21 @@ internal sealed class AddPurchaseRecordToInvestmentCommandHandler(
 {
     public async Task<Result<PurchaseRecordDto>> Handle(AddPurchaseRecordToInvestmentCommand request, CancellationToken cancellationToken)
     {
-        Investment? investment = await investmentRepository.GetAsync(request.InvestmentId, cancellationToken);
+        // Step 1: Validate investment strategy exists
+        InvestmentStrategy? investmentStrategy = await investmentStrategyRepository.GetAsync(request.InvestmentStrategyId, cancellationToken);
+        if (investmentStrategy is null)
+        {
+            return Result.Failure<PurchaseRecordDto>(InvestmentStrategyErrors.NotFound(request.InvestmentStrategyId));
+        }
 
+        // Step 2: Validate investment exists and belongs to the investment strategy
+        Investment? investment = await investmentRepository.GetAsync(request.InvestmentId, cancellationToken);
         if (investment is null)
+        {
+            return Result.Failure<PurchaseRecordDto>(InvestmentErrors.NotFound(request.InvestmentId));
+        }
+
+        if (investment.InvestmentStrategyId != request.InvestmentStrategyId)
         {
             return Result.Failure<PurchaseRecordDto>(InvestmentErrors.NotFound(request.InvestmentId));
         }
@@ -41,14 +54,6 @@ internal sealed class AddPurchaseRecordToInvestmentCommandHandler(
         if (currency is null)
         {
             return Result.Failure<PurchaseRecordDto>(CurrencyErrors.NotFound(request.CurrencyId));
-        }
-
-        // Get the investment strategy to check uninvested amount
-        InvestmentStrategy? investmentStrategy = await investmentStrategyRepository.GetAsync(investment.InvestmentStrategyId, cancellationToken);
-
-        if (investmentStrategy is null)
-        {
-            return Result.Failure<PurchaseRecordDto>(InvestmentStrategyErrors.NotFound(investment.InvestmentStrategyId));
         }
 
         Result<PurchaseRecord> addResult = investment.AddPurchaseRecord(
