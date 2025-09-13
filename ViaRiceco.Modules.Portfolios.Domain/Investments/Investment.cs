@@ -18,16 +18,16 @@ public sealed class Investment : Entity
     public decimal RealPortfolioPercentage { get; private set; }
 
     public IReadOnlyCollection<PurchaseRecord> PurchaseRecords => _purchaseRecords.AsReadOnly();
-    
+
     // Calculated property: sum of PurchaseRecords total prices
     public decimal InvestedAmount => _purchaseRecords.Sum(pr => pr.TotalPrice);
-    
+
     // Calculated property: difference between current and invested amounts
     public decimal CurrentInvestedDifference => CurrentAmount - InvestedAmount;
 
     public static Investment Create(
-        string name, 
-        string investmentStrategyId, 
+        string name,
+        string investmentStrategyId,
         DateTime createdAtUtc)
     {
         var investment = new Investment
@@ -70,7 +70,8 @@ public sealed class Investment : Entity
         CurrentAmount = currentAmount;
         UpdatedAtUtc = updatedAtUtc;
 
-        Raise(new InvestmentCurrentAmountUpdatedDomainEvent(Id, CurrentAmount, CurrentInvestedDifference, updatedAtUtc));
+        Raise(new InvestmentCurrentAmountUpdatedDomainEvent(Id, CurrentAmount, CurrentInvestedDifference,
+            updatedAtUtc));
     }
 
     public void UpdateRealPortfolioPercentage(decimal realPortfolioPercentage, DateTime updatedAtUtc)
@@ -87,18 +88,18 @@ public sealed class Investment : Entity
     }
 
     public Result<PurchaseRecord> AddPurchaseRecord(
-        DateTime purchaseDate, 
-        decimal amount, 
-        decimal pricePerUnit, 
+        DateTime purchaseDate,
+        decimal amount,
+        decimal pricePerUnit,
         string currencyId,
         decimal uninvestedAmount,
         DateTime createdAtUtc)
     {
         Result<PurchaseRecord> createResult = PurchaseRecord.Create(
-            purchaseDate, 
-            amount, 
-            pricePerUnit, 
-            currencyId, 
+            purchaseDate,
+            amount,
+            pricePerUnit,
+            currencyId,
             Id,
             uninvestedAmount,
             createdAtUtc);
@@ -112,8 +113,7 @@ public sealed class Investment : Entity
         _purchaseRecords.Add(purchaseRecord);
         UpdatedAtUtc = createdAtUtc;
 
-        // Raise domain event about purchase record being added to investment
-        Raise(new PurchaseRecordAddedToInvestmentDomainEvent(Id, createdAtUtc));
+        Raise(new PurchaseRecordAddedToInvestmentDomainEvent(Id, InvestmentStrategyId, purchaseRecord.TotalPrice, createdAtUtc));
 
         return Result.Success(purchaseRecord);
     }

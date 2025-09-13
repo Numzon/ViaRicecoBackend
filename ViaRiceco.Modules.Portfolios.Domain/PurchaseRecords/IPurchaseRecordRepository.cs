@@ -1,4 +1,5 @@
 using ViaRiceco.Common.Domain.Models;
+using ViaRiceco.Common.Domain.Parameters;
 
 namespace ViaRiceco.Modules.Portfolios.Domain.PurchaseRecords;
 

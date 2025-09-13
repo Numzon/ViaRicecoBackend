@@ -3,6 +3,7 @@ using ViaRiceco.Common.Domain.Models;
 using ViaRiceco.Modules.Portfolios.Domain.PurchaseRecords;
 using ViaRiceco.Modules.Portfolios.Infrastructure.Database;
 using System.Linq.Dynamic.Core;
+using ViaRiceco.Common.Domain.Parameters;
 
 namespace ViaRiceco.Modules.Portfolios.Infrastructure.PurchaseRecords;
 

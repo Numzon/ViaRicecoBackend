@@ -7,7 +7,7 @@ using ViaRiceco.Modules.Portfolios.Application.Abstractions.Data;
 using ViaRiceco.Modules.Portfolios.Domain.Investments;
 using ViaRiceco.Modules.Portfolios.Domain.InvestmentStrategies;
 
-namespace ViaRiceco.Modules.Portfolios.Application.Investments.RemovePurchaseRecordFromInvestment;
+namespace ViaRiceco.Modules.Portfolios.Application.PurchaseRecords.RemovePurchaseRecordFromInvestment;
 
 public sealed record RemovePurchaseRecordFromInvestmentCommand(
     string InvestmentStrategyId,

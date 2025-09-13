@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using ViaRiceco.Common.Domain.Models;
 using ViaRiceco.Common.Presentation.Results;
-using ViaRiceco.Modules.Portfolios.Application.Investments.RemovePurchaseRecordFromInvestment;
+using ViaRiceco.Modules.Portfolios.Application.PurchaseRecords.RemovePurchaseRecordFromInvestment;
 using ViaRiceco.Modules.Portfolios.Presentation.Enumerations;
 
 namespace ViaRiceco.Modules.Portfolios.Presentation.PurchaseRecords;

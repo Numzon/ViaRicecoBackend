@@ -10,7 +10,7 @@ using ViaRiceco.Modules.Portfolios.Domain.Investments;
 using ViaRiceco.Modules.Portfolios.Domain.InvestmentStrategies;
 using ViaRiceco.Modules.Portfolios.Domain.PurchaseRecords;
 
-namespace ViaRiceco.Modules.Portfolios.Application.Investments.AddPurchaseRecordToInvestment;
+namespace ViaRiceco.Modules.Portfolios.Application.PurchaseRecords.AddPurchaseRecordToInvestment;
 
 public sealed record AddPurchaseRecordToInvestmentCommand(
     string InvestmentStrategyId,

@@ -7,19 +7,19 @@ using ViaRiceco.Modules.Portfolios.Application.Abstractions.Data;
 using ViaRiceco.Modules.Portfolios.Application.InvestmentStrategies.Models;
 using ViaRiceco.Modules.Portfolios.Domain.InvestmentStrategies;
 
-namespace ViaRiceco.Modules.Portfolios.Application.InvestmentStrategies.UpdateInvestmentCurrentAmounts;
+namespace ViaRiceco.Modules.Portfolios.Application.Investments.UpdateInvestmentModelPercentages;
 
-public sealed record UpdateInvestmentCurrentAmountsCommand(
+public sealed record UpdateInvestmentModelPercentagesCommand(
     string InvestmentStrategyId,
-    Dictionary<string, decimal> InvestmentCurrentAmounts) : ICommand<InvestmentStrategyDto>;
+    Dictionary<string, decimal> InvestmentPercentages) : ICommand<InvestmentStrategyDto>;
 
-internal sealed class UpdateInvestmentCurrentAmountsCommandHandler(
+internal sealed class UpdateInvestmentModelPercentagesCommandHandler(
     IInvestmentStrategyRepository repository,
     IUnitOfWork unitOfWork,
     TimeProvider timeProvider)
-    : ICommandHandler<UpdateInvestmentCurrentAmountsCommand, InvestmentStrategyDto>
+    : ICommandHandler<UpdateInvestmentModelPercentagesCommand, InvestmentStrategyDto>
 {
-    public async Task<Result<InvestmentStrategyDto>> Handle(UpdateInvestmentCurrentAmountsCommand request, CancellationToken cancellationToken)
+    public async Task<Result<InvestmentStrategyDto>> Handle(UpdateInvestmentModelPercentagesCommand request, CancellationToken cancellationToken)
     {
         InvestmentStrategy? strategy = await repository.GetAsync(request.InvestmentStrategyId, cancellationToken);
 
@@ -28,7 +28,12 @@ internal sealed class UpdateInvestmentCurrentAmountsCommandHandler(
             return Result.Failure<InvestmentStrategyDto>(InvestmentStrategyErrors.NotFound(request.InvestmentStrategyId));
         }
 
-        strategy.UpdateInvestmentCurrentAmounts(request.InvestmentCurrentAmounts, timeProvider.UtcNow());
+        Result result = strategy.UpdateInvestmentsModelPercentages(request.InvestmentPercentages, timeProvider.UtcNow());
+
+        if (result.IsFailure)
+        {
+            return Result.Failure<InvestmentStrategyDto>(result.Error);
+        }
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
@@ -53,21 +58,25 @@ internal sealed class UpdateInvestmentCurrentAmountsCommandHandler(
 }
 
 [UsedImplicitly]
-internal sealed class UpdateInvestmentCurrentAmountsCommandValidator : AbstractValidator<UpdateInvestmentCurrentAmountsCommand>
+internal sealed class UpdateInvestmentModelPercentagesCommandValidator : AbstractValidator<UpdateInvestmentModelPercentagesCommand>
 {
-    public UpdateInvestmentCurrentAmountsCommandValidator()
+    public UpdateInvestmentModelPercentagesCommandValidator()
     {
         RuleFor(x => x.InvestmentStrategyId)
             .NotEmpty()
             .WithMessage("Investment strategy ID is required");
 
-        RuleFor(x => x.InvestmentCurrentAmounts)
+        RuleFor(x => x.InvestmentPercentages)
             .NotNull()
             .NotEmpty()
-            .WithMessage("Investment current amounts are required");
+            .WithMessage("Investment percentages are required");
 
-        RuleForEach(x => x.InvestmentCurrentAmounts.Values)
-            .GreaterThanOrEqualTo(0)
-            .WithMessage("Each investment current amount must be greater than or equal to zero");
+        RuleForEach(x => x.InvestmentPercentages.Values)
+            .InclusiveBetween(0, 100)
+            .WithMessage("Each investment percentage must be between 0 and 100");
+
+        RuleFor(x => x.InvestmentPercentages.Values.Sum())
+            .LessThanOrEqualTo(100)
+            .WithMessage("Total investment percentages cannot exceed 100%");
     }
 }

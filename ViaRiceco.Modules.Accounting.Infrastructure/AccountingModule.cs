@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ViaRiceco.Common.Infrastructure.Enumerations;
+using ViaRiceco.Common.Infrastructure.Outbox;
 using ViaRiceco.Modules.Accounting.Application.Abstractions.Data;
 using ViaRiceco.Modules.Accounting.Domain.SettlementPeriods;
 using ViaRiceco.Modules.Accounting.Domain.TaxTypes;
@@ -27,12 +28,13 @@ public static class AccountingModule
     
     private static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddDbContext<AccountingDbContext>((_, options) =>
+        services.AddDbContext<AccountingDbContext>((sp, options) =>
         {
             options
                 .UseNpgsql(configuration.GetConnectionString(ConnectionStrings.Database),
                     npgsqlOptions => npgsqlOptions.MigrationsHistoryTable(HistoryRepository.DefaultTableName, Schemas.Accounting))
-                .UseSnakeCaseNamingConvention();
+                .UseSnakeCaseNamingConvention()
+                .AddInterceptors(sp.GetRequiredService<InsertOutboxMessagesInterceptor>());
         });
 
         services.AddScoped<ITaxTypeRepository, TaxTypeRepository>();

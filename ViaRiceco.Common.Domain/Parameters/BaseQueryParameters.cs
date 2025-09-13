@@ -1,4 +1,4 @@
-namespace ViaRiceco.Common.Domain.Models;
+namespace ViaRiceco.Common.Domain.Parameters;
 
 public sealed class BaseQueryParameters
 {

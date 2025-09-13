@@ -7,7 +7,7 @@ using ViaRiceco.Modules.Portfolios.Application.Abstractions.Data;
 using ViaRiceco.Modules.Portfolios.Application.InvestmentStrategies.Models;
 using ViaRiceco.Modules.Portfolios.Domain.InvestmentStrategies;
 
-namespace ViaRiceco.Modules.Portfolios.Application.InvestmentStrategies.RemoveInvestmentFromStrategy;
+namespace ViaRiceco.Modules.Portfolios.Application.Investments.RemoveInvestmentFromStrategy;
 
 public sealed record RemoveInvestmentFromStrategyCommand(
     string InvestmentStrategyId,

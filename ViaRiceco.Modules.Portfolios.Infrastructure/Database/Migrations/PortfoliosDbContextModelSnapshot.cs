@@ -23,6 +23,59 @@ namespace ViaRiceco.Modules.Portfolios.Infrastructure.Database.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("ViaRiceco.Common.Domain.Outbox.OutboxMessage", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasMaxLength(2000)
+                        .HasColumnType("jsonb")
+                        .HasColumnName("content");
+
+                    b.Property<string>("Error")
+                        .HasColumnType("text")
+                        .HasColumnName("error");
+
+                    b.Property<DateTime>("OccurredOnUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("occurred_on_utc");
+
+                    b.Property<DateTime?>("ProcessedOnUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("processed_on_utc");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("type");
+
+                    b.HasKey("Id")
+                        .HasName("pk_outbox_messages");
+
+                    b.ToTable("outbox_messages", "portfolios");
+                });
+
+            modelBuilder.Entity("ViaRiceco.Common.Domain.Outbox.OutboxMessageConsumer", b =>
+                {
+                    b.Property<Guid>("OutboxMessageId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("outbox_message_id");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("name");
+
+                    b.HasKey("OutboxMessageId", "Name")
+                        .HasName("pk_outbox_message_consumers");
+
+                    b.ToTable("outbox_message_consumers", "portfolios");
+                });
+
             modelBuilder.Entity("ViaRiceco.Modules.Portfolios.Domain.Currencies.Currency", b =>
                 {
                     b.Property<string>("Id")
@@ -143,7 +196,7 @@ namespace ViaRiceco.Modules.Portfolios.Infrastructure.Database.Migrations
                     b.ToTable("investment_strategies", "portfolios");
                 });
 
-            modelBuilder.Entity("ViaRiceco.Modules.Portfolios.Domain.InvestmentTypes.InvestmentStrategyType", b =>
+            modelBuilder.Entity("ViaRiceco.Modules.Portfolios.Domain.InvestmentStrategyTypes.InvestmentStrategyType", b =>
                 {
                     b.Property<string>("Id")
                         .HasMaxLength(100)
@@ -192,7 +245,6 @@ namespace ViaRiceco.Modules.Portfolios.Infrastructure.Database.Migrations
 
                     b.Property<string>("InvestmentStrategyId")
                         .IsRequired()
-                        .HasMaxLength(100)
                         .HasColumnType("character varying(100)")
                         .HasColumnName("investment_strategy_id");
 

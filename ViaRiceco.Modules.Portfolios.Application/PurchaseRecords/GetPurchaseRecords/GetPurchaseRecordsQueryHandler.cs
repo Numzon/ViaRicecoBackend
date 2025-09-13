@@ -1,5 +1,6 @@
 using ViaRiceco.Common.Application.Abstractions.Queries;
 using ViaRiceco.Common.Domain.Models;
+using ViaRiceco.Common.Domain.Parameters;
 using ViaRiceco.Modules.Portfolios.Application.PurchaseRecords.Models;
 using ViaRiceco.Modules.Portfolios.Domain.PurchaseRecords;
 using ViaRiceco.Modules.Portfolios.Domain.InvestmentStrategies;
@@ -29,14 +30,12 @@ internal sealed class GetPurchaseRecordsQueryHandler(
     public async Task<Result<GetPurchaseRecordsQueryResponse>> Handle(GetPurchaseRecordsQuery request,
         CancellationToken cancellationToken)
     {
-        // Step 1: Validate investment strategy exists
         InvestmentStrategy? investmentStrategy = await investmentStrategyRepository.GetAsync(request.InvestmentStrategyId, cancellationToken);
         if (investmentStrategy is null)
         {
             return Result.Failure<GetPurchaseRecordsQueryResponse>(InvestmentStrategyErrors.NotFound(request.InvestmentStrategyId));
         }
-
-        // Step 2: Validate investment exists and belongs to the investment strategy
+        
         Investment? investment = await investmentRepository.GetAsync(request.InvestmentId, cancellationToken);
         if (investment is null)
         {

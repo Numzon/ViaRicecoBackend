@@ -18,11 +18,7 @@ internal sealed class InvestmentConfiguration : IEntityTypeConfiguration<Investm
         builder.Property(i => i.Name)
                .IsRequired()
                .HasMaxLength(200);
-
-        builder.Property(i => i.InvestmentStrategyId)
-               .IsRequired()
-               .HasMaxLength(100);
-
+        
         builder.Property(i => i.ModelPortfolioPercentage)
                .IsRequired()
                .HasPrecision(5, 2); // 0.00 to 100.00

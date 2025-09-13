@@ -11,8 +11,8 @@ using ViaRiceco.Common.Domain.Models;
 using ViaRiceco.Common.Presentation.Abstractions.Headers;
 using ViaRiceco.Common.Presentation.Enumerations;
 using ViaRiceco.Common.Presentation.Results;
+using ViaRiceco.Modules.Portfolios.Application.Investments.UpdateInvestmentCurrentAmounts;
 using ViaRiceco.Modules.Portfolios.Application.InvestmentStrategies.Models;
-using ViaRiceco.Modules.Portfolios.Application.InvestmentStrategies.UpdateInvestmentCurrentAmounts;
 using ViaRiceco.Modules.Portfolios.Presentation.Enumerations;
 using ViaRiceco.Modules.Portfolios.Presentation.InvestmentStrategies.Hyperlinks;
 
