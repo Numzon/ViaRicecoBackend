@@ -40,8 +40,12 @@ internal sealed class InvestmentConfiguration : IEntityTypeConfiguration<Investm
 
         builder.Property(i => i.UpdatedAtUtc);
 
-        // Configure navigation properties for collections (not owned)
-        builder.HasMany<PurchaseRecord>()
+        // Configure relationship with purchase records using the backing field
+        builder.Navigation(i => i.PurchaseRecords)
+               .HasField("_purchaseRecords")
+               .UsePropertyAccessMode(PropertyAccessMode.Field);
+               
+        builder.HasMany(i => i.PurchaseRecords)
                .WithOne()
                .HasForeignKey(pr => pr.InvestmentId)
                .OnDelete(DeleteBehavior.Cascade);

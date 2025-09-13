@@ -9,7 +9,6 @@ using ViaRiceco.Common.Application.Services.DataShapers;
 using ViaRiceco.Common.Application.Services.Hyperlinks;
 using ViaRiceco.Common.Domain.Models;
 using ViaRiceco.Common.Presentation.Abstractions.Headers;
-using ViaRiceco.Common.Presentation.Enumerations;
 using ViaRiceco.Common.Presentation.Results;
 using ViaRiceco.Modules.Portfolios.Application.FinancialGoals.CreateFinancialGoal;
 using ViaRiceco.Modules.Portfolios.Application.FinancialGoals.Models;
@@ -31,7 +30,6 @@ internal sealed class CreateFinancialGoalEndpoint(ISender sender, IHyperlinkServ
     public override void Configure()
     {
         Post("/portfolios/financial-goals");
-        Tags(EndpointTags.FinancialGoals);
         AllowAnonymous();
         Description(d => d.WithName(nameof(CreateFinancialGoalEndpoint)));
         

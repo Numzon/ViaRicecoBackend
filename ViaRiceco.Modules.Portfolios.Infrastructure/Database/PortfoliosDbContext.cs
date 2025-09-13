@@ -4,13 +4,13 @@ using ViaRiceco.Modules.Portfolios.Domain.Currencies;
 using ViaRiceco.Modules.Portfolios.Domain.FinancialGoals;
 using ViaRiceco.Modules.Portfolios.Domain.Investments;
 using ViaRiceco.Modules.Portfolios.Domain.InvestmentStrategies;
-using ViaRiceco.Modules.Portfolios.Domain.InvestmentTypes;
+using ViaRiceco.Modules.Portfolios.Domain.InvestmentStrategyTypes;
 using ViaRiceco.Modules.Portfolios.Domain.PurchaseRecords;
 using ViaRiceco.Modules.Portfolios.Infrastructure.Currencies;
 using ViaRiceco.Modules.Portfolios.Infrastructure.FinancialGoals;
 using ViaRiceco.Modules.Portfolios.Infrastructure.Investments;
 using ViaRiceco.Modules.Portfolios.Infrastructure.InvestmentStrategies;
-using ViaRiceco.Modules.Portfolios.Infrastructure.InvestmentTypes;
+using ViaRiceco.Modules.Portfolios.Infrastructure.InvestmentStrategyTypes;
 using ViaRiceco.Modules.Portfolios.Infrastructure.PurchaseRecords;
 
 namespace ViaRiceco.Modules.Portfolios.Infrastructure.Database;

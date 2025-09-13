@@ -10,7 +10,6 @@ using ViaRiceco.Common.Application.Services.Hyperlinks;
 using ViaRiceco.Common.Application.Services.Hyperlinks.Models;
 using ViaRiceco.Common.Domain.Models;
 using ViaRiceco.Common.Presentation.Abstractions.Collections;
-using ViaRiceco.Common.Presentation.Enumerations;
 using ViaRiceco.Common.Presentation.Results;
 using ViaRiceco.Modules.Portfolios.Application.InvestmentStrategies.GetInvestmentStrategies;
 using ViaRiceco.Modules.Portfolios.Application.InvestmentStrategies.Models;
@@ -28,7 +27,6 @@ internal sealed class GetInvestmentStrategiesEndpoint(
     public override void Configure()
     {
         Get("/portfolios/investment-strategies");
-        Tags(EndpointTags.InvestmentStrategies);
         AllowAnonymous();
         Description(d => d.WithName(nameof(GetInvestmentStrategiesEndpoint)));
         

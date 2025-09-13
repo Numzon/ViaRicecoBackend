@@ -90,7 +90,8 @@ public sealed class Investment : Entity
         DateTime purchaseDate, 
         decimal amount, 
         decimal pricePerUnit, 
-        string currencyId, 
+        string currencyId,
+        decimal uninvestedAmount,
         DateTime createdAtUtc)
     {
         Result<PurchaseRecord> createResult = PurchaseRecord.Create(
@@ -98,7 +99,8 @@ public sealed class Investment : Entity
             amount, 
             pricePerUnit, 
             currencyId, 
-            Id, 
+            Id,
+            uninvestedAmount,
             createdAtUtc);
 
         if (createResult.IsFailure)

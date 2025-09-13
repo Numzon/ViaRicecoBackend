@@ -30,7 +30,6 @@ internal sealed class GetFinancialGoalEndpoint(ISender sender, IHyperlinkService
     public override void Configure()
     {
         Get("/portfolios/financial-goals/{id}");
-        Tags(EndpointTags.FinancialGoals);
         AllowAnonymous();
         Description(d => d.WithName(nameof(GetFinancialGoalEndpoint)));
         

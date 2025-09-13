@@ -9,7 +9,6 @@ using ViaRiceco.Common.Application.Services.DataShapers;
 using ViaRiceco.Common.Application.Services.Hyperlinks;
 using ViaRiceco.Common.Domain.Models;
 using ViaRiceco.Common.Presentation.Abstractions.Headers;
-using ViaRiceco.Common.Presentation.Enumerations;
 using ViaRiceco.Common.Presentation.Results;
 using ViaRiceco.Modules.Portfolios.Application.FinancialGoals.UpdateFinancialGoal;
 using ViaRiceco.Modules.Portfolios.Application.FinancialGoals.Models;
@@ -32,7 +31,6 @@ internal sealed class UpdateFinancialGoalEndpoint(ISender sender, IHyperlinkServ
     public override void Configure()
     {
         Put("/portfolios/financial-goals/{id}");
-        Tags(EndpointTags.FinancialGoals);
         AllowAnonymous();
         Description(d => d.WithName(nameof(UpdateFinancialGoalEndpoint)));
         

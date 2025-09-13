@@ -9,7 +9,6 @@ using ViaRiceco.Common.Application.Services.DataShapers;
 using ViaRiceco.Common.Application.Services.Hyperlinks;
 using ViaRiceco.Common.Domain.Models;
 using ViaRiceco.Common.Presentation.Abstractions.Headers;
-using ViaRiceco.Common.Presentation.Enumerations;
 using ViaRiceco.Common.Presentation.Results;
 using ViaRiceco.Modules.Portfolios.Application.Currencies.UpdateCurrency;
 using ViaRiceco.Modules.Portfolios.Application.Currencies.Models;
@@ -32,7 +31,6 @@ internal sealed class UpdateCurrencyEndpoint(ISender sender, IHyperlinkService h
     public override void Configure()
     {
         Put("/portfolios/currencies/{id}");
-        Tags(EndpointTags.Currencies);
         AllowAnonymous();
         Description(d => d.WithName(nameof(UpdateCurrencyEndpoint)));
         

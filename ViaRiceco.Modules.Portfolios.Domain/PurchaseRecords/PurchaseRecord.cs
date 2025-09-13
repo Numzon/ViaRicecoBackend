@@ -21,17 +21,17 @@ public sealed class PurchaseRecord : Entity
         decimal pricePerUnit, 
         string currencyId, 
         string investmentId,
+        decimal uninvestedAmount,
         DateTime createdAtUtc)
     {
-        Result validationResult = ValidateCreateParameters(purchaseDate, amount, pricePerUnit, currencyId, investmentId);
+        // Calculate total price to ensure consistency
+        decimal totalPrice = amount * pricePerUnit;
+        
+        Result validationResult = ValidateCreateParameters(purchaseDate, amount, pricePerUnit, currencyId, investmentId, totalPrice, uninvestedAmount);
         if (validationResult.IsFailure)
         {
             return Result.Failure<PurchaseRecord>(validationResult.Error);
         }
-
-        // Calculate total price to ensure consistency
-        decimal totalPrice = amount * pricePerUnit;
-        
         var record = new PurchaseRecord
         {
             Id = $"pr_{Guid.NewGuid()}",
@@ -96,7 +96,9 @@ public sealed class PurchaseRecord : Entity
         decimal amount, 
         decimal pricePerUnit, 
         string currencyId, 
-        string investmentId)
+        string investmentId,
+        decimal totalPrice,
+        decimal uninvestedAmount)
     {
         if (!PurchaseRecordSpecification.IsValidAmount(amount))
         {
@@ -121,6 +123,12 @@ public sealed class PurchaseRecord : Entity
         if (!PurchaseRecordSpecification.IsValidInvestmentId(investmentId))
         {
             return Result.Failure(PurchaseRecordErrors.InvalidInvestment(investmentId));
+        }
+
+        // Business rule: Purchase cost cannot exceed available uninvested amount
+        if (!PurchaseRecordSpecification.HasSufficientUninvestedAmount(totalPrice, uninvestedAmount))
+        {
+            return Result.Failure(PurchaseRecordErrors.InsufficientUninvestedAmount(totalPrice, uninvestedAmount));
         }
 
         return Result.Success();

@@ -27,7 +27,6 @@ internal sealed class GetFinancialGoalsEndpoint(
     public override void Configure()
     {
         Get("/portfolios/financial-goals");
-        Tags(EndpointTags.FinancialGoals);
         AllowAnonymous();
         Description(d => d.WithName(nameof(GetFinancialGoalsEndpoint)));
         

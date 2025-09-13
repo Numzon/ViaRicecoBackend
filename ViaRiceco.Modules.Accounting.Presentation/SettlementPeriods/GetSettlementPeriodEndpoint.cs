@@ -34,7 +34,6 @@ internal sealed class GetSettlementPeriodEndpoint(
     public override void Configure()
     {
         Get("/accounting/settlement-periods/{id}");
-        Tags(EndpointTags.SettlementPeriods);
         AllowAnonymous();
         Description(d => d.WithName(nameof(GetSettlementPeriodEndpoint)));
         

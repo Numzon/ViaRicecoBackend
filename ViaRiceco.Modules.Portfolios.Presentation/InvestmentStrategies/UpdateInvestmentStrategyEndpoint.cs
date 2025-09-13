@@ -31,7 +31,6 @@ internal sealed class UpdateInvestmentStrategyEndpoint(ISender sender, IHyperlin
     public override void Configure()
     {
         Put("/portfolios/investment-strategies/{id}");
-        Tags(EndpointTags.InvestmentStrategies);
         AllowAnonymous();
         Description(d => d.WithName(nameof(UpdateInvestmentStrategyEndpoint)));
         

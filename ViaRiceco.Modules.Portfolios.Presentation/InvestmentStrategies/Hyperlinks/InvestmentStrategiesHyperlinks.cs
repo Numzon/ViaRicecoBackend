@@ -3,6 +3,7 @@ using ViaRiceco.Common.Application.Services.Hyperlinks;
 using ViaRiceco.Common.Application.Services.Hyperlinks.Models;
 using ViaRiceco.Common.Domain.Enumerations;
 using ViaRiceco.Common.Presentation.Abstractions.Collections;
+using ViaRiceco.Modules.Portfolios.Presentation.Investments;
 
 namespace ViaRiceco.Modules.Portfolios.Presentation.InvestmentStrategies.Hyperlinks;
 

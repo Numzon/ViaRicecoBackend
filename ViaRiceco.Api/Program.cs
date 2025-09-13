@@ -36,7 +36,10 @@ string redisConnectionString = builder.Configuration.GetConnectionStringOrThrow(
 
 builder.Services.AddInfrastructure(DiagnosticsConfig.ServiceName, databaseConnectionString, redisConnectionString);
 
-builder.Services.SwaggerDocument();
+builder.Services.SwaggerDocument(o => 
+{
+    o.AutoTagPathSegmentIndex = -1; // Disable automatic tagging from path segments
+});
 
 builder.Services.AddHealthChecks()
     .AddNpgSql(databaseConnectionString)

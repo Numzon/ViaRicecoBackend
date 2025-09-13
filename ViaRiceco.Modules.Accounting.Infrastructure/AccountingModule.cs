@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Asp.Versioning.Conventions;
+using FastEndpoints.AspVersioning;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,6 +11,7 @@ using ViaRiceco.Modules.Accounting.Domain.TaxTypes;
 using ViaRiceco.Modules.Accounting.Infrastructure.Database;
 using ViaRiceco.Modules.Accounting.Infrastructure.SettlementPeriods;
 using ViaRiceco.Modules.Accounting.Infrastructure.TaxTypes;
+using ViaRiceco.Modules.Accounting.Presentation.Enumerations;
 
 namespace ViaRiceco.Modules.Accounting.Infrastructure;
 
@@ -16,7 +19,8 @@ public static class AccountingModule
 {
     public static IServiceCollection AddAccountingModule(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddInfrastructure(configuration);
+        services.AddInfrastructure(configuration)
+                .AddPresentation();
         
         return services;       
     }
@@ -37,5 +41,16 @@ public static class AccountingModule
         services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<AccountingDbContext>());
         
         return services;
+    }
+
+    private static IServiceCollection AddPresentation(this IServiceCollection services)
+    {
+        VersionSets.CreateApi(CustomVersionSets.TaxTypes, v => v
+            .HasApiVersion(1.0));
+        
+        VersionSets.CreateApi(CustomVersionSets.SettlementPeriods, v => v
+            .HasApiVersion(1.0));
+        
+        return services;       
     }
 }

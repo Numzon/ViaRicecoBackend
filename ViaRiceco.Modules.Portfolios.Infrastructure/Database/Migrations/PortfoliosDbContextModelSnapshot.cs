@@ -264,10 +264,6 @@ namespace ViaRiceco.Modules.Portfolios.Infrastructure.Database.Migrations
                         .HasColumnType("character varying(100)")
                         .HasColumnName("investment_id");
 
-                    b.Property<string>("InvestmentId1")
-                        .HasColumnType("character varying(100)")
-                        .HasColumnName("investment_id1");
-
                     b.Property<decimal>("PricePerUnit")
                         .HasPrecision(18, 8)
                         .HasColumnType("numeric(18,8)")
@@ -294,9 +290,6 @@ namespace ViaRiceco.Modules.Portfolios.Infrastructure.Database.Migrations
 
                     b.HasIndex("InvestmentId")
                         .HasDatabaseName("ix_purchase_records_investment_id");
-
-                    b.HasIndex("InvestmentId1")
-                        .HasDatabaseName("ix_purchase_records_investment_id1");
 
                     b.HasIndex("PurchaseDate")
                         .HasDatabaseName("ix_purchase_records_purchase_date");
@@ -331,16 +324,11 @@ namespace ViaRiceco.Modules.Portfolios.Infrastructure.Database.Migrations
             modelBuilder.Entity("ViaRiceco.Modules.Portfolios.Domain.PurchaseRecords.PurchaseRecord", b =>
                 {
                     b.HasOne("ViaRiceco.Modules.Portfolios.Domain.Investments.Investment", null)
-                        .WithMany()
+                        .WithMany("PurchaseRecords")
                         .HasForeignKey("InvestmentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_purchase_records_investments_investment_id");
-
-                    b.HasOne("ViaRiceco.Modules.Portfolios.Domain.Investments.Investment", null)
-                        .WithMany("PurchaseRecords")
-                        .HasForeignKey("InvestmentId1")
-                        .HasConstraintName("fk_purchase_records_investments_investment_id1");
                 });
 
             modelBuilder.Entity("ViaRiceco.Modules.Portfolios.Domain.InvestmentStrategies.InvestmentStrategy", b =>

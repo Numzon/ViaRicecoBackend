@@ -31,7 +31,6 @@ internal sealed class AddInvestmentToStrategyEndpoint(ISender sender, IHyperlink
     public override void Configure()
     {
         Post("/portfolios/investment-strategies/{id}/investments");
-        Tags(EndpointTags.InvestmentStrategies);
         AllowAnonymous();
         Description(d => d.WithName(nameof(AddInvestmentToStrategyEndpoint)));
         

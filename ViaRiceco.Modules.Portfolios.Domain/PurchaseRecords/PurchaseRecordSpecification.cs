@@ -43,6 +43,14 @@ public static class PurchaseRecordSpecification
     }
 
     /// <summary>
+    /// Determines whether there are sufficient uninvested funds to cover the purchase cost
+    /// </summary>
+    public static bool HasSufficientUninvestedAmount(decimal totalPrice, decimal uninvestedAmount)
+    {
+        return totalPrice <= uninvestedAmount;
+    }
+
+    /// <summary>
     /// Determines whether all purchase record parameters are valid for creation
     /// </summary>
     public static bool AreCreateParametersValid(

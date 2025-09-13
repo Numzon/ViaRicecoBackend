@@ -28,7 +28,6 @@ internal sealed class GetPurchaseRecordsEndpoint(
     public override void Configure()
     {
         Get("/portfolios/purchase-records");
-        Tags(EndpointTags.PurchaseRecords);
         AllowAnonymous();
         Description(d => d.WithName(nameof(GetPurchaseRecordsEndpoint)));
         

@@ -5,7 +5,6 @@ using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using ViaRiceco.Common.Domain.Models;
-using ViaRiceco.Common.Presentation.Enumerations;
 using ViaRiceco.Common.Presentation.Results;
 using ViaRiceco.Modules.Accounting.Application.SettlementPeriods.RemoveIncome;
 using ViaRiceco.Modules.Accounting.Presentation.Enumerations;
@@ -21,7 +20,6 @@ internal sealed class RemoveIncomeEndpoint(ISender sender)
     public override void Configure()
     {
         Delete("/accounting/settlement-periods/{settlementPeriodId}/incomes/{incomeId}");
-        Tags(EndpointTags.SettlementPeriods);
         AllowAnonymous();
         Description(d => d.WithName(nameof(RemoveIncomeEndpoint)));
         

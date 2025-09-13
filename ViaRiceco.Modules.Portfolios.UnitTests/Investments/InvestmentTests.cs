@@ -183,7 +183,7 @@ public sealed class InvestmentTests : BaseTest
         var investment = Investment.Create(name, investmentStrategyId, createdAtUtc);
 
         // Act
-        Result<PurchaseRecord> result = investment.AddPurchaseRecord(purchaseDate, amount, pricePerUnit, currencyId, purchaseCreatedAtUtc);
+        Result<PurchaseRecord> result = investment.AddPurchaseRecord(purchaseDate, amount, pricePerUnit, currencyId, 20000.0m, purchaseCreatedAtUtc);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -213,7 +213,7 @@ public sealed class InvestmentTests : BaseTest
         var investment = Investment.Create(name, investmentStrategyId, createdAtUtc);
 
         // Act
-        Result<PurchaseRecord> result = investment.AddPurchaseRecord(purchaseDate, amount, pricePerUnit, currencyId, purchaseCreatedAtUtc);
+        Result<PurchaseRecord> result = investment.AddPurchaseRecord(purchaseDate, amount, pricePerUnit, currencyId, 20000.0m, purchaseCreatedAtUtc);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -238,7 +238,7 @@ public sealed class InvestmentTests : BaseTest
         DateTime updatedAtUtc = Faker.Date.RecentOffset().UtcDateTime;
 
         var investment = Investment.Create(name, investmentStrategyId, createdAtUtc);
-        Result<PurchaseRecord> addResult = investment.AddPurchaseRecord(purchaseDate, amount, pricePerUnit, currencyId, purchaseCreatedAtUtc);
+        Result<PurchaseRecord> addResult = investment.AddPurchaseRecord(purchaseDate, amount, pricePerUnit, currencyId, 20000.0m, purchaseCreatedAtUtc);
         PurchaseRecord record = addResult.Value;
 
         // Act
@@ -288,7 +288,7 @@ public sealed class InvestmentTests : BaseTest
         DateTime updatedAtUtc = Faker.Date.RecentOffset().UtcDateTime;
 
         var investment = Investment.Create(name, investmentStrategyId, createdAtUtc);
-        Result<PurchaseRecord> addResult = investment.AddPurchaseRecord(purchaseDate, amount, pricePerUnit, currencyId, purchaseCreatedAtUtc);
+        Result<PurchaseRecord> addResult = investment.AddPurchaseRecord(purchaseDate, amount, pricePerUnit, currencyId, 20000.0m, purchaseCreatedAtUtc);
         PurchaseRecord record = addResult.Value;
 
         // Act
@@ -315,9 +315,9 @@ public sealed class InvestmentTests : BaseTest
         var investment = Investment.Create(name, investmentStrategyId, createdAtUtc);
 
         // Act - Add multiple purchase records
-        investment.AddPurchaseRecord(Faker.Date.PastOffset().UtcDateTime, 100m, 150m, currencyId, purchaseCreatedAtUtc).IsSuccess.Should().BeTrue(); // 15,000
-        investment.AddPurchaseRecord(Faker.Date.PastOffset().UtcDateTime, 50m, 160m, currencyId, purchaseCreatedAtUtc).IsSuccess.Should().BeTrue();  // 8,000
-        investment.AddPurchaseRecord(Faker.Date.PastOffset().UtcDateTime, 75m, 140m, currencyId, purchaseCreatedAtUtc).IsSuccess.Should().BeTrue();  // 10,500
+        investment.AddPurchaseRecord(Faker.Date.PastOffset().UtcDateTime, 100m, 150m, currencyId, 50000.0m, purchaseCreatedAtUtc).IsSuccess.Should().BeTrue(); // 15,000
+        investment.AddPurchaseRecord(Faker.Date.PastOffset().UtcDateTime, 50m, 160m, currencyId, 50000.0m, purchaseCreatedAtUtc).IsSuccess.Should().BeTrue();  // 8,000
+        investment.AddPurchaseRecord(Faker.Date.PastOffset().UtcDateTime, 75m, 140m, currencyId, 50000.0m, purchaseCreatedAtUtc).IsSuccess.Should().BeTrue();  // 10,500
 
         // Assert
         investment.PurchaseRecords.Should().HaveCount(3);
@@ -339,7 +339,7 @@ public sealed class InvestmentTests : BaseTest
         var investment = Investment.Create(name, investmentStrategyId, createdAtUtc);
 
         // Act
-        investment.AddPurchaseRecord(Faker.Date.PastOffset().UtcDateTime, 100m, 150m, currencyId, purchaseCreatedAtUtc); // Invested: 15,000
+        investment.AddPurchaseRecord(Faker.Date.PastOffset().UtcDateTime, 100m, 150m, currencyId, 25000.0m, purchaseCreatedAtUtc); // Invested: 15,000
         investment.UpdateCurrentAmount(18000m, updatedAtUtc); // Current: 18,000
 
         // Assert
@@ -363,7 +363,7 @@ public sealed class InvestmentTests : BaseTest
         var investment = Investment.Create(name, investmentStrategyId, createdAtUtc);
 
         // Act
-        investment.AddPurchaseRecord(Faker.Date.PastOffset().UtcDateTime, 100m, 150m, currencyId, purchaseCreatedAtUtc); // Invested: 15,000
+        investment.AddPurchaseRecord(Faker.Date.PastOffset().UtcDateTime, 100m, 150m, currencyId, 25000.0m, purchaseCreatedAtUtc); // Invested: 15,000
         investment.UpdateCurrentAmount(12000m, updatedAtUtc); // Current: 12,000
 
         // Assert
@@ -425,8 +425,8 @@ public sealed class InvestmentTests : BaseTest
         var investment = Investment.Create(name, investmentStrategyId, createdAtUtc);
 
         // Act - Add multiple purchases on same day
-        Result<PurchaseRecord> result1 = investment.AddPurchaseRecord(samePurchaseDate, 50m, 150m, currencyId, purchaseCreatedAtUtc);
-        Result<PurchaseRecord> result2 = investment.AddPurchaseRecord(samePurchaseDate, 50m, 150m, currencyId, purchaseCreatedAtUtc);
+        Result<PurchaseRecord> result1 = investment.AddPurchaseRecord(samePurchaseDate, 50m, 150m, currencyId, 20000.0m, purchaseCreatedAtUtc);
+        Result<PurchaseRecord> result2 = investment.AddPurchaseRecord(samePurchaseDate, 50m, 150m, currencyId, 20000.0m, purchaseCreatedAtUtc);
         PurchaseRecord record1 = result1.Value;
         PurchaseRecord record2 = result2.Value;
 

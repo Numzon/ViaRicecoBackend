@@ -31,7 +31,6 @@ internal sealed class AddIncomeEndpoint(ISender sender, IHyperlinkService hyperl
     public override void Configure()
     {
         Post("/accounting/settlement-periods/{settlementPeriodId}/incomes");
-        Tags(EndpointTags.SettlementPeriods);
         AllowAnonymous();
         Description(d => d.WithName(nameof(AddIncomeEndpoint)));
         

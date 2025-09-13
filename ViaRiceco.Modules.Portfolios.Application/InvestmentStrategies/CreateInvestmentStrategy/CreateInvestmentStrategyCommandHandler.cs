@@ -7,7 +7,7 @@ using ViaRiceco.Modules.Portfolios.Application.Abstractions.Data;
 using ViaRiceco.Modules.Portfolios.Application.InvestmentStrategies.Models;
 using ViaRiceco.Modules.Portfolios.Domain.FinancialGoals;
 using ViaRiceco.Modules.Portfolios.Domain.InvestmentStrategies;
-using ViaRiceco.Modules.Portfolios.Domain.InvestmentTypes;
+using ViaRiceco.Modules.Portfolios.Domain.InvestmentStrategyTypes;
 
 namespace ViaRiceco.Modules.Portfolios.Application.InvestmentStrategies.CreateInvestmentStrategy;
 

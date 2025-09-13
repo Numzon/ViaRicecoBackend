@@ -32,7 +32,6 @@ internal sealed class CreateInvestmentStrategyEndpoint(ISender sender, IHyperlin
     public override void Configure()
     {
         Post("/portfolios/investment-strategies");
-        Tags(EndpointTags.InvestmentStrategies);
         AllowAnonymous();
         Description(d => d.WithName(nameof(CreateInvestmentStrategyEndpoint)));
         

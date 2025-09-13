@@ -32,7 +32,6 @@ internal sealed class UpdateIncomeEndpoint(ISender sender, IHyperlinkService hyp
     public override void Configure()
     {
         Put("/accounting/settlement-periods/{settlementPeriodId}/incomes/{incomeId}");
-        Tags(EndpointTags.SettlementPeriods);
         AllowAnonymous();
         Description(d => d.WithName(nameof(UpdateIncomeEndpoint)));
         

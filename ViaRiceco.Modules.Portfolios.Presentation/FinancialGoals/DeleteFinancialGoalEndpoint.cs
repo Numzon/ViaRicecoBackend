@@ -5,7 +5,6 @@ using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using ViaRiceco.Common.Domain.Models;
-using ViaRiceco.Common.Presentation.Enumerations;
 using ViaRiceco.Common.Presentation.Results;
 using ViaRiceco.Modules.Portfolios.Application.FinancialGoals.DeleteFinancialGoal;
 using ViaRiceco.Modules.Portfolios.Presentation.Enumerations;
@@ -24,7 +23,6 @@ internal sealed class DeleteFinancialGoalEndpoint(ISender sender)
     public override void Configure()
     {
         Delete("/portfolios/financial-goals/{id}");
-        Tags(EndpointTags.FinancialGoals);
         AllowAnonymous();
         Description(d => d.WithName(nameof(DeleteFinancialGoalEndpoint)));
         

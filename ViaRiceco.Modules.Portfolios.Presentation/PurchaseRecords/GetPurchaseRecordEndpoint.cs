@@ -30,7 +30,6 @@ internal sealed class GetPurchaseRecordEndpoint(ISender sender, IHyperlinkServic
     public override void Configure()
     {
         Get("/portfolios/purchase-records/{id}");
-        Tags(EndpointTags.PurchaseRecords);
         AllowAnonymous();
         Description(d => d.WithName(nameof(GetPurchaseRecordEndpoint)));
         

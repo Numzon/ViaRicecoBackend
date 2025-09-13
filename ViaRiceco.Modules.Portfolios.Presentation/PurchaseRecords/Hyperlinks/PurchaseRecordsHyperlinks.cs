@@ -13,6 +13,8 @@ public static class PurchaseRecordsHyperlinks
         return
         [
             hyperlinkService.Create(nameof(GetPurchaseRecordEndpoint), RelationshipTypes.Self, HttpMethods.Get, new { id }),
+            hyperlinkService.Create(nameof(UpdatePurchaseRecordEndpoint), RelationshipTypes.Update, HttpMethods.Put, new { id }),
+            hyperlinkService.Create(nameof(DeletePurchaseRecordEndpoint), RelationshipTypes.Delete, HttpMethods.Delete, new { id }),
             hyperlinkService.Create(nameof(GetPurchaseRecordsEndpoint), RelationshipTypes.Collection, HttpMethods.Get)
         ];
     }
