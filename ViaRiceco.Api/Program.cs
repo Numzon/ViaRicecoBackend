@@ -33,11 +33,12 @@ builder.Services.AddApplication([
 
 string databaseConnectionString = builder.Configuration.GetConnectionStringOrThrow(ConnectionStrings.Database);
 string redisConnectionString = builder.Configuration.GetConnectionStringOrThrow(ConnectionStrings.Cache);
+string messageBrokerConnectionString = builder.Configuration.GetConnectionStringOrThrow(ConnectionStrings.MessageBroker);
 
 builder.Services.AddInfrastructure(DiagnosticsConfig.ServiceName,
     [
     ],
-    databaseConnectionString, redisConnectionString);
+    databaseConnectionString, redisConnectionString, messageBrokerConnectionString);
 
 builder.Services.SwaggerDocument(o => 
 {

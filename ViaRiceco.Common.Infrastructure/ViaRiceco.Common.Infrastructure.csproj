@@ -9,6 +9,7 @@
     <ItemGroup>
       <PackageReference Include="EFCore.NamingConventions" />
       <PackageReference Include="MassTransit" />
+      <PackageReference Include="MassTransit.RabbitMQ" />
       <PackageReference Include="MassTransit.Redis" />
       <PackageReference Include="Microsoft.Extensions.Configuration" />
       <PackageReference Include="Microsoft.Extensions.DependencyInjection" />

@@ -16,21 +16,24 @@ namespace ViaRiceco.Common.Infrastructure;
 
 public static class InfrastructureConfiguration
 {
-    public static IServiceCollection AddInfrastructure(this IServiceCollection services, string serviceName,
+    public static IServiceCollection AddInfrastructure(this IServiceCollection services, 
+        string serviceName,
         Action<IRegistrationConfigurator>[] moduleConfigureConsumers,
-        string databaseConnectionString, string redisConnectionString)
+        string databaseConnectionString, 
+        string redisConnectionString, 
+        string rabbitMqConnectionString)
     {
         services.TryAddSingleton(TimeProvider.System);
-        
+
         services.TryAddSingleton<IEventBus, IntegrationEventBus>();
-        
+
         services.TryAddSingleton<InsertOutboxMessagesInterceptor>();
 
         NpgsqlDataSource npgsqlDataSource = new NpgsqlDataSourceBuilder(databaseConnectionString).Build();
         services.TryAddSingleton(npgsqlDataSource);
 
         services.TryAddScoped<IDbConnectionFactory, DbConnectionFactory>();
-        
+
         services.AddQuartz(configurator =>
         {
             var scheduler = Guid.NewGuid();
@@ -39,7 +42,7 @@ public static class InfrastructureConfiguration
         });
 
         services.AddQuartzHostedService(options => options.WaitForJobsToComplete = true);
-        
+
         try
         {
             IConnectionMultiplexer connectionMultiplexer = ConnectionMultiplexer.Connect(redisConnectionString);
@@ -51,7 +54,7 @@ public static class InfrastructureConfiguration
         {
             services.AddDistributedMemoryCache();
         }
-        
+
         services.AddMassTransit(configure =>
         {
             foreach (Action<IRegistrationConfigurator> configureConsumers in moduleConfigureConsumers)
@@ -61,8 +64,12 @@ public static class InfrastructureConfiguration
 
             configure.SetKebabCaseEndpointNameFormatter();
 
-            configure.UsingInMemory((context, cfg) =>
+            configure.UsingRabbitMq((context, cfg) =>
             {
+                cfg.Host(rabbitMqConnectionString);
+                    
+                cfg.UseMessageRetry(r => r.Interval(3, TimeSpan.FromSeconds(2)));
+                    
                 cfg.ConfigureEndpoints(context);
             });
         });

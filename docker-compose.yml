@@ -9,9 +9,14 @@ services:
       - "5000:8080"
       - "5001:8081"
     depends_on:
-      - viariceco.seq
-      - viariceco.database
-      - viariceco.redis
+      viariceco.seq:
+        condition: service_started
+      viariceco.database:
+        condition: service_started
+      viariceco.redis:
+        condition: service_started
+      viariceco.rabbitmq:
+        condition: service_healthy
     networks:
       - viariceco-network
     restart: unless-stopped
@@ -64,11 +69,36 @@ services:
       - "4317:4317"
       - "4318:4318"
       - "16686:16686"
+    networks:
+      - viariceco-network
+    restart: unless-stopped
+
+  viariceco.rabbitmq:
+    container_name: ViaRiceco.RabbitMQ
+    image: rabbitmq:3-management
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - ./.containers/rabbitmq-data:/var/lib/rabbitmq
+    networks:
+      - viariceco-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 30s
+      timeout: 30s
+      retries: 5
+      start_period: 60s
 
 volumes:
   seq-data:
   postgres-data:
   redis-data:
+  rabbitmq-data:
 
 networks:
   viariceco-network:
