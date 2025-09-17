@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <IsPackable>false</IsPackable>
+        <IsTestProject>true</IsTestProject>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\ViaRiceco.Modules.Budgets.Domain\ViaRiceco.Modules.Budgets.Domain.csproj" />
+      <ProjectReference Include="..\ViaRiceco.Modules.Budgets.Application\ViaRiceco.Modules.Budgets.Application.csproj" />
+      <ProjectReference Include="..\ViaRiceco.Modules.Budgets.Infrastructure\ViaRiceco.Modules.Budgets.Infrastructure.csproj" />
+      <ProjectReference Include="..\ViaRiceco.Modules.Budgets.Presentation\ViaRiceco.Modules.Budgets.Presentation.csproj" />
+    </ItemGroup>
+
+</Project>

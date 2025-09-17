@@ -1,0 +1,12 @@
+{
+  "Budgets": {
+    "Outbox": {
+      "IntervalInSeconds": 10,
+      "BatchSize": 15
+    },
+    "Inbox": {
+      "IntervalInSeconds": 10,
+      "BatchSize": 15
+    }
+  }
+}

@@ -13,6 +13,7 @@ using ViaRiceco.Common.Infrastructure.Enumerations;
 using ViaRiceco.Common.Presentation;
 using ViaRiceco.Modules.Accounting.Infrastructure;
 using ViaRiceco.Modules.Portfolios.Infrastructure;
+using ViaRiceco.Modules.Budgets.Infrastructure;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -24,11 +25,13 @@ builder.Services.AddProblemDetails();
 builder.Services.AddPresentation([
     ViaRiceco.Modules.Accounting.Presentation.AssemblyReference.Assembly,
     ViaRiceco.Modules.Portfolios.Presentation.AssemblyReference.Assembly,
+    ViaRiceco.Modules.Budgets.Presentation.AssemblyReference.Assembly,
 ]);
 
 builder.Services.AddApplication([
     ViaRiceco.Modules.Accounting.Application.AssemblyReference.Assembly,
     ViaRiceco.Modules.Portfolios.Application.AssemblyReference.Assembly,
+    ViaRiceco.Modules.Budgets.Application.AssemblyReference.Assembly,
 ]);
 
 string databaseConnectionString = builder.Configuration.GetConnectionStringOrThrow(ConnectionStrings.Database);
@@ -50,12 +53,14 @@ builder.Services.AddHealthChecks()
     .AddRedis(redisConnectionString);
 
 builder.Configuration.AddModuleConfiguration([
-    Modules.Accounting,
-    Modules.Portfolios
+    AppModules.Accounting,
+    AppModules.Portfolios,
+    AppModules.Budgets
 ]);
 
 builder.Services.AddAccountingModule(builder.Configuration);
 builder.Services.AddPortfoliosModule(builder.Configuration);
+builder.Services.AddBudgetsModule(builder.Configuration);
 
 builder.Services.AddHttpContextAccessor();
 
