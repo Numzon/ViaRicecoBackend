@@ -31,14 +31,7 @@ public static class PresentationConfiguration
                 new MediaTypeApiVersionReaderBuilder()
                     .Template("application/vnd.via-riceco.hateoas.{version}+json")
                     .Build());
-            
         });
-
-        VersionSets.CreateApi(CustomVersionSets.TaxTypes, v => v
-            .HasApiVersion(1.0));
-        
-        VersionSets.CreateApi(CustomVersionSets.SettlementPeriods, v => v
-            .HasApiVersion(1.0));
         
         return services;
     }

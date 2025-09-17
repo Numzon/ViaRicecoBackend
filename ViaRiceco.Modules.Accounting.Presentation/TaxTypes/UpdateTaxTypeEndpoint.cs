@@ -35,7 +35,6 @@ internal sealed class UpdateTaxTypeEndpoint(ISender sender, IHyperlinkService hy
     public override void Configure()
     {
         Put("/accounting/tax-types/{id}");
-        Tags(EndpointTags.TaxTypes);
         AllowAnonymous();
         Description(d => d.WithName(nameof(UpdateTaxTypeEndpoint)));
         

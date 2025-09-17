@@ -9,8 +9,15 @@
     <ItemGroup>
       <PackageReference Include="EFCore.NamingConventions" />
       <PackageReference Include="Microsoft.Extensions.Configuration" />
+      <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
       <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
+      <PackageReference Include="Quartz.Extensions.Hosting" />
+      <PackageReference Include="Scrutor" />
       <PackageReference Include="StackExchange.Redis" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Inbox\" />
     </ItemGroup>
 
 </Project>

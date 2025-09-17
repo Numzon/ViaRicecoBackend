@@ -9,11 +9,10 @@ using ViaRiceco.Common.Application.Services.DataShapers;
 using ViaRiceco.Common.Application.Services.Hyperlinks;
 using ViaRiceco.Common.Domain.Models;
 using ViaRiceco.Common.Presentation.Abstractions.Headers;
-using ViaRiceco.Common.Presentation.Enumerations;
 using ViaRiceco.Common.Presentation.Results;
+using ViaRiceco.Modules.Accounting.Presentation.Enumerations;
 using ViaRiceco.Modules.Accounting.Application.SettlementPeriods.CreateSettlementPeriod;
 using ViaRiceco.Modules.Accounting.Application.SettlementPeriods.Models;
-using ViaRiceco.Modules.Accounting.Presentation.Enumerations;
 using ViaRiceco.Modules.Accounting.Presentation.SettlementPeriods.Hyperlinks;
 
 namespace ViaRiceco.Modules.Accounting.Presentation.SettlementPeriods;
@@ -31,7 +30,6 @@ internal sealed class CreateSettlementPeriodEndpoint(ISender sender, IHyperlinkS
     public override void Configure()
     {
         Post("/accounting/settlement-periods");
-        Tags(EndpointTags.SettlementPeriods);
         AllowAnonymous();
         Description(d => d.WithName(nameof(CreateSettlementPeriodEndpoint)));
         

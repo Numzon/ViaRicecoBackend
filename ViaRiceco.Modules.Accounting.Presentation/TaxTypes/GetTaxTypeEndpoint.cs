@@ -10,7 +10,6 @@ using ViaRiceco.Common.Application.Services.Hyperlinks;
 using ViaRiceco.Common.Application.Services.Hyperlinks.Models;
 using ViaRiceco.Common.Domain.Models;
 using ViaRiceco.Common.Presentation.Abstractions.Headers;
-using ViaRiceco.Common.Presentation.Enumerations;
 using ViaRiceco.Common.Presentation.Results;
 using ViaRiceco.Modules.Accounting.Application.TaxTypes.GetTaxType;
 using ViaRiceco.Modules.Accounting.Application.TaxTypes.Models;
@@ -35,7 +34,6 @@ internal sealed class GetTaxTypeEndpoint(
     public override void Configure()
     {
         Get("/accounting/tax-types/{id}");
-        Tags(EndpointTags.TaxTypes);
         AllowAnonymous();
         Description(d => d.WithName(nameof(GetTaxTypeEndpoint)));
         

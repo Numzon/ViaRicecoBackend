@@ -1,4 +1,4 @@
-﻿namespace ViaRiceco.Common.Presentation.Enumerations;
+﻿namespace ViaRiceco.Modules.Accounting.Presentation.Enumerations;
 
 public static class CustomVersionSets
 {

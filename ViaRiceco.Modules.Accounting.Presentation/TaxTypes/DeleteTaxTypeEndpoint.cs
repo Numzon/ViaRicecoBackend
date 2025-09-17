@@ -9,7 +9,6 @@ using ViaRiceco.Common.Application.Services.DataShapers;
 using ViaRiceco.Common.Application.Services.Hyperlinks;
 using ViaRiceco.Common.Application.Services.Hyperlinks.Models;
 using ViaRiceco.Common.Domain.Models;
-using ViaRiceco.Common.Presentation.Enumerations;
 using ViaRiceco.Common.Presentation.Results;
 using ViaRiceco.Modules.Accounting.Application.TaxTypes.DeleteTaxType;
 using ViaRiceco.Modules.Accounting.Presentation.Enumerations;
@@ -25,7 +24,6 @@ internal sealed class DeleteTaxTypeEndpoint(ISender sender)
     public override void Configure()
     {
         Delete("/accounting/tax-types/{id}");
-        Tags(EndpointTags.TaxTypes);
         AllowAnonymous();
         Description(d => d.WithName(nameof(DeleteTaxTypeEndpoint)));
         

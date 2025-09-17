@@ -32,7 +32,6 @@ internal sealed class UpdateTaxEndpoint(ISender sender, IHyperlinkService hyperl
     public override void Configure()
     {
         Put("/accounting/settlement-periods/{settlementPeriodId}/taxes/{taxId}");
-        Tags(EndpointTags.SettlementPeriods);
         AllowAnonymous();
         Description(d => d.WithName(nameof(UpdateTaxEndpoint)));
         

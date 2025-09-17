@@ -10,5 +10,9 @@
             <_Parameter1>ViaRiceco.Modules.Portfolios.UnitTests</_Parameter1>
         </AssemblyAttribute>
     </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Investments\" />
+    </ItemGroup>
     
 </Project>
