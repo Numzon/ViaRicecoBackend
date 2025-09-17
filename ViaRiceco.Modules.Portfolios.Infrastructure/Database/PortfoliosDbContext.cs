@@ -2,7 +2,9 @@ using System.Data;
 using System.Data.Common;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using ViaRiceco.Common.Domain.Inbox;
 using ViaRiceco.Common.Domain.Outbox;
+using ViaRiceco.Common.Infrastructure.Inbox;
 using ViaRiceco.Common.Infrastructure.Outbox;
 using ViaRiceco.Modules.Portfolios.Application.Abstractions.Data;
 using ViaRiceco.Modules.Portfolios.Domain.Currencies;
@@ -31,6 +33,9 @@ public sealed class PortfoliosDbContext(DbContextOptions<PortfoliosDbContext> op
     internal DbSet<PurchaseRecord> PurchaseRecords { get; set; }
     internal DbSet<OutboxMessage> OutboxMessages { get; set; }
     internal DbSet<OutboxMessageConsumer> OutboxMessageConsumers { get; set; }
+    
+    internal DbSet<InboxMessage> InboxMessages { get; set; }
+    internal DbSet<InboxMessageConsumer> InboxMessageConsumers { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -38,6 +43,8 @@ public sealed class PortfoliosDbContext(DbContextOptions<PortfoliosDbContext> op
 
         modelBuilder.ApplyConfiguration(new OutboxMessageConfiguration());
         modelBuilder.ApplyConfiguration(new OutboxMessageConsumerConfiguration());
+        modelBuilder.ApplyConfiguration(new InboxMessageConfiguration());
+        modelBuilder.ApplyConfiguration(new InboxMessageConsumerConfiguration());
         modelBuilder.ApplyConfiguration(new CurrencyConfiguration());
         modelBuilder.ApplyConfiguration(new FinancialGoalConfiguration());
         modelBuilder.ApplyConfiguration(new InvestmentStrategyTypeConfiguration());

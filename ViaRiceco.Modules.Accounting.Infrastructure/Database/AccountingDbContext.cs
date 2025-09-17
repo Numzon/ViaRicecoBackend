@@ -2,7 +2,9 @@
 using System.Data.Common;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using ViaRiceco.Common.Domain.Inbox;
 using ViaRiceco.Common.Domain.Outbox;
+using ViaRiceco.Common.Infrastructure.Inbox;
 using ViaRiceco.Common.Infrastructure.Outbox;
 using ViaRiceco.Modules.Accounting.Application.Abstractions.Data;
 using ViaRiceco.Modules.Accounting.Domain.SettlementPeriods;
@@ -19,6 +21,9 @@ public sealed class AccountingDbContext(DbContextOptions<AccountingDbContext> op
     internal DbSet<SettlementPeriod> SettlementPeriods { get; set; }
     internal DbSet<OutboxMessage> OutboxMessages { get; set; }
     internal DbSet<OutboxMessageConsumer> OutboxMessageConsumers { get; set; }
+    
+    internal DbSet<InboxMessage> InboxMessages { get; set; }
+    internal DbSet<InboxMessageConsumer> InboxMessageConsumers { get; set; }
         
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -26,6 +31,9 @@ public sealed class AccountingDbContext(DbContextOptions<AccountingDbContext> op
 
         modelBuilder.ApplyConfiguration(new OutboxMessageConfiguration());
         modelBuilder.ApplyConfiguration(new OutboxMessageConsumerConfiguration());
+        modelBuilder.ApplyConfiguration(new InboxMessageConfiguration());
+        modelBuilder.ApplyConfiguration(new InboxMessageConsumerConfiguration());
+        
         modelBuilder.ApplyConfiguration(new TaxTypeConfiguration());
         modelBuilder.ApplyConfiguration(new SettlementPeriodConfiguration());
     }

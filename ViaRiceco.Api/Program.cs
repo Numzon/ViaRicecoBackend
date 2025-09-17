@@ -34,7 +34,10 @@ builder.Services.AddApplication([
 string databaseConnectionString = builder.Configuration.GetConnectionStringOrThrow(ConnectionStrings.Database);
 string redisConnectionString = builder.Configuration.GetConnectionStringOrThrow(ConnectionStrings.Cache);
 
-builder.Services.AddInfrastructure(DiagnosticsConfig.ServiceName, databaseConnectionString, redisConnectionString);
+builder.Services.AddInfrastructure(DiagnosticsConfig.ServiceName,
+    [
+    ],
+    databaseConnectionString, redisConnectionString);
 
 builder.Services.SwaggerDocument(o => 
 {

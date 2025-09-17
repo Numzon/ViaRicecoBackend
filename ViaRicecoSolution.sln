@@ -65,6 +65,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ViaRiceco.Modules.Portfolio
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ViaRiceco.Modules.Portfolios.IntegrationTests", "ViaRiceco.Modules.Portfolios.IntegrationTests\ViaRiceco.Modules.Portfolios.IntegrationTests.csproj", "{89012ABC-DEF1-2345-6789-012ABCDEFABC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ViaRiceco.Modules.Accounting.IntegrationEvents", "ViaRiceco.Modules.Accounting.IntegrationEvents\ViaRiceco.Modules.Accounting.IntegrationEvents.csproj", "{6DDFA975-7668-452F-A5BE-96AE3079DD39}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ViaRiceco.Modules.Portfolios.IntegrationEvents", "ViaRiceco.Modules.Portfolios.IntegrationEvents\ViaRiceco.Modules.Portfolios.IntegrationEvents.csproj", "{7FE39B05-D1D6-479E-8FFD-0096DE191330}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -151,6 +155,14 @@ Global
 		{89012ABC-DEF1-2345-6789-012ABCDEFABC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{89012ABC-DEF1-2345-6789-012ABCDEFABC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{89012ABC-DEF1-2345-6789-012ABCDEFABC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6DDFA975-7668-452F-A5BE-96AE3079DD39}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6DDFA975-7668-452F-A5BE-96AE3079DD39}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6DDFA975-7668-452F-A5BE-96AE3079DD39}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6DDFA975-7668-452F-A5BE-96AE3079DD39}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7FE39B05-D1D6-479E-8FFD-0096DE191330}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7FE39B05-D1D6-479E-8FFD-0096DE191330}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7FE39B05-D1D6-479E-8FFD-0096DE191330}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7FE39B05-D1D6-479E-8FFD-0096DE191330}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{91A61868-AEDF-478E-B405-4B7B08123508} = {D3404520-0C80-4235-8432-181056FD8B22}
@@ -179,5 +191,7 @@ Global
 		{6F789012-ABCD-EF12-3456-789012ABCDEF} = {5E6F7890-ABCD-EF12-3456-789012ABCDEF}
 		{789012AB-CDEF-1234-5678-9012ABCDEFAB} = {5E6F7890-ABCD-EF12-3456-789012ABCDEF}
 		{89012ABC-DEF1-2345-6789-012ABCDEFABC} = {5E6F7890-ABCD-EF12-3456-789012ABCDEF}
+		{6DDFA975-7668-452F-A5BE-96AE3079DD39} = {C2C0374A-1286-45D9-8879-A66E85DFEA52}
+		{7FE39B05-D1D6-479E-8FFD-0096DE191330} = {B8E3F5A9-7D4C-4E8F-9A12-3F6E8D9C5B7A}
 	EndGlobalSection
 EndGlobal

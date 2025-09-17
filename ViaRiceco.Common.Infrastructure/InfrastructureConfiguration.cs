@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using MassTransit;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Quartz;
 using Npgsql;
@@ -6,7 +7,9 @@ using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using StackExchange.Redis;
 using ViaRiceco.Common.Application.Data;
+using ViaRiceco.Common.Application.EventBus;
 using ViaRiceco.Common.Infrastructure.Data;
+using ViaRiceco.Common.Infrastructure.EventBus;
 using ViaRiceco.Common.Infrastructure.Outbox;
 
 namespace ViaRiceco.Common.Infrastructure;
@@ -14,9 +17,12 @@ namespace ViaRiceco.Common.Infrastructure;
 public static class InfrastructureConfiguration
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, string serviceName,
+        Action<IRegistrationConfigurator>[] moduleConfigureConsumers,
         string databaseConnectionString, string redisConnectionString)
     {
         services.TryAddSingleton(TimeProvider.System);
+        
+        services.TryAddSingleton<IEventBus, IntegrationEventBus>();
         
         services.TryAddSingleton<InsertOutboxMessagesInterceptor>();
 
@@ -45,6 +51,21 @@ public static class InfrastructureConfiguration
         {
             services.AddDistributedMemoryCache();
         }
+        
+        services.AddMassTransit(configure =>
+        {
+            foreach (Action<IRegistrationConfigurator> configureConsumers in moduleConfigureConsumers)
+            {
+                configureConsumers(configure);
+            }
+
+            configure.SetKebabCaseEndpointNameFormatter();
+
+            configure.UsingInMemory((context, cfg) =>
+            {
+                cfg.ConfigureEndpoints(context);
+            });
+        });
 
         services
             .AddOpenTelemetry()

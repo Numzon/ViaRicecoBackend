@@ -15,6 +15,7 @@ using ViaRiceco.Modules.Accounting.Domain.Outbox;
 
 namespace ViaRiceco.Modules.Accounting.Infrastructure.Outbox;
 
+[DisallowConcurrentExecution]
 internal sealed class ProcessOutboxJob(
     IUnitOfWork unitOfWork,
     IOutboxMessageRepository outboxMessageRepository,
@@ -31,10 +32,10 @@ internal sealed class ProcessOutboxJob(
     {
         logger.LogInformation("{Module} - Beginning to process outbox messages", ModuleName);
 
-        await using DbTransaction transaction = await unitOfWork.BeginTransactionAsync();
+        await using DbTransaction transaction = await unitOfWork.BeginTransactionAsync(context.CancellationToken);
 
         IReadOnlyList<OutboxMessage> outboxMessages =
-            await outboxMessageRepository.GetOutboxMessagesAsync(_outboxOptions.BatchSize);
+            await outboxMessageRepository.GetOutboxMessagesAsync(_outboxOptions.BatchSize, context.CancellationToken);
 
         if (outboxMessages.Count > 0)
         {
@@ -73,10 +74,10 @@ internal sealed class ProcessOutboxJob(
                 outboxMessage.Update(timeProvider.UtcNow(), exception);
             }
 
-            await unitOfWork.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync(context.CancellationToken);
         }
         
-        await transaction.CommitAsync();
+        await transaction.CommitAsync(context.CancellationToken);
 
         logger.LogInformation("{Module} - Completed processing outbox messages", ModuleName);
     }

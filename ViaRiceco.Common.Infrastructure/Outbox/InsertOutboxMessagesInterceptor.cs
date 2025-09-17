@@ -8,7 +8,7 @@ using ViaRiceco.Common.Infrastructure.Serialization;
 
 namespace ViaRiceco.Common.Infrastructure.Outbox;
 
-public class InsertOutboxMessagesInterceptor : SaveChangesInterceptor
+public sealed class InsertOutboxMessagesInterceptor : SaveChangesInterceptor
 {
     public override ValueTask<InterceptionResult<int>> SavingChangesAsync(
         DbContextEventData eventData,
