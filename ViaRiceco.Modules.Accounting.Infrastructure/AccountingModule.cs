@@ -4,12 +4,16 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using ViaRiceco.Common.Application.Messaging;
 using ViaRiceco.Common.Infrastructure.Enumerations;
 using ViaRiceco.Common.Infrastructure.Outbox;
 using ViaRiceco.Modules.Accounting.Application.Abstractions.Data;
+using ViaRiceco.Modules.Accounting.Domain.Outbox;
 using ViaRiceco.Modules.Accounting.Domain.SettlementPeriods;
 using ViaRiceco.Modules.Accounting.Domain.TaxTypes;
 using ViaRiceco.Modules.Accounting.Infrastructure.Database;
+using ViaRiceco.Modules.Accounting.Infrastructure.Outbox;
 using ViaRiceco.Modules.Accounting.Infrastructure.SettlementPeriods;
 using ViaRiceco.Modules.Accounting.Infrastructure.TaxTypes;
 using ViaRiceco.Modules.Accounting.Presentation.Enumerations;
@@ -20,6 +24,8 @@ public static class AccountingModule
 {
     public static IServiceCollection AddAccountingModule(this IServiceCollection services, IConfiguration configuration)
     {
+        services.AddDomainEventHandlers();
+        
         services.AddInfrastructure(configuration)
                 .AddPresentation();
         
@@ -39,8 +45,14 @@ public static class AccountingModule
 
         services.AddScoped<ITaxTypeRepository, TaxTypeRepository>();
         services.AddScoped<ISettlementPeriodRepository, SettlementPeriodRepository>();
+        services.AddScoped<IOutboxMessageRepository, OutboxMessageRepository>();
+        services.AddScoped<IOutboxMessageConsumerRepository, OutboxMessageConsumerRepository>();
         
         services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<AccountingDbContext>());
+
+        services.Configure<OutboxOptions>(configuration.GetSection("Accounting:Outbox"));
+
+        services.ConfigureOptions<ConfigureProcessOutboxJob>();
         
         return services;
     }
@@ -54,5 +66,28 @@ public static class AccountingModule
             .HasApiVersion(1.0));
         
         return services;       
+    }
+    
+    private static void AddDomainEventHandlers(this IServiceCollection services)
+    {
+        Type[] domainEventHandlers = Application.AssemblyReference.Assembly
+            .GetTypes()
+            .Where(t => t.IsAssignableTo(typeof(IDomainEventHandler)))
+            .ToArray();
+
+        foreach (Type domainEventHandler in domainEventHandlers)
+        {
+            services.TryAddScoped(domainEventHandler);
+
+            Type domainEvent = domainEventHandler
+                .GetInterfaces()
+                .Single(i => i.IsGenericType)
+                .GetGenericArguments()
+                .Single();
+
+            Type closedIdempotentHandler = typeof(IdempotentDomainEventHandler<>).MakeGenericType(domainEvent);
+    
+            services.Decorate(domainEventHandler, closedIdempotentHandler);
+        }
     }
 }
