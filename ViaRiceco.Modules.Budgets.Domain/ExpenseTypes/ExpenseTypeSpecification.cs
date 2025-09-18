@@ -5,14 +5,6 @@ public static class ExpenseTypeSpecification
     public const string DefaultExpenseTypeName = "Investment";
 
     /// <summary>
-    /// Determines whether the expense type name is valid (not null or empty)
-    /// </summary>
-    public static bool IsValidName(string? name)
-    {
-        return !string.IsNullOrWhiteSpace(name);
-    }
-
-    /// <summary>
     /// Determines whether this is the default expense type
     /// </summary>
     public static bool IsDefaultExpenseType(ExpenseType expenseType)

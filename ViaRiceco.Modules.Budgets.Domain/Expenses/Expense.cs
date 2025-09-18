@@ -14,18 +14,8 @@ public sealed class Expense : Entity
     /// <summary>
     /// Creates an expense with auto-generated ID for manual creation
     /// </summary>
-    public static Result<Expense> Create(string name, string expenseTypeId, DateTime createdAtUtc)
+    public static Expense Create(string name, string expenseTypeId, DateTime createdAtUtc)
     {
-        if (!ExpenseSpecification.AreCreateParametersValid(name, expenseTypeId))
-        {
-            if (!ExpenseSpecification.IsValidName(name))
-            {
-                return Result.Failure<Expense>(ExpenseErrors.InvalidName());
-            }
-            
-            return Result.Failure<Expense>(ExpenseErrors.InvalidExpenseTypeId());
-        }
-
         var expense = new Expense
         {
             Id = $"e_{Guid.NewGuid()}",
@@ -36,31 +26,21 @@ public sealed class Expense : Entity
 
         expense.Raise(new ExpenseCreatedDomainEvent(expense.Id, expense.Name, expense.ExpenseTypeId, createdAtUtc));
 
-        return Result.Success(expense);
+        return expense;
     }
 
     /// <summary>
     /// Creates an expense with provided ID for integration events
     /// </summary>
-    public static Result<Expense> CreateFromIntegrationEvent(
+    public static Expense CreateFromIntegrationEvent(
         string id, 
         string name, 
         string expenseTypeId, 
         DateTime createdAtUtc)
     {
-        if (!ExpenseSpecification.AreCreateParametersValid(name, expenseTypeId))
+        if (string.IsNullOrWhiteSpace(id))
         {
-            if (!ExpenseSpecification.IsValidName(name))
-            {
-                return Result.Failure<Expense>(ExpenseErrors.InvalidName());
-            }
-            
-            return Result.Failure<Expense>(ExpenseErrors.InvalidExpenseTypeId());
-        }
-
-        if (!ExpenseSpecification.IsValidId(id))
-        {
-            return Result.Failure<Expense>(ExpenseErrors.InvalidId());
+            throw new ArgumentException("Expense ID cannot be empty for integration events.", nameof(id));
         }
 
         var expense = new Expense
@@ -71,26 +51,16 @@ public sealed class Expense : Entity
             CreatedAtUtc = createdAtUtc
         };
 
-        expense.Raise(new ExpenseCreatedDomainEvent(expense.Id, expense.Name, expense.ExpenseTypeId, createdAtUtc));
+        expense.Raise(new ExpenseCreatedFromIntegrationEventDomainEvent(expense.Id, expense.Name, expense.ExpenseTypeId, createdAtUtc));
 
-        return Result.Success(expense);
+        return expense;
     }
 
-    public Result Update(string name, string expenseTypeId, DateTime updatedAtUtc)
+    public void Update(string name, string expenseTypeId, DateTime updatedAtUtc)
     {
-        if (!ExpenseSpecification.AreUpdateParametersValid(name, expenseTypeId))
-        {
-            if (!ExpenseSpecification.IsValidName(name))
-            {
-                return Result.Failure(ExpenseErrors.InvalidName());
-            }
-            
-            return Result.Failure(ExpenseErrors.InvalidExpenseTypeId());
-        }
-
         if (Name == name && ExpenseTypeId == expenseTypeId)
         {
-            return Result.Success();
+            return; 
         }
 
         Name = name;
@@ -98,7 +68,5 @@ public sealed class Expense : Entity
         UpdatedAtUtc = updatedAtUtc;
 
         Raise(new ExpenseUpdatedDomainEvent(Id, Name, ExpenseTypeId, updatedAtUtc));
-        
-        return Result.Success();
     }
 }

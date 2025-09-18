@@ -18,37 +18,26 @@ public sealed class ExpenseType : Entity
     /// <summary>
     /// Creates a user-defined expense type
     /// </summary>
-    public static Result<ExpenseType> Create(string name, DateTime createdAtUtc)
+    public static ExpenseType Create(string name, DateTime createdAtUtc)
     {
-        if (!ExpenseTypeSpecification.IsValidName(name))
-        {
-            return Result.Failure<ExpenseType>(ExpenseTypeErrors.InvalidName());
-        }
-
         var expenseType = new ExpenseType
         {
             Id = $"et_{Guid.NewGuid()}",
             Name = name,
-            IsSystemDefined = false, // User-created expense types are not system-defined
+            IsSystemDefined = false,
             CreatedAtUtc = createdAtUtc
         };
 
         expenseType.Raise(new ExpenseTypeCreatedDomainEvent(expenseType.Id, createdAtUtc));
 
-        return Result.Success(expenseType);
+        return expenseType;
     }
 
     public Result Update(string name, DateTime updatedAtUtc)
     {
-        // Prevent updates to system-defined expense types
         if (IsSystemDefined)
         {
             return Result.Failure(ExpenseTypeErrors.CannotUpdateSystemDefined());
-        }
-
-        if (!ExpenseTypeSpecification.IsValidName(name))
-        {
-            return Result.Failure(ExpenseTypeErrors.InvalidName());
         }
 
         if (Name == name)

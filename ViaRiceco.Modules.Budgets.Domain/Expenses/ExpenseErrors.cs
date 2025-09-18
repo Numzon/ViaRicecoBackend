@@ -8,21 +8,13 @@ public static class ExpenseErrors
         "Expense.NotFound", 
         $"Expense with Id '{expenseId}' was not found.");
     
-    public static Error InvalidName() => Error.Validation(
-        "Expense.InvalidName",
-        "Expense name cannot be empty.");
-
-    public static Error InvalidExpenseTypeId() => Error.Validation(
-        "Expense.InvalidExpenseTypeId", 
-        "Expense type ID cannot be empty.");
-
-    public static Error InvalidId() => Error.Validation(
-        "Expense.InvalidId", 
-        "Expense ID cannot be empty.");
-
     public static Error InvalidSortParameter(string? sort) => Error.Validation(
         "Expense.InvalidSortParameter", 
         $"Invalid sort parameter: '{sort}'");
+
+    public static Error DuplicateNameInExpenseType(string name, string expenseTypeId) => Error.Conflict(
+        "Expense.DuplicateNameInExpenseType", 
+        $"Expense with name '{name}' already exists in expense type '{expenseTypeId}'.");
 
     public static Error ExpenseTypeNotFound(string expenseTypeId) => Error.Validation(
         "Expense.ExpenseTypeNotFound", 
