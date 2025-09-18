@@ -78,7 +78,7 @@ public sealed class InvestmentStrategyTypeTests : BaseTest
 
         // Assert
         result.IsFailure.Should().BeTrue();
-        result.Error.Should().Be(Error.Validation("InvestmentStrategyType.InvalidName", "Investment strategy type name cannot be empty."));
+        result.Error.Should().Be(InvestmentStrategyTypeErrors.InvalidName());
     }
 
     [Fact]
@@ -164,7 +164,7 @@ public sealed class InvestmentStrategyTypeTests : BaseTest
 
         // Assert
         result.IsFailure.Should().BeTrue();
-        result.Error.Should().Be(Error.Validation("InvestmentStrategyType.InvalidName", "Investment strategy type name cannot be empty."));
+        result.Error.Should().Be(InvestmentStrategyTypeErrors.InvalidName());
         strategyType.Name.Should().Be(originalName); // Should remain unchanged
     }
 

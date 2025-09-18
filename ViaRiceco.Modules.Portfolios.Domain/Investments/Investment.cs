@@ -122,7 +122,7 @@ public sealed class Investment : Entity
     {
         if (!InvestmentSpecification.PurchaseRecordExists(this, purchaseRecordId))
         {
-            return Result.Failure(InvestmentErrors.PurchaseRecordNotFound(purchaseRecordId));
+            return Result.Failure(PurchaseRecordErrors.NotFound(purchaseRecordId));
         }
 
         PurchaseRecord purchaseRecord = _purchaseRecords.First(pr => pr.Id == purchaseRecordId);

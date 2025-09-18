@@ -14,7 +14,7 @@ public sealed class InvestmentStrategyType : Entity
     {
         if (!InvestmentStrategyTypeSpecification.IsValidName(name))
         {
-            return Result.Failure<InvestmentStrategyType>(InvestmentStrategyTypeErrors.InvalidName(name));
+            return Result.Failure<InvestmentStrategyType>(InvestmentStrategyTypeErrors.InvalidName());
         }
 
         var strategyType = new InvestmentStrategyType
@@ -33,7 +33,7 @@ public sealed class InvestmentStrategyType : Entity
     {
         if (!InvestmentStrategyTypeSpecification.IsValidName(name))
         {
-            return Result.Failure(InvestmentStrategyTypeErrors.InvalidName(name));
+            return Result.Failure(InvestmentStrategyTypeErrors.InvalidName());
         }
 
         if (Name == name)
