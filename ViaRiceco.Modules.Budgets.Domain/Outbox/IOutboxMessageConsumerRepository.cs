@@ -7,3 +7,4 @@ public interface IOutboxMessageConsumerRepository
     Task<bool> ExistsAsync(Guid outboxMessageId, string name, CancellationToken cancellationToken = default);
     void Insert(OutboxMessageConsumer consumer);
 }
+

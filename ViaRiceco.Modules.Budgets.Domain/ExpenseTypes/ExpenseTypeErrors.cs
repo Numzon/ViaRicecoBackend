@@ -12,6 +12,10 @@ public static class ExpenseTypeErrors
         "ExpenseType.InvalidName",
         "Expense type name cannot be empty.");
 
+    public static Error CannotUpdateSystemDefined() => Error.Validation(
+        "ExpenseType.CannotUpdateSystemDefined",
+        "System-defined expense types cannot be modified.");
+
     public static Error InvalidSortParameter(string? sort) => Error.Validation(
         "ExpenseType.InvalidSortParameter", 
         $"Invalid sort parameter: '{sort}'");
@@ -20,3 +24,4 @@ public static class ExpenseTypeErrors
         "ExpenseType.DuplicateName", 
         $"Expense type with name '{name}' already exists.");
 }
+

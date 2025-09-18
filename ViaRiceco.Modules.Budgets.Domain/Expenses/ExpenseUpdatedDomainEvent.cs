@@ -13,3 +13,4 @@ public sealed class ExpenseUpdatedDomainEvent(
     public string ExpenseTypeId { get; init; } = expenseTypeId;
     public DateTime UpdatedAtUtc { get; init; } = updatedAtUtc;
 }
+

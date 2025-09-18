@@ -42,3 +42,4 @@ public static class ExpenseSpecification
         return IsValidName(name) && IsValidExpenseTypeId(expenseTypeId);
     }
 }
+

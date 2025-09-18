@@ -9,7 +9,15 @@ public sealed class ExpenseType : Entity
     }
 
     public string Name { get; private set; } = string.Empty;
+    
+    /// <summary>
+    /// Indicates if this expense type is defined by the system (cannot be modified/deleted by users)
+    /// </summary>
+    public bool IsSystemDefined { get; private set; }
 
+    /// <summary>
+    /// Creates a user-defined expense type
+    /// </summary>
     public static Result<ExpenseType> Create(string name, DateTime createdAtUtc)
     {
         if (!ExpenseTypeSpecification.IsValidName(name))
@@ -21,6 +29,7 @@ public sealed class ExpenseType : Entity
         {
             Id = $"et_{Guid.NewGuid()}",
             Name = name,
+            IsSystemDefined = false, // User-created expense types are not system-defined
             CreatedAtUtc = createdAtUtc
         };
 
@@ -31,6 +40,12 @@ public sealed class ExpenseType : Entity
 
     public Result Update(string name, DateTime updatedAtUtc)
     {
+        // Prevent updates to system-defined expense types
+        if (IsSystemDefined)
+        {
+            return Result.Failure(ExpenseTypeErrors.CannotUpdateSystemDefined());
+        }
+
         if (!ExpenseTypeSpecification.IsValidName(name))
         {
             return Result.Failure(ExpenseTypeErrors.InvalidName());

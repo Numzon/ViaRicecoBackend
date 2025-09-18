@@ -7,18 +7,24 @@ using ViaRiceco.Common.Domain.Outbox;
 using ViaRiceco.Common.Infrastructure.Inbox;
 using ViaRiceco.Common.Infrastructure.Outbox;
 using ViaRiceco.Modules.Budgets.Application.Abstractions.Data;
+using ViaRiceco.Modules.Budgets.Domain.Expenses;
+using ViaRiceco.Modules.Budgets.Domain.ExpenseTypes;
+using ViaRiceco.Modules.Budgets.Infrastructure.Expenses;
+using ViaRiceco.Modules.Budgets.Infrastructure.ExpenseTypes;
 
 namespace ViaRiceco.Modules.Budgets.Infrastructure.Database;
 
 public sealed class BudgetsDbContext(DbContextOptions<BudgetsDbContext> options)
     : DbContext(options), IUnitOfWork
 {
+    internal DbSet<ExpenseType> ExpenseTypes { get; set; }
+    internal DbSet<Expense> Expenses { get; set; }
     internal DbSet<OutboxMessage> OutboxMessages { get; set; }
     internal DbSet<OutboxMessageConsumer> OutboxMessageConsumers { get; set; }
     
     internal DbSet<InboxMessage> InboxMessages { get; set; }
     internal DbSet<InboxMessageConsumer> InboxMessageConsumers { get; set; }
-
+    
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.HasDefaultSchema(Schemas.Budgets);
@@ -27,6 +33,9 @@ public sealed class BudgetsDbContext(DbContextOptions<BudgetsDbContext> options)
         modelBuilder.ApplyConfiguration(new OutboxMessageConsumerConfiguration());
         modelBuilder.ApplyConfiguration(new InboxMessageConfiguration());
         modelBuilder.ApplyConfiguration(new InboxMessageConsumerConfiguration());
+        
+        modelBuilder.ApplyConfiguration(new ExpenseTypeConfiguration());
+        modelBuilder.ApplyConfiguration(new ExpenseConfiguration());
     }
 
     public async Task<DbTransaction> BeginTransactionAsync(CancellationToken cancellationToken = default)
@@ -39,3 +48,4 @@ public sealed class BudgetsDbContext(DbContextOptions<BudgetsDbContext> options)
         return (await Database.BeginTransactionAsync(cancellationToken)).GetDbTransaction();
     }
 }
+

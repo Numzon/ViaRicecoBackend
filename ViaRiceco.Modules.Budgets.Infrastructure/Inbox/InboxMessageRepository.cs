@@ -24,3 +24,4 @@ internal sealed class InboxMessageRepository(BudgetsDbContext context) : IInboxM
             .ToListAsync(cancellationToken);
     }
 }
+

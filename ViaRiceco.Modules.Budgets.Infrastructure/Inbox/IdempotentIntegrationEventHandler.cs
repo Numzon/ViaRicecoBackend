@@ -34,3 +34,4 @@ internal sealed class IdempotentIntegrationEventHandler<TIntegrationEvent>(
         await unitOfWork.SaveChangesAsync(cancellationToken);
     }
 }
+

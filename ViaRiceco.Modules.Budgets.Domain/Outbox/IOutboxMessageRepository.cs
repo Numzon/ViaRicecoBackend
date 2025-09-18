@@ -7,3 +7,4 @@ public interface IOutboxMessageRepository
     Task<IReadOnlyList<OutboxMessage>> GetOutboxMessagesAsync(int batchSize,
         CancellationToken cancellationToken = default);
 }
+

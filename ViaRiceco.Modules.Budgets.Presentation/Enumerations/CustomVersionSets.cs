@@ -4,3 +4,4 @@ public static class CustomVersionSets
 {
     public const string Example = ">>Example<<";
 }
+

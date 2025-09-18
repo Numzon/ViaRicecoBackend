@@ -13,3 +13,4 @@ public sealed class ExpenseCreatedDomainEvent(
     public string ExpenseTypeId { get; init; } = expenseTypeId;
     public DateTime CreatedAtUtc { get; init; } = createdAtUtc;
 }
+

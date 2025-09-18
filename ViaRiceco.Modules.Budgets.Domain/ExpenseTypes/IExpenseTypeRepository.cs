@@ -11,3 +11,4 @@ public interface IExpenseTypeRepository
     void Insert(ExpenseType expenseType);
     void Delete(ExpenseType expenseType);
 }
+

@@ -21,3 +21,4 @@ internal sealed class ConfigureProcessInboxJob(IOptions<InboxOptions> options)
                         schedule.WithIntervalInSeconds(_inboxOptions.IntervalInSeconds).RepeatForever()));
     }
 }
+

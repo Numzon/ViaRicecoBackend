@@ -10,3 +10,4 @@ internal static class TestResultExtensions
         testResult.FailingTypes?.Should().BeEmpty();
     }
 }
+

@@ -16,3 +16,4 @@ internal sealed class InboxMessageConsumerRepository(BudgetsDbContext context) :
 
     public void Insert(InboxMessageConsumer consumer) => context.InboxMessageConsumers.Add(consumer);
 }
+

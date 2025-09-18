@@ -13,3 +13,4 @@ public abstract class BaseTest
     
     protected static readonly Assembly PresentationAssembly = typeof(Budgets.Presentation.AssemblyReference).Assembly;
 }
+

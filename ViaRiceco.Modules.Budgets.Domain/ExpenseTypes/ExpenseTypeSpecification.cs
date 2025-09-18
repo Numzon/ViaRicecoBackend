@@ -27,4 +27,20 @@ public static class ExpenseTypeSpecification
     {
         return string.Equals(name, DefaultExpenseTypeName, StringComparison.OrdinalIgnoreCase);
     }
+
+    /// <summary>
+    /// Determines whether the expense type can be updated (not system-defined)
+    /// </summary>
+    public static bool CanBeUpdated(ExpenseType expenseType)
+    {
+        return !expenseType.IsSystemDefined;
+    }
+
+    /// <summary>
+    /// Determines whether the expense type can be deleted (not system-defined)
+    /// </summary>
+    public static bool CanBeDeleted(ExpenseType expenseType)
+    {
+        return !expenseType.IsSystemDefined;
+    }
 }

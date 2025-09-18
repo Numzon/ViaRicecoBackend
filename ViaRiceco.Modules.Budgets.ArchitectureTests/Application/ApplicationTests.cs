@@ -175,3 +175,4 @@ public class ApplicationTests : BaseTest
             .ShouldBeSuccessful();
     }
 }
+

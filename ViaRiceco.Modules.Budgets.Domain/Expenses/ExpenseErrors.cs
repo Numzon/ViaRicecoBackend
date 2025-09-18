@@ -28,3 +28,4 @@ public static class ExpenseErrors
         "Expense.ExpenseTypeNotFound", 
         $"Expense type with ID '{expenseTypeId}' was not found.");
 }
+

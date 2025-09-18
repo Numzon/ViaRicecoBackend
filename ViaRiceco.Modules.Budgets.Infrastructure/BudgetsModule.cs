@@ -10,9 +10,13 @@ using ViaRiceco.Common.Application.Messaging;
 using ViaRiceco.Common.Infrastructure.Enumerations;
 using ViaRiceco.Common.Infrastructure.Outbox;
 using ViaRiceco.Modules.Budgets.Application.Abstractions.Data;
+using ViaRiceco.Modules.Budgets.Domain.Expenses;
+using ViaRiceco.Modules.Budgets.Domain.ExpenseTypes;
 using ViaRiceco.Modules.Budgets.Domain.Inbox;
 using ViaRiceco.Modules.Budgets.Domain.Outbox;
 using ViaRiceco.Modules.Budgets.Infrastructure.Database;
+using ViaRiceco.Modules.Budgets.Infrastructure.Expenses;
+using ViaRiceco.Modules.Budgets.Infrastructure.ExpenseTypes;
 using ViaRiceco.Modules.Budgets.Infrastructure.Inbox;
 using ViaRiceco.Modules.Budgets.Infrastructure.Outbox;
 
@@ -44,6 +48,8 @@ public static class BudgetsModule
         });
 
         // Repository registrations
+        services.AddScoped<IExpenseTypeRepository, ExpenseTypeRepository>();
+        services.AddScoped<IExpenseRepository, ExpenseRepository>();
         services.AddScoped<IOutboxMessageRepository, OutboxMessageRepository>();
         services.AddScoped<IOutboxMessageConsumerRepository, OutboxMessageConsumerRepository>();
         
@@ -115,3 +121,4 @@ public static class BudgetsModule
         }
     }
 }
+

@@ -83,3 +83,4 @@ public class DomainTests : BaseTest
         failingTypes.Should().BeEmpty();
     }
 }
+

@@ -16,3 +16,4 @@ internal sealed class OutboxMessageConsumerRepository(BudgetsDbContext context) 
 
     public void Insert(OutboxMessageConsumer consumer) => context.OutboxMessageConsumers.Add(consumer);
 }
+

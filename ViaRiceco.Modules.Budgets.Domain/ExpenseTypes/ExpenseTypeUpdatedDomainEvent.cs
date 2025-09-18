@@ -8,3 +8,4 @@ public sealed class ExpenseTypeUpdatedDomainEvent(string expenseTypeId, string n
     public string Name { get; init; } = name;
     public DateTime UpdatedAtUtc { get; init; } = updatedAtUtc;  
 }
+

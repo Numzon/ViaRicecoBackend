@@ -7,3 +7,4 @@ public interface IInboxMessageRepository
     Task<IReadOnlyList<InboxMessage>> GetInboxMessagesAsync(int batchSize,
         CancellationToken cancellationToken = default);
 }
+
