@@ -2,6 +2,7 @@ namespace ViaRiceco.Modules.Budgets.Presentation.Enumerations;
 
 public static class CustomVersionSets
 {
-    public const string Example = ">>Example<<";
+    public const string ExpenseTypes = ">>ExpenseTypes<<";
+    public const string Expenses = ">>Expenses<<";
 }
 

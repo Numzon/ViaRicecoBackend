@@ -6,6 +6,23 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Bogus" />
+        <PackageReference Include="coverlet.collector"/>
+        <PackageReference Include="FluentAssertions" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk"/>
+        <PackageReference Include="NSubstitute" />
+        <PackageReference Include="Testcontainers.PostgreSql" />
+        <PackageReference Include="Testcontainers.Redis" />
+        <PackageReference Include="xunit"/>
+        <PackageReference Include="xunit.runner.visualstudio"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Using Include="Xunit"/>
+    </ItemGroup>
+
+    <ItemGroup>
       <ProjectReference Include="..\ViaRiceco.Modules.Budgets.Infrastructure\ViaRiceco.Modules.Budgets.Infrastructure.csproj" />
       <ProjectReference Include="..\ViaRiceco.Api\ViaRiceco.Api.csproj" />
     </ItemGroup>

@@ -19,6 +19,7 @@ using ViaRiceco.Modules.Budgets.Infrastructure.Expenses;
 using ViaRiceco.Modules.Budgets.Infrastructure.ExpenseTypes;
 using ViaRiceco.Modules.Budgets.Infrastructure.Inbox;
 using ViaRiceco.Modules.Budgets.Infrastructure.Outbox;
+using ViaRiceco.Modules.Budgets.Presentation.Enumerations;
 
 namespace ViaRiceco.Modules.Budgets.Infrastructure;
 
@@ -70,7 +71,12 @@ public static class BudgetsModule
 
     private static IServiceCollection AddPresentation(this IServiceCollection services)
     {
-        // Add version sets here when needed
+        VersionSets.CreateApi(CustomVersionSets.ExpenseTypes, v => v
+            .HasApiVersion(1.0));
+        
+        VersionSets.CreateApi(CustomVersionSets.Expenses, v => v
+            .HasApiVersion(1.0));
+        
         return services;
     }
     
