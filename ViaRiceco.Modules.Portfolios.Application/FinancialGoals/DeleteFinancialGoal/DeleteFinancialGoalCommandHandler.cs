@@ -23,7 +23,13 @@ internal sealed class DeleteFinancialGoalCommandHandler(
         {
             return Result.Failure(FinancialGoalErrors.NotFound(request.Id));
         }
-
+        
+        bool hasChildren = await repository.HasChildrenAsync(request.Id, cancellationToken);
+        if (hasChildren)
+        {
+            return Result.Failure(FinancialGoalErrors.CannotDeleteGoalWithChildren(request.Id));
+        }
+        
         repository.Delete(financialGoal);
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
