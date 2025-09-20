@@ -21,21 +21,19 @@ internal sealed class CreateExpenseCommandHandler(
 {
     public async Task<Result<ExpenseDto>> Handle(CreateExpenseCommand request, CancellationToken cancellationToken)
     {
-        // Verify that the expense type exists
         ExpenseType? expenseType = await expenseTypeRepository.GetAsync(request.ExpenseTypeId, cancellationToken);
         if (expenseType is null)
         {
             return Result.Failure<ExpenseDto>(ExpenseTypeErrors.NotFound(request.ExpenseTypeId));
         }
-
-        // Check for duplicate name within the same expense type
+        
         bool exists = await expenseRepository.ExistsByNameAndExpenseTypeAsync(request.Name, request.ExpenseTypeId, cancellationToken);
         if (exists)
         {
             return Result.Failure<ExpenseDto>(ExpenseErrors.DuplicateNameInExpenseType(request.Name, request.ExpenseTypeId));
         }
 
-        var expense = Expense.Create(request.Name, request.ExpenseTypeId, DateTime.SpecifyKind(timeProvider.GetUtcNow().DateTime, DateTimeKind.Utc));
+        var expense = Expense.Create(request.Name, request.ExpenseTypeId, DateTime.SpecifyKind(timeProvider.UtcNow(), DateTimeKind.Utc));
         
         expenseRepository.Insert(expense);
 

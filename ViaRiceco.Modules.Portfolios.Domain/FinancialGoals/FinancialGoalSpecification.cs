@@ -11,42 +11,27 @@ public static class FinancialGoalSpecification
     }
 
     /// <summary>
-    /// Determines whether setting the specified parent ID would create a circular reference
-    /// </summary>
-    public static bool WouldCreateCircularReference(string goalId, string? parentId)
-    {
-        return parentId == goalId;
-    }
-
-    /// <summary>
     /// Determines whether the financial goal is a root goal (has no parent)
     /// </summary>
     public static bool IsRootGoal(FinancialGoal financialGoal)
     {
         return financialGoal.ParentId is null;
     }
-
+    
     /// <summary>
-    /// Determines whether the financial goal has a specific parent
+    /// Determines whether a parent ID requires validation (not null and different from current)
     /// </summary>
-    public static bool HasParent(FinancialGoal financialGoal, string parentId)
+    public static bool RequiresParentValidation(FinancialGoal currentGoal, string? proposedParentId)
     {
-        return financialGoal.ParentId == parentId;
+        return proposedParentId is not null && proposedParentId != currentGoal.ParentId;
     }
 
     /// <summary>
-    /// Determines whether all financial goal creation parameters are valid
+    /// Determines whether the basic update parameters are valid (name validation only)
+    /// Note: Circular reference validation requires async repository access
     /// </summary>
-    public static bool AreCreateParametersValid(string? name)
+    public static bool AreBasicUpdateParametersValid(string? name)
     {
         return IsValidName(name);
-    }
-
-    /// <summary>
-    /// Determines whether all financial goal update parameters are valid
-    /// </summary>
-    public static bool AreUpdateParametersValid(string goalId, string? name, string? parentId)
-    {
-        return IsValidName(name) && !WouldCreateCircularReference(goalId, parentId);
     }
 }

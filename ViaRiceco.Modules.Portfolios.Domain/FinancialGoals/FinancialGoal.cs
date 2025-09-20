@@ -33,7 +33,7 @@ public sealed class FinancialGoal : Entity
 
     public Result Update(string name, string? parentId, DateTime updatedAtUtc)
     {
-        if (!FinancialGoalSpecification.AreUpdateParametersValid(Id, name, parentId))
+        if (!FinancialGoalSpecification.AreBasicUpdateParametersValid(name))
         {
             return Result.Failure(Error.Validation("FinancialGoal.InvalidName", "Financial goal name cannot be empty."));
         }

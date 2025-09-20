@@ -25,13 +25,11 @@ internal sealed class DeleteExpenseTypeCommandHandler(
             return Result.Failure(ExpenseTypeErrors.NotFound(request.Id));
         }
 
-        // Prevent deletion of system-defined expense types
         if (!ExpenseTypeSpecification.CanBeDeleted(expenseType))
         {
             return Result.Failure(ExpenseTypeErrors.CannotUpdateSystemDefined());
         }
         
-        // Check if expense type is in use by any expenses
         bool isExpenseTypeInUse = await expenseRepository.ExistsByExpenseTypeAsync(
             request.Id, 
             cancellationToken);

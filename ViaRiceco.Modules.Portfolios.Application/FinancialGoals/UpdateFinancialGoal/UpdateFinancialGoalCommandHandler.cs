@@ -26,18 +26,18 @@ internal sealed class UpdateFinancialGoalCommandHandler(
             return Result.Failure<FinancialGoalDto>(FinancialGoalErrors.NotFound(request.Id));
         }
 
-        // If ParentId is provided and different, validate it exists and isn't circular
-        if (request.ParentId is not null && request.ParentId != financialGoal.ParentId)
+        if (FinancialGoalSpecification.RequiresParentValidation(financialGoal, request.ParentId))
         {
-            if (request.ParentId == request.Id)
-            {
-                return Result.Failure<FinancialGoalDto>(FinancialGoalErrors.CircularReference(request.Id, request.ParentId));
-            }
-
-            FinancialGoal? parent = await repository.GetAsync(request.ParentId, cancellationToken);
+            FinancialGoal? parent = await repository.GetAsync(request.ParentId!, cancellationToken);
             if (parent is null)
             {
-                return Result.Failure<FinancialGoalDto>(FinancialGoalErrors.ParentNotFound(request.ParentId));
+                return Result.Failure<FinancialGoalDto>(FinancialGoalErrors.ParentNotFound(request.ParentId!));
+            }
+
+            bool hasCircularReference = await WouldCreateCircularReferenceAsync(request.Id, request.ParentId!, cancellationToken);
+            if (hasCircularReference)
+            {
+                return Result.Failure<FinancialGoalDto>(FinancialGoalErrors.CircularReference(request.Id, request.ParentId!));
             }
         }
 
@@ -53,6 +53,38 @@ internal sealed class UpdateFinancialGoalCommandHandler(
         var dto = new FinancialGoalDto(financialGoal.Id, financialGoal.Name, financialGoal.ParentId);
 
         return dto;
+    }
+    
+    private async Task<bool> WouldCreateCircularReferenceAsync(string goalId, string proposedParentId, CancellationToken cancellationToken)
+    {
+        if (goalId == proposedParentId)
+        {
+            return true;
+        }
+
+        const int maxDepth = 100; 
+        var visitedGoals = new HashSet<string> { goalId }; 
+        string? currentParentId = proposedParentId;
+        int depth = 0;
+
+        while (currentParentId is not null && depth < maxDepth)
+        {
+            if (!visitedGoals.Add(currentParentId))
+            {
+                return true;
+            }
+
+            FinancialGoal? currentParent = await repository.GetAsync(currentParentId, cancellationToken);
+            if (currentParent is null)
+            {
+                break;
+            }
+
+            currentParentId = currentParent.ParentId;
+            depth++;
+        }
+
+        return false; 
     }
 }
 

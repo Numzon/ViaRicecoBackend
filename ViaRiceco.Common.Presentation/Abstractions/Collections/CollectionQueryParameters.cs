@@ -6,7 +6,7 @@ namespace ViaRiceco.Common.Presentation.Abstractions.Collections;
 
 public abstract class CollectionQueryParameters : BaseAcceptHeader, ICollectionQueryParameters
 {
-    [BindFrom("q")] 
+    [BindFrom("q")]
     public string? Search { get; set; }
     public string? Sort { get; init; }
     public string? Fields { get; init; }
