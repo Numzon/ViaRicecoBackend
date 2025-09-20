@@ -23,16 +23,11 @@ internal sealed class GetExpensesEndpoint(
     ISender sender,
     IHyperlinkService hyperlinkService,
     IDataShapingService dataShapingService)
-    : Ep.Req<GetExpensesEndpoint.Request>.Res<ViaRicecoCollectionResponse>
+    : Ep.Req<GetExpensesEndpoint.ExpenseCollectionQueryParameters>.Res<ViaRicecoCollectionResponse>
 {
     [UsedImplicitly]
-    internal sealed class Request : BaseAcceptHeader
+    internal sealed class ExpenseCollectionQueryParameters : CollectionQueryParameters
     {
-        public string? Search { get; init; }
-        public string? Sort { get; init; }
-        public int Page { get; init; } = 1;
-        public int PageSize { get; init; } = 10;
-        public string? Fields { get; init; }
         public string? ExpenseTypeId { get; init; }
     }
 
@@ -47,7 +42,7 @@ internal sealed class GetExpensesEndpoint(
             .MapToApiVersion(1.0));
     }
 
-    public override async Task HandleAsync(Request req, CancellationToken ct)
+    public override async Task HandleAsync(ExpenseCollectionQueryParameters req, CancellationToken ct)
     {
         var queryCommand = new GetExpensesQuery(req.Search, req.Sort, req.Page, req.PageSize, req.ExpenseTypeId);
         Result<GetExpensesQueryResponse> result = await sender.Send(queryCommand, ct);

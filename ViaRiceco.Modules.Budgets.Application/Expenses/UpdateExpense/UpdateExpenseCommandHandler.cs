@@ -41,7 +41,7 @@ internal sealed class UpdateExpenseCommandHandler(
             return Result.Failure<ExpenseDto>(ExpenseErrors.DuplicateNameInExpenseType(request.Name, request.ExpenseTypeId));
         }
 
-        expense.Update(request.Name, request.ExpenseTypeId, timeProvider.GetUtcNow().DateTime);
+        expense.Update(request.Name, request.ExpenseTypeId, DateTime.SpecifyKind(timeProvider.GetUtcNow().DateTime, DateTimeKind.Utc));
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 

@@ -3,12 +3,14 @@
     <PropertyGroup>
         <IsPackable>false</IsPackable>
         <IsTestProject>true</IsTestProject>
+        <NoWarn>$(NoWarn);IDE0008;CA1515;CA1852;S3442</NoWarn>
     </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="Bogus" />
         <PackageReference Include="coverlet.collector"/>
         <PackageReference Include="FluentAssertions" />
+        <PackageReference Include="JetBrains.Annotations" />
         <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
         <PackageReference Include="Microsoft.NET.Test.Sdk"/>
         <PackageReference Include="NSubstitute" />

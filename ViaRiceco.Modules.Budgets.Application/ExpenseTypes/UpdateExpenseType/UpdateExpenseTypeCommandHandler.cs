@@ -31,7 +31,7 @@ internal sealed class UpdateExpenseTypeCommandHandler(
             return Result.Failure<ExpenseTypeDto>(ExpenseTypeErrors.DuplicateName(request.Name));
         }
 
-        Result updateResult = expenseType.Update(request.Name, timeProvider.GetUtcNow().DateTime);
+        Result updateResult = expenseType.Update(request.Name, DateTime.SpecifyKind(timeProvider.GetUtcNow().DateTime, DateTimeKind.Utc));
         
         if (updateResult.IsFailure)
         {

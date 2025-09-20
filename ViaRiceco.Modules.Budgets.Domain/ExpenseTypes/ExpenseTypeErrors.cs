@@ -19,5 +19,9 @@ public static class ExpenseTypeErrors
     public static Error DuplicateName(string name) => Error.Conflict(
         "ExpenseType.DuplicateName", 
         $"Expense type with name '{name}' already exists.");
+
+    public static Error InUse(string expenseTypeId) => Error.Conflict(
+        "ExpenseType.InUse",
+        $"Expense type with ID '{expenseTypeId}' cannot be deleted because it is in use by one or more expenses.");
 }
 

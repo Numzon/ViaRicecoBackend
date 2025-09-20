@@ -35,7 +35,7 @@ internal sealed class CreateExpenseCommandHandler(
             return Result.Failure<ExpenseDto>(ExpenseErrors.DuplicateNameInExpenseType(request.Name, request.ExpenseTypeId));
         }
 
-        var expense = Expense.Create(request.Name, request.ExpenseTypeId, timeProvider.GetUtcNow().DateTime);
+        var expense = Expense.Create(request.Name, request.ExpenseTypeId, DateTime.SpecifyKind(timeProvider.GetUtcNow().DateTime, DateTimeKind.Utc));
         
         expenseRepository.Insert(expense);
 

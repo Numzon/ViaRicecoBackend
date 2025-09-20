@@ -43,6 +43,11 @@ internal sealed class ExpenseRepository(BudgetsDbContext context) : IExpenseRepo
         return context.Expenses.AnyAsync(e => e.Name == name && e.ExpenseTypeId == expenseTypeId && e.Id != excludeId, cancellationToken);
     }
 
+    public Task<bool> ExistsByExpenseTypeAsync(string expenseTypeId, CancellationToken cancellationToken = default)
+    {
+        return context.Expenses.AnyAsync(e => e.ExpenseTypeId == expenseTypeId, cancellationToken);
+    }
+
     public Task<int> CountAsync(string? search, string? expenseTypeId, CancellationToken cancellationToken = default)
     {
         string? cleanedSearch = search?.Trim().ToLowerInvariant();

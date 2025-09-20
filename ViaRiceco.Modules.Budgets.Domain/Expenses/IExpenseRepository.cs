@@ -8,6 +8,7 @@ public interface IExpenseRepository
         string? expenseTypeId, CancellationToken cancellationToken = default);
     Task<bool> ExistsByNameAndExpenseTypeAsync(string name, string expenseTypeId, CancellationToken cancellationToken = default);
     Task<bool> ExistsByNameAndExpenseTypeAsync(string name, string expenseTypeId, string excludeId, CancellationToken cancellationToken = default);
+    Task<bool> ExistsByExpenseTypeAsync(string expenseTypeId, CancellationToken cancellationToken = default);
     Task<int> CountAsync(string? search, string? expenseTypeId, CancellationToken cancellationToken = default);
     void Insert(Expense expense);
     void Delete(Expense expense);
