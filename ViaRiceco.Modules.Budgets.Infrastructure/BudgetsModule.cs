@@ -1,5 +1,6 @@
 using Asp.Versioning.Conventions;
 using FastEndpoints.AspVersioning;
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.Extensions.Configuration;
@@ -20,6 +21,7 @@ using ViaRiceco.Modules.Budgets.Infrastructure.ExpenseTypes;
 using ViaRiceco.Modules.Budgets.Infrastructure.Inbox;
 using ViaRiceco.Modules.Budgets.Infrastructure.Outbox;
 using ViaRiceco.Modules.Budgets.Presentation.Enumerations;
+using ViaRiceco.Modules.Portfolios.IntegrationEvents.InvestmentStrategies;
 
 namespace ViaRiceco.Modules.Budgets.Infrastructure;
 
@@ -34,6 +36,11 @@ public static class BudgetsModule
             .AddPresentation();
 
         return services;
+    }
+    
+    public static void ConfigureConsumers(IRegistrationConfigurator registrationConfigurator)
+    {
+        registrationConfigurator.AddConsumer<IntegrationEventConsumer<InvestmentStrategyCreatedIntegrationEvent>>();
     }
     
     private static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)

@@ -34,8 +34,8 @@ internal sealed class ExpenseTypeConfiguration : IEntityTypeConfiguration<Expens
         // Seed default expense type
         builder.HasData(new
         {
-            Id = $"et_{Guid.Parse("db610449-8a5f-47d0-be6a-ec26e4945375")}", // Fixed ID for seeding
-            Name = ExpenseTypeSpecification.DefaultExpenseTypeName,
+            ExpenseTypeSpecification.Investment.Id,
+            ExpenseTypeSpecification.Investment.Name,
             IsSystemDefined = true, // Mark as system-defined
             CreatedAtUtc = new DateTime(2025, 9, 18, 18, 37, 0, DateTimeKind.Utc),
             UpdatedAtUtc = (DateTime?)null

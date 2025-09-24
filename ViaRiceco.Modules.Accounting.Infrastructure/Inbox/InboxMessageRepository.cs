@@ -23,4 +23,9 @@ internal sealed class InboxMessageRepository(AccountingDbContext context) : IInb
                 FOR UPDATE", batchSize)
             .ToListAsync(cancellationToken);
     }
+
+    public void Insert(InboxMessage message)
+    {
+        context.InboxMessages.Add(message);       
+    }
 }

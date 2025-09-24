@@ -67,7 +67,7 @@ public sealed class InvestmentStrategyTests : BaseTest
 
         // Assert
         InvestmentStrategyCreatedDomainEvent domainEvent = AssertDomainEventWasPublished<InvestmentStrategyCreatedDomainEvent>(strategy);
-        domainEvent.StrategyId.Should().Be(strategy.Id);
+        domainEvent.InvestmentStrategyId.Should().Be(strategy.Id);
         domainEvent.CreatedAtUtc.Should().Be(createdAtUtc);
     }
 

@@ -11,6 +11,8 @@ public sealed class Expense : Entity
     public string Name { get; private set; } = string.Empty;
     public string ExpenseTypeId { get; private set; } = string.Empty;
 
+    public string? InvestmentStrategyId { get; set; }
+
     /// <summary>
     /// Creates an expense with auto-generated ID for manual creation
     /// </summary>
@@ -21,6 +23,7 @@ public sealed class Expense : Entity
             Id = $"e_{Guid.NewGuid()}",
             Name = name,
             ExpenseTypeId = expenseTypeId,
+            InvestmentStrategyId = null,
             CreatedAtUtc = createdAtUtc
         };
 
@@ -33,21 +36,17 @@ public sealed class Expense : Entity
     /// Creates an expense with provided ID for integration events
     /// </summary>
     public static Expense CreateFromIntegrationEvent(
-        string id, 
         string name, 
         string expenseTypeId, 
+        string investmentStrategyId,
         DateTime createdAtUtc)
     {
-        if (string.IsNullOrWhiteSpace(id))
-        {
-            throw new ArgumentException("Expense ID cannot be empty for integration events.", nameof(id));
-        }
-
         var expense = new Expense
         {
-            Id = id,
+            Id = $"e_{Guid.NewGuid()}",
             Name = name,
             ExpenseTypeId = expenseTypeId,
+            InvestmentStrategyId = investmentStrategyId,
             CreatedAtUtc = createdAtUtc
         };
 

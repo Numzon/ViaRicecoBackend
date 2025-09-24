@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using ViaRiceco.Modules.Budgets.Domain.Expenses;
+using ViaRiceco.Modules.Budgets.Domain.ExpenseTypes;
 
 namespace ViaRiceco.Modules.Budgets.Infrastructure.Expenses;
 
@@ -17,6 +18,9 @@ internal sealed class ExpenseConfiguration : IEntityTypeConfiguration<Expense>
         builder.Property(e => e.Name)
                .IsRequired()
                .HasMaxLength(200);
+        
+        builder.Property(e => e.InvestmentStrategyId)
+            .HasMaxLength(100);
 
         builder.Property(e => e.ExpenseTypeId)
                .IsRequired()
@@ -32,12 +36,14 @@ internal sealed class ExpenseConfiguration : IEntityTypeConfiguration<Expense>
                .IsUnique();
 
         // Foreign key relationship to ExpenseType
-        builder.HasOne<Domain.ExpenseTypes.ExpenseType>()
+        builder.HasOne<ExpenseType>()
                .WithMany()
                .HasForeignKey(e => e.ExpenseTypeId)
                .OnDelete(DeleteBehavior.Restrict);
 
-        // Index on ExpenseTypeId for performance
+        builder.HasIndex(e => e.InvestmentStrategyId);
+        
         builder.HasIndex(e => e.ExpenseTypeId);
+        
     }
 }

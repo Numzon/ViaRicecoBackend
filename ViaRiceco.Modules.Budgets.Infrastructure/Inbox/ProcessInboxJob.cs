@@ -69,7 +69,7 @@ internal sealed class ProcessInboxJob(
                     exception = caughtException;
                 }
 
-                inboxMessage.Update(timeProvider.GetUtcNow().DateTime, exception);
+                inboxMessage.Update(timeProvider.UtcNow(), exception);
             }
 
             await unitOfWork.SaveChangesAsync(context.CancellationToken);

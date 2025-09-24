@@ -70,10 +70,11 @@ public sealed class ExpenseTests : BaseTest
         string id = "e_" + Faker.Random.Guid();
         string name = Faker.Commerce.ProductName();
         string expenseTypeId = "et_" + Faker.Random.Guid();
+        string investmentStrategyId = "is_" + Faker.Random.Guid();
         DateTime createdAtUtc = Faker.Date.RecentOffset().UtcDateTime;
 
         // Act
-        var expense = Expense.CreateFromIntegrationEvent(id, name, expenseTypeId, createdAtUtc);
+        var expense = Expense.CreateFromIntegrationEvent(name, expenseTypeId, investmentStrategyId, createdAtUtc);
 
         // Assert
         expense.Should().NotBeNull();
@@ -90,38 +91,20 @@ public sealed class ExpenseTests : BaseTest
         // Arrange
         string id = "e_" + Faker.Random.Guid();
         string name = Faker.Commerce.ProductName();
+        string investmentStrategyId = "is_" + Faker.Random.Guid();
         string expenseTypeId = "et_" + Faker.Random.Guid();
         DateTime createdAtUtc = Faker.Date.RecentOffset().UtcDateTime;
 
         // Act
-        var expense = Expense.CreateFromIntegrationEvent(id, name, expenseTypeId, createdAtUtc);
+        var expense = Expense.CreateFromIntegrationEvent(name, expenseTypeId, investmentStrategyId, createdAtUtc);
 
         // Assert
-        ExpenseCreatedFromIntegrationEventDomainEvent domainEvent = AssertDomainEventWasPublished<ExpenseCreatedFromIntegrationEventDomainEvent>(expense);
+        ExpenseCreatedFromIntegrationEventDomainEvent domainEvent =
+            AssertDomainEventWasPublished<ExpenseCreatedFromIntegrationEventDomainEvent>(expense);
         domainEvent.ExpenseId.Should().Be(id);
         domainEvent.Name.Should().Be(name);
         domainEvent.ExpenseTypeId.Should().Be(expenseTypeId);
         domainEvent.CreatedAtUtc.Should().Be(createdAtUtc);
-    }
-
-    [Theory]
-    [InlineData("")]
-    [InlineData("   ")]
-    [InlineData(null)]
-    public void CreateFromIntegrationEvent_Should_ThrowArgumentException_WhenIdIsEmpty(string? id)
-    {
-        // Arrange
-        string name = Faker.Commerce.ProductName();
-        string expenseTypeId = "et_" + Faker.Random.Guid();
-        DateTime createdAtUtc = Faker.Date.RecentOffset().UtcDateTime;
-
-        // Act
-        Action act = () => Expense.CreateFromIntegrationEvent(id!, name, expenseTypeId, createdAtUtc);
-
-        // Assert
-        act.Should().Throw<ArgumentException>()
-            .WithMessage("Expense ID cannot be empty for integration events.*")
-            .And.ParamName.Should().Be("id");
     }
 
     [Fact]
@@ -244,7 +227,7 @@ public sealed class ExpenseTests : BaseTest
         // Assert
         expense.Name.Should().Be(finalName);
         expense.UpdatedAtUtc.Should().Be(secondUpdateUtc);
-        
+
         expense.DomainEvents.Should().HaveCount(3);
         expense.DomainEvents.OfType<ExpenseCreatedDomainEvent>().Should().HaveCount(1);
         expense.DomainEvents.OfType<ExpenseUpdatedDomainEvent>().Should().HaveCount(2);
@@ -286,26 +269,5 @@ public sealed class ExpenseTests : BaseTest
         expense.Name.Should().Be(expenseName);
         expense.Id.Should().StartWith("e_");
         expense.ExpenseTypeId.Should().Be(expenseTypeId);
-    }
-
-    [Fact]
-    public void CreateFromIntegrationEvent_Should_HandleMultipleCreationsWithSamePattern()
-    {
-        // Arrange
-        string baseId = "e_" + Faker.Random.Guid();
-        string name = Faker.Commerce.ProductName();
-        string expenseTypeId = "et_" + Faker.Random.Guid();
-        DateTime createdAtUtc = Faker.Date.RecentOffset().UtcDateTime;
-
-        // Act
-        var expense1 = Expense.CreateFromIntegrationEvent(baseId + "1", name, expenseTypeId, createdAtUtc);
-        var expense2 = Expense.CreateFromIntegrationEvent(baseId + "2", name, expenseTypeId, createdAtUtc);
-
-        // Assert
-        expense1.Id.Should().NotBe(expense2.Id);
-        expense1.Name.Should().Be(name);
-        expense2.Name.Should().Be(name);
-        expense1.ExpenseTypeId.Should().Be(expenseTypeId);
-        expense2.ExpenseTypeId.Should().Be(expenseTypeId);
     }
 }

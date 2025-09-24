@@ -2,30 +2,10 @@ namespace ViaRiceco.Modules.Budgets.Domain.ExpenseTypes;
 
 public static class ExpenseTypeSpecification
 {
-    public const string DefaultExpenseTypeName = "Investment";
-
-    /// <summary>
-    /// Determines whether this is the default expense type
-    /// </summary>
-    public static bool IsDefaultExpenseType(ExpenseType expenseType)
+    public sealed class Investment
     {
-        return string.Equals(expenseType.Name, DefaultExpenseTypeName, StringComparison.OrdinalIgnoreCase);
-    }
-
-    /// <summary>
-    /// Determines whether the given name represents the default expense type
-    /// </summary>
-    public static bool IsDefaultExpenseTypeName(string? name)
-    {
-        return string.Equals(name, DefaultExpenseTypeName, StringComparison.OrdinalIgnoreCase);
-    }
-
-    /// <summary>
-    /// Determines whether the expense type can be updated (not system-defined)
-    /// </summary>
-    public static bool CanBeUpdated(ExpenseType expenseType)
-    {
-        return !expenseType.IsSystemDefined;
+        public const string Id = "et_db610449-8a5f-47d0-be6a-ec26e4945375";   
+        public const string Name = "Investment";
     }
 
     /// <summary>

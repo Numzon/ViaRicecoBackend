@@ -3,6 +3,7 @@
     <ItemGroup>
       <ProjectReference Include="..\ViaRiceco.Modules.Portfolios.Domain\ViaRiceco.Modules.Portfolios.Domain.csproj" />
       <ProjectReference Include="..\ViaRiceco.Common.Application\ViaRiceco.Common.Application.csproj" />
+      <ProjectReference Include="..\ViaRiceco.Modules.Portfolios.IntegrationEvents\ViaRiceco.Modules.Portfolios.IntegrationEvents.csproj" />
     </ItemGroup>
 
     <ItemGroup>

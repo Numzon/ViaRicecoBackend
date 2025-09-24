@@ -7,13 +7,14 @@ namespace ViaRiceco.Modules.Portfolios.Infrastructure.Inbox;
 
 internal sealed class InboxMessageRepository(PortfoliosDbContext context) : IInboxMessageRepository
 {
-    public async Task<IReadOnlyList<InboxMessage>> GetInboxMessagesAsync(int batchSize, CancellationToken cancellationToken = default)
+    public async Task<IReadOnlyList<InboxMessage>> GetInboxMessagesAsync(int batchSize,
+        CancellationToken cancellationToken = default)
     {
         if (context.Database.CurrentTransaction == null)
         {
             throw new InvalidOperationException("FOR UPDATE requires an active transaction");
         }
-        
+
         return await context.InboxMessages
             .FromSqlRaw(@"
                 SELECT * FROM portfolios.inbox_messages 
@@ -22,5 +23,10 @@ internal sealed class InboxMessageRepository(PortfoliosDbContext context) : IInb
                 LIMIT {0} 
                 FOR UPDATE", batchSize)
             .ToListAsync(cancellationToken);
+    }
+
+    public void Insert(InboxMessage message)
+    {
+        context.InboxMessages.Add(message); 
     }
 }

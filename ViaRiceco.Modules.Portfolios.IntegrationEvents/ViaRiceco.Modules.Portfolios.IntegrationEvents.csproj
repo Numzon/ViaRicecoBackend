@@ -7,7 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\ViaRiceco.Modules.Portfolios.Application\ViaRiceco.Modules.Portfolios.Application.csproj" />
+      <ProjectReference Include="..\ViaRiceco.Common.Application\ViaRiceco.Common.Application.csproj" />
     </ItemGroup>
 
 </Project>
