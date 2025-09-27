@@ -13,3 +13,4 @@ public abstract class BaseTest
     
     protected static readonly Assembly PresentationAssembly = typeof(Accounting.Presentation.AssemblyReference).Assembly;
 }
+#pragma warning restore CA1515

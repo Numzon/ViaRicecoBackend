@@ -1,6 +1,6 @@
 namespace ViaRiceco.Modules.Portfolios.Domain.FinancialGoals;
 
-public interface IFinancialGoalRepository
+public interface IFinancialGoalRepository   
 {
     Task<FinancialGoal?> GetAsync(string id, CancellationToken cancellationToken = default);
     Task<IReadOnlyCollection<FinancialGoal>> GetRootGoalsAsync(CancellationToken cancellationToken = default);
@@ -13,4 +13,6 @@ public interface IFinancialGoalRepository
     Task<int> CountAsync(string? search, CancellationToken cancellationToken = default);
     void Insert(FinancialGoal financialGoal);
     void Delete(FinancialGoal financialGoal);
+    Task<IReadOnlyCollection<FinancialGoalTreeElement>> GetAllWithChildrenAsTreeAsync(string financialGoalId,
+        CancellationToken cancellationToken = default);
 }

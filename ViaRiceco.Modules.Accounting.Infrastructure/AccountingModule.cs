@@ -5,14 +5,17 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using ViaRiceco.Common.Application.EventBus;
 using ViaRiceco.Common.Application.Messaging;
 using ViaRiceco.Common.Infrastructure.Enumerations;
 using ViaRiceco.Common.Infrastructure.Outbox;
 using ViaRiceco.Modules.Accounting.Application.Abstractions.Data;
+using ViaRiceco.Modules.Accounting.Domain.Inbox;
 using ViaRiceco.Modules.Accounting.Domain.Outbox;
 using ViaRiceco.Modules.Accounting.Domain.SettlementPeriods;
 using ViaRiceco.Modules.Accounting.Domain.TaxTypes;
 using ViaRiceco.Modules.Accounting.Infrastructure.Database;
+using ViaRiceco.Modules.Accounting.Infrastructure.Inbox;
 using ViaRiceco.Modules.Accounting.Infrastructure.Outbox;
 using ViaRiceco.Modules.Accounting.Infrastructure.SettlementPeriods;
 using ViaRiceco.Modules.Accounting.Infrastructure.TaxTypes;
@@ -25,6 +28,7 @@ public static class AccountingModule
     public static IServiceCollection AddAccountingModule(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddDomainEventHandlers();
+        services.AddIntegrationEventHandlers();
         
         services.AddInfrastructure(configuration)
                 .AddPresentation();
@@ -45,14 +49,22 @@ public static class AccountingModule
 
         services.AddScoped<ITaxTypeRepository, TaxTypeRepository>();
         services.AddScoped<ISettlementPeriodRepository, SettlementPeriodRepository>();
+        
+        //outbox
         services.AddScoped<IOutboxMessageRepository, OutboxMessageRepository>();
         services.AddScoped<IOutboxMessageConsumerRepository, OutboxMessageConsumerRepository>();
+        
+        //inbox
+        services.AddScoped<IInboxMessageRepository, InboxMessageRepository>();
+        services.AddScoped<IInboxMessageConsumerRepository, InboxMessageConsumerRepository>();
         
         services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<AccountingDbContext>());
 
         services.Configure<OutboxOptions>(configuration.GetSection("Accounting:Outbox"));
+        services.Configure<InboxOptions>(configuration.GetSection("Accounting:Inbox"));
 
         services.ConfigureOptions<ConfigureProcessOutboxJob>();
+        services.ConfigureOptions<ConfigureProcessInboxJob>();
         
         return services;
     }
@@ -88,6 +100,30 @@ public static class AccountingModule
             Type closedIdempotentHandler = typeof(IdempotentDomainEventHandler<>).MakeGenericType(domainEvent);
     
             services.Decorate(domainEventHandler, closedIdempotentHandler);
+        }
+    }
+    
+    private static void AddIntegrationEventHandlers(this IServiceCollection services)
+    {
+        Type[] integrationEventHandlers = Presentation.AssemblyReference.Assembly
+            .GetTypes()
+            .Where(t => t.IsAssignableTo(typeof(IIntegrationEventHandler)))
+            .ToArray();
+
+        foreach (Type integrationEventHandler in integrationEventHandlers)
+        {
+            services.TryAddScoped(integrationEventHandler);
+
+            Type integrationEvent = integrationEventHandler
+                .GetInterfaces()
+                .Single(i => i.IsGenericType)
+                .GetGenericArguments()
+                .Single();
+
+            Type closedIdempotentHandler =
+                typeof(IdempotentIntegrationEventHandler<>).MakeGenericType(integrationEvent);
+
+            services.Decorate(integrationEventHandler, closedIdempotentHandler);
         }
     }
 }

@@ -12,9 +12,9 @@ public static class InvestmentStrategyTypeErrors
         "InvestmentStrategyType.DuplicateName", 
         $"Investment strategy type with name '{name}' already exists.");
     
-    public static Error InvalidName(string name) => Error.Validation(
+    public static Error InvalidName() => Error.Validation(
         "InvestmentStrategyType.InvalidName", 
-        $"Investment strategy type name '{name}' is invalid. Name cannot be empty.");
+        "Investment strategy type name cannot be empty.");
 
     public static Error InvalidSortParameter(string? sort) => Error.Validation(
         "InvestmentStrategyType.InvalidSortParameter", 

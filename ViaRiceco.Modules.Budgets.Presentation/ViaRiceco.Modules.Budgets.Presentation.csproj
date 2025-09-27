@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <ItemGroup>
+      <ProjectReference Include="..\ViaRiceco.Modules.Budgets.Application\ViaRiceco.Modules.Budgets.Application.csproj" />
+      <ProjectReference Include="..\ViaRiceco.Common.Presentation\ViaRiceco.Common.Presentation.csproj" />
+      <ProjectReference Include="..\ViaRiceco.Modules.Portfolios.IntegrationEvents\ViaRiceco.Modules.Portfolios.IntegrationEvents.csproj" />
+    </ItemGroup>
+
+</Project>
+

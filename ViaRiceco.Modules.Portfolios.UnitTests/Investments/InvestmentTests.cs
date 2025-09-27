@@ -392,11 +392,8 @@ public sealed class InvestmentTests : BaseTest
         investment.Id.Should().StartWith("i_");
     }
 
-    [Theory]
-    [InlineData(0.01)]    // Very small percentage
-    [InlineData(50.0)]    // Half portfolio
-    [InlineData(99.99)]   // Nearly entire portfolio
-    public void Create_Should_HandleVariousPortfolioPercentages(decimal percentage)
+    [Fact]
+    public void Create_Should_SetDefaultModelPortfolioPercentageToZero()
     {
         // Arrange
         string name = "Test Investment";
@@ -405,6 +402,26 @@ public sealed class InvestmentTests : BaseTest
 
         // Act
         var investment = Investment.Create(name, investmentStrategyId, createdAtUtc);
+
+        // Assert
+        investment.ModelPortfolioPercentage.Should().Be(0);
+    }
+
+    [Theory]
+    [InlineData(0.01)]    // Very small percentage
+    [InlineData(50.0)]    // Half portfolio
+    [InlineData(99.99)]   // Nearly entire portfolio
+    public void Update_Should_HandleVariousPortfolioPercentages(decimal percentage)
+    {
+        // Arrange
+        string name = "Test Investment";
+        string investmentStrategyId = $"is_{Guid.NewGuid()}";
+        DateTime createdAtUtc = Faker.Date.RecentOffset().UtcDateTime;
+        DateTime updatedAtUtc = Faker.Date.FutureOffset().UtcDateTime;
+
+        // Act
+        var investment = Investment.Create(name, investmentStrategyId, createdAtUtc);
+        investment.Update(name, percentage, updatedAtUtc);
 
         // Assert
         investment.ModelPortfolioPercentage.Should().Be(percentage);

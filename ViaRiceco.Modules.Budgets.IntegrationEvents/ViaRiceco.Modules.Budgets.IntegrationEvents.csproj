@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <ItemGroup>
+      <ProjectReference Include="..\ViaRiceco.Common.Application\ViaRiceco.Common.Application.csproj" />
+    </ItemGroup>
+
+</Project>
+

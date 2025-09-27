@@ -19,7 +19,8 @@ public sealed class PurchaseRecordTests : BaseTest
         DateTime createdAtUtc = Faker.Date.RecentOffset().UtcDateTime;
 
         // Act
-        Result<PurchaseRecord> result = PurchaseRecord.Create(purchaseDate, amount, pricePerUnit, currencyId, investmentId, 1000.0m, createdAtUtc);
+        decimal totalPrice = amount * pricePerUnit;
+        Result<PurchaseRecord> result = PurchaseRecord.Create(purchaseDate, amount, pricePerUnit, currencyId, investmentId, totalPrice + 100m, createdAtUtc);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -48,7 +49,8 @@ public sealed class PurchaseRecordTests : BaseTest
         DateTime createdAtUtc = Faker.Date.RecentOffset().UtcDateTime;
 
         // Act
-        Result<PurchaseRecord> result = PurchaseRecord.Create(purchaseDate, amount, pricePerUnit, currencyId, investmentId, 1000.0m, createdAtUtc);
+        decimal totalPrice = amount * pricePerUnit;
+        Result<PurchaseRecord> result = PurchaseRecord.Create(purchaseDate, amount, pricePerUnit, currencyId, investmentId, totalPrice + 100m, createdAtUtc);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -67,8 +69,9 @@ public sealed class PurchaseRecordTests : BaseTest
         DateTime createdAtUtc = Faker.Date.RecentOffset().UtcDateTime;
 
         // Act
-        Result<PurchaseRecord> result1 = PurchaseRecord.Create(purchaseDate, amount, pricePerUnit, currencyId, investmentId, 1000.0m, createdAtUtc);
-        Result<PurchaseRecord> result2 = PurchaseRecord.Create(purchaseDate, amount, pricePerUnit, currencyId, investmentId, 1000.0m, createdAtUtc);
+        decimal totalPrice = amount * pricePerUnit;
+        Result<PurchaseRecord> result1 = PurchaseRecord.Create(purchaseDate, amount, pricePerUnit, currencyId, investmentId, totalPrice + 100m, createdAtUtc);
+        Result<PurchaseRecord> result2 = PurchaseRecord.Create(purchaseDate, amount, pricePerUnit, currencyId, investmentId, totalPrice + 100m, createdAtUtc);
 
         // Assert
         result1.IsSuccess.Should().BeTrue();
@@ -90,7 +93,8 @@ public sealed class PurchaseRecordTests : BaseTest
         DateTime createdAtUtc = Faker.Date.RecentOffset().UtcDateTime;
 
         // Act
-        Result<PurchaseRecord> result = PurchaseRecord.Create(purchaseDate, amount, pricePerUnit, currencyId, investmentId, 1000.0m, createdAtUtc);
+        decimal totalPrice = amount * pricePerUnit;
+        Result<PurchaseRecord> result = PurchaseRecord.Create(purchaseDate, amount, pricePerUnit, currencyId, investmentId, totalPrice + 100m, createdAtUtc);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -114,7 +118,8 @@ public sealed class PurchaseRecordTests : BaseTest
         DateTime createdAtUtc = Faker.Date.RecentOffset().UtcDateTime;
 
         // Act
-        Result<PurchaseRecord> result = PurchaseRecord.Create(purchaseDate, invalidAmount, pricePerUnit, currencyId, investmentId, 1000.0m, createdAtUtc);
+        decimal totalPrice = invalidAmount * pricePerUnit;
+        Result<PurchaseRecord> result = PurchaseRecord.Create(purchaseDate, invalidAmount, pricePerUnit, currencyId, investmentId, Math.Max(totalPrice + 100m, 1000m), createdAtUtc);
 
         // Assert
         result.IsFailure.Should().BeTrue();
@@ -135,7 +140,8 @@ public sealed class PurchaseRecordTests : BaseTest
         DateTime createdAtUtc = Faker.Date.RecentOffset().UtcDateTime;
 
         // Act
-        Result<PurchaseRecord> result = PurchaseRecord.Create(purchaseDate, amount, invalidPricePerUnit, currencyId, investmentId, 1000.0m, createdAtUtc);
+        decimal totalPrice = amount * invalidPricePerUnit;
+        Result<PurchaseRecord> result = PurchaseRecord.Create(purchaseDate, amount, invalidPricePerUnit, currencyId, investmentId, Math.Max(totalPrice + 100m, 1000m), createdAtUtc);
 
         // Assert
         result.IsFailure.Should().BeTrue();
@@ -154,7 +160,8 @@ public sealed class PurchaseRecordTests : BaseTest
         DateTime createdAtUtc = Faker.Date.RecentOffset().UtcDateTime;
 
         // Act
-        Result<PurchaseRecord> result = PurchaseRecord.Create(futurePurchaseDate, amount, pricePerUnit, currencyId, investmentId, 1000.0m, createdAtUtc);
+        decimal totalPrice = amount * pricePerUnit;
+        Result<PurchaseRecord> result = PurchaseRecord.Create(futurePurchaseDate, amount, pricePerUnit, currencyId, investmentId, totalPrice + 100m, createdAtUtc);
 
         // Assert
         result.IsFailure.Should().BeTrue();
@@ -175,7 +182,8 @@ public sealed class PurchaseRecordTests : BaseTest
         DateTime createdAtUtc = Faker.Date.RecentOffset().UtcDateTime;
 
         // Act
-        Result<PurchaseRecord> result = PurchaseRecord.Create(purchaseDate, amount, pricePerUnit, invalidCurrencyId!, investmentId, 1000.0m, createdAtUtc);
+        decimal totalPrice = amount * pricePerUnit;
+        Result<PurchaseRecord> result = PurchaseRecord.Create(purchaseDate, amount, pricePerUnit, invalidCurrencyId!, investmentId, totalPrice + 100m, createdAtUtc);
 
         // Assert
         result.IsFailure.Should().BeTrue();
@@ -196,7 +204,8 @@ public sealed class PurchaseRecordTests : BaseTest
         DateTime createdAtUtc = Faker.Date.RecentOffset().UtcDateTime;
 
         // Act
-        Result<PurchaseRecord> result = PurchaseRecord.Create(purchaseDate, amount, pricePerUnit, currencyId, invalidInvestmentId!, 1000.0m, createdAtUtc);
+        decimal totalPrice = amount * pricePerUnit;
+        Result<PurchaseRecord> result = PurchaseRecord.Create(purchaseDate, amount, pricePerUnit, currencyId, invalidInvestmentId!, totalPrice + 100m, createdAtUtc);
 
         // Assert
         result.IsFailure.Should().BeTrue();
@@ -283,7 +292,8 @@ public sealed class PurchaseRecordTests : BaseTest
         DateTime createdAtUtc = Faker.Date.PastOffset().UtcDateTime;
         DateTime updatedAtUtc = Faker.Date.RecentOffset().UtcDateTime;
 
-        Result<PurchaseRecord> createResult = PurchaseRecord.Create(purchaseDate, amount, pricePerUnit, currencyId, investmentId, 1000.0m, createdAtUtc);
+        decimal totalPrice = amount * pricePerUnit;
+        Result<PurchaseRecord> createResult = PurchaseRecord.Create(purchaseDate, amount, pricePerUnit, currencyId, investmentId, totalPrice + 100m, createdAtUtc);
         PurchaseRecord record = createResult.Value;
 
         // Act
@@ -331,7 +341,8 @@ public sealed class PurchaseRecordTests : BaseTest
         DateTime createdAtUtc = Faker.Date.RecentOffset().UtcDateTime;
 
         // Act
-        Result<PurchaseRecord> result = PurchaseRecord.Create(purchaseDate, amount, pricePerUnit, currencyId, investmentId, 1000.0m, createdAtUtc);
+        decimal totalPrice = amount * pricePerUnit;
+        Result<PurchaseRecord> result = PurchaseRecord.Create(purchaseDate, amount, pricePerUnit, currencyId, investmentId, totalPrice + 100m, createdAtUtc);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -351,7 +362,8 @@ public sealed class PurchaseRecordTests : BaseTest
         DateTime createdAtUtc = Faker.Date.RecentOffset().UtcDateTime;
 
         // Act
-        Result<PurchaseRecord> result = PurchaseRecord.Create(purchaseDate, amount, pricePerUnit, currencyId, investmentId, 1000.0m, createdAtUtc);
+        decimal totalPrice = amount * pricePerUnit;
+        Result<PurchaseRecord> result = PurchaseRecord.Create(purchaseDate, amount, pricePerUnit, currencyId, investmentId, totalPrice + 100m, createdAtUtc);
 
         // Assert
         result.IsSuccess.Should().BeTrue();

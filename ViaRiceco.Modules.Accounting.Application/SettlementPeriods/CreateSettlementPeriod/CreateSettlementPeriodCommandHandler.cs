@@ -25,6 +25,11 @@ internal sealed class CreateSettlementPeriodCommandHandler(
             return Result.Failure<SettlementPeriodDto>(SettlementPeriodErrors.InvalidMonth(request.Month));
         }
 
+        if (request.Year is < 1900 or > 2100)
+        {
+            return Result.Failure<SettlementPeriodDto>(SettlementPeriodErrors.InvalidYear(request.Year));
+        }
+
         bool exists = await repository.ExistsByMonthAndYearAsync(request.Month, request.Year, cancellationToken);
         if (exists)
         {
@@ -73,7 +78,7 @@ internal sealed class CreateSettlementPeriodCommandValidator : AbstractValidator
             .WithMessage("Month must be between 1 and 12");
 
         RuleFor(x => x.Year)
-            .GreaterThan(1900)
-            .WithMessage("Year must be greater than 1900");
+            .InclusiveBetween(1900, 2100)
+            .WithMessage("Year must be between 1900 and 2100");
     }
 }

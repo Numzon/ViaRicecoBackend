@@ -2,8 +2,8 @@ using ViaRiceco.Common.Domain.Models;
 
 namespace ViaRiceco.Modules.Portfolios.Domain.InvestmentStrategies;
 
-public sealed class InvestmentStrategyCreatedDomainEvent(string strategyId, DateTime createdAtUtc) : DomainEvent
+public sealed class InvestmentStrategyCreatedDomainEvent(string investmentStrategyId, DateTime createdAtUtc) : DomainEvent
 {
-    public string StrategyId { get; init; } = strategyId;
+    public string InvestmentStrategyId { get; init; } = investmentStrategyId;
     public DateTime CreatedAtUtc { get; init; } = createdAtUtc;
 }

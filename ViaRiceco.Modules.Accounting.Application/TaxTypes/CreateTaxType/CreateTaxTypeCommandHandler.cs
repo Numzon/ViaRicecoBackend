@@ -43,6 +43,9 @@ internal sealed class CreateTaxTypeCommandValidator : AbstractValidator<CreateTa
 {
     public CreateTaxTypeCommandValidator()
     {
-        RuleFor(x => x.Name).NotEmpty();
+        RuleFor(x => x.Name)
+            .NotEmpty()
+            .MaximumLength(200)
+            .WithMessage("Tax type name cannot exceed 200 characters");
     }
 }

@@ -67,7 +67,7 @@ public sealed class InvestmentStrategyTests : BaseTest
 
         // Assert
         InvestmentStrategyCreatedDomainEvent domainEvent = AssertDomainEventWasPublished<InvestmentStrategyCreatedDomainEvent>(strategy);
-        domainEvent.StrategyId.Should().Be(strategy.Id);
+        domainEvent.InvestmentStrategyId.Should().Be(strategy.Id);
         domainEvent.CreatedAtUtc.Should().Be(createdAtUtc);
     }
 
@@ -187,7 +187,7 @@ public sealed class InvestmentStrategyTests : BaseTest
     }
 
     [Fact]
-    public void AddInvestment_Should_ThrowException_WhenTotalModelPercentageExceeds100()
+    public void AddInvestment_Should_SucceedWithoutPercentageValidation()
     {
         // Arrange
         string financialGoalId = $"fg_{Guid.NewGuid()}";
@@ -198,19 +198,17 @@ public sealed class InvestmentStrategyTests : BaseTest
 
         var strategy = InvestmentStrategy.Create(financialGoalId, investmentStrategyTypeId, uninvestedAmount, createdAtUtc);
 
-        // Add investments up to 70%
+        // Act - Adding multiple investments should succeed (percentages validated separately)
         Result<Investment> result1 = strategy.AddInvestment("Apple Inc.", investmentCreatedAtUtc);
         Result<Investment> result2 = strategy.AddInvestment("Microsoft", investmentCreatedAtUtc);
-        
-        result1.IsSuccess.Should().BeTrue();
-        result2.IsSuccess.Should().BeTrue();
-
-        // Act - Adding 40% more should exceed 100%
-        Result<Investment> result = strategy.AddInvestment("Google", investmentCreatedAtUtc);
+        Result<Investment> result3 = strategy.AddInvestment("Google", investmentCreatedAtUtc);
         
         // Assert
-        result.IsFailure.Should().BeTrue();
-        result.Error.Code.Should().Be("InvestmentStrategy.ModelPortfolioPercentageExceeds100");
+        result1.IsSuccess.Should().BeTrue();
+        result2.IsSuccess.Should().BeTrue();
+        result3.IsSuccess.Should().BeTrue();
+        strategy.Investments.Should().HaveCount(3);
+        strategy.Investments.All(i => i.ModelPortfolioPercentage == 0).Should().BeTrue(); // All start with 0%
     }
 
     [Fact]
@@ -307,8 +305,8 @@ public sealed class InvestmentStrategyTests : BaseTest
 
         var newPercentages = new Dictionary<string, decimal>
         {
-            { investment1.Id, 35m },
-            { investment2.Id, 30m }
+            { investment1.Id, 60m },
+            { investment2.Id, 40m }
         };
 
         // Act
@@ -316,8 +314,8 @@ public sealed class InvestmentStrategyTests : BaseTest
 
         // Assert
         result.IsSuccess.Should().BeTrue();
-        investment1.ModelPortfolioPercentage.Should().Be(35m);
-        investment2.ModelPortfolioPercentage.Should().Be(30m);
+        investment1.ModelPortfolioPercentage.Should().Be(60m);
+        investment2.ModelPortfolioPercentage.Should().Be(40m);
         strategy.UpdatedAtUtc.Should().Be(updatedAtUtc);
     }
 
@@ -377,7 +375,7 @@ public sealed class InvestmentStrategyTests : BaseTest
 
         // Assert
         result.IsFailure.Should().BeTrue();
-        result.Error.Should().Be(InvestmentStrategyErrors.ModelPortfolioPercentageExceeds100());
+        result.Error.Should().Be(InvestmentStrategyErrors.ModelPortfolioPercentagesMustSumTo100());
     }
 
     [Fact]

@@ -70,4 +70,44 @@ internal sealed class FinancialGoalRepository(PortfoliosDbContext context) : IFi
     {
         context.FinancialGoals.Remove(financialGoal);
     }
+
+    public async Task<IReadOnlyCollection<FinancialGoalTreeElement>> GetAllWithChildrenAsTreeAsync(string financialGoalId, CancellationToken cancellationToken = default)
+    {
+        return await context.Database.SqlQueryRaw<FinancialGoalTreeElement>(@"
+            WITH RECURSIVE financial_goals_tree(
+                id, 
+                name, 
+                parent_id, 
+                tree_depth
+            ) AS (
+                -- Base case: Select root financial goals (no parent)
+                SELECT 
+                    fg.id,
+                    fg.name,
+                    fg.parent_id,
+                    0 AS tree_depth
+                FROM portfolios.financial_goals fg
+                WHERE fg.parent_id IS NULL AND fg.id = {0}
+
+                UNION ALL
+
+                -- Recursive case: Find children of current nodes
+                SELECT 
+                    child.id,
+                    child.name,
+                    child.parent_id,
+                    parent_tree.tree_depth + 1 AS tree_depth
+                FROM portfolios.financial_goals child
+                INNER JOIN financial_goals_tree parent_tree 
+                    ON parent_tree.id = child.parent_id
+            )
+            SELECT 
+                id,
+                name,
+                parent_id,
+                tree_depth
+            FROM financial_goals_tree
+            ORDER BY tree_depth, name;
+        ", financialGoalId).ToListAsync(cancellationToken);
+    }
 }
