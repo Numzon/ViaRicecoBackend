@@ -21,6 +21,7 @@ using ViaRiceco.Modules.Budgets.Infrastructure.ExpenseTypes;
 using ViaRiceco.Modules.Budgets.Infrastructure.Inbox;
 using ViaRiceco.Modules.Budgets.Infrastructure.Outbox;
 using ViaRiceco.Modules.Budgets.Presentation.Enumerations;
+using ViaRiceco.Modules.Portfolios.IntegrationEvents;
 using ViaRiceco.Modules.Portfolios.IntegrationEvents.InvestmentStrategies;
 
 namespace ViaRiceco.Modules.Budgets.Infrastructure;

@@ -1,4 +1,4 @@
-﻿namespace ViaRiceco.Modules.Portfolios.IntegrationEvents.InvestmentStrategies.Models;
+﻿namespace ViaRiceco.Modules.Portfolios.IntegrationEvents.InvestmentStrategies;
 
 public sealed class FinancialGoalIntegrationModel
 {

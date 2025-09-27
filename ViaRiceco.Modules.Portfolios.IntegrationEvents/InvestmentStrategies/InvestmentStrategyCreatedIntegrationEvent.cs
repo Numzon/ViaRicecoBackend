@@ -1,5 +1,4 @@
 ﻿using ViaRiceco.Common.Application.EventBus;
-using ViaRiceco.Modules.Portfolios.IntegrationEvents.InvestmentStrategies.Models;
 
 namespace ViaRiceco.Modules.Portfolios.IntegrationEvents.InvestmentStrategies;
 

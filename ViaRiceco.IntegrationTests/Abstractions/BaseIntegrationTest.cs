@@ -1,0 +1,26 @@
+﻿using Bogus;
+using MediatR;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace ViaRiceco.IntegrationTests.Abstractions;
+
+#pragma warning disable CA1515
+[Collection(nameof(IntegrationTestCollection))]
+public abstract class BaseIntegrationTest : IDisposable
+{
+    private readonly IServiceScope _scope;
+    protected readonly ISender Sender;
+    protected readonly Faker Faker = new();
+
+    protected BaseIntegrationTest(IntegrationTestWebAppFactory factory)
+    {
+        _scope = factory.Services.CreateScope();
+        Sender = _scope.ServiceProvider.GetRequiredService<ISender>();
+    }
+
+    public void Dispose()
+    {
+        _scope.Dispose();
+    }
+}
+#pragma warning restore CA1515

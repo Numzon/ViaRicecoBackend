@@ -2,8 +2,8 @@
 using ViaRiceco.Common.Application.Messaging;
 using ViaRiceco.Modules.Portfolios.Domain.FinancialGoals;
 using ViaRiceco.Modules.Portfolios.Domain.InvestmentStrategies;
+using ViaRiceco.Modules.Portfolios.IntegrationEvents;
 using ViaRiceco.Modules.Portfolios.IntegrationEvents.InvestmentStrategies;
-using ViaRiceco.Modules.Portfolios.IntegrationEvents.InvestmentStrategies.Models;
 
 namespace ViaRiceco.Modules.Portfolios.Application.InvestmentStrategies.InvestmentStrategyCreated;
 

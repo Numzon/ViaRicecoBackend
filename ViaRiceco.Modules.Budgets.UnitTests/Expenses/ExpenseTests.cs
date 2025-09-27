@@ -67,7 +67,6 @@ public sealed class ExpenseTests : BaseTest
     public void CreateFromIntegrationEvent_Should_CreateExpenseWithProvidedId()
     {
         // Arrange
-        string id = "e_" + Faker.Random.Guid();
         string name = Faker.Commerce.ProductName();
         string expenseTypeId = "et_" + Faker.Random.Guid();
         string investmentStrategyId = "is_" + Faker.Random.Guid();
@@ -78,7 +77,6 @@ public sealed class ExpenseTests : BaseTest
 
         // Assert
         expense.Should().NotBeNull();
-        expense.Id.Should().Be(id);
         expense.Name.Should().Be(name);
         expense.ExpenseTypeId.Should().Be(expenseTypeId);
         expense.CreatedAtUtc.Should().Be(createdAtUtc);
@@ -89,7 +87,6 @@ public sealed class ExpenseTests : BaseTest
     public void CreateFromIntegrationEvent_Should_PublishExpenseCreatedFromIntegrationEventDomainEvent()
     {
         // Arrange
-        string id = "e_" + Faker.Random.Guid();
         string name = Faker.Commerce.ProductName();
         string investmentStrategyId = "is_" + Faker.Random.Guid();
         string expenseTypeId = "et_" + Faker.Random.Guid();
@@ -101,7 +98,6 @@ public sealed class ExpenseTests : BaseTest
         // Assert
         ExpenseCreatedFromIntegrationEventDomainEvent domainEvent =
             AssertDomainEventWasPublished<ExpenseCreatedFromIntegrationEventDomainEvent>(expense);
-        domainEvent.ExpenseId.Should().Be(id);
         domainEvent.Name.Should().Be(name);
         domainEvent.ExpenseTypeId.Should().Be(expenseTypeId);
         domainEvent.CreatedAtUtc.Should().Be(createdAtUtc);

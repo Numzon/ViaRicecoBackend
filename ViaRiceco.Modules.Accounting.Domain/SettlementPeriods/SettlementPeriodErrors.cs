@@ -13,6 +13,9 @@ public static class SettlementPeriodErrors
     public static Error InvalidMonth(int month) =>
         Error.Validation("SettlementPeriod.InvalidMonth", $"Month must be between 1 and 12, but was {month}");
 
+    public static Error InvalidYear(int year) =>
+        Error.Validation("SettlementPeriod.InvalidYear", $"Year must be between 1900 and 2100, but was {year}");
+
     public static Error CannotDeleteWithData() =>
         Error.Conflict("SettlementPeriod.CannotDeleteWithData", "Cannot delete settlement period that contains incomes or taxes");
 

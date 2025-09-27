@@ -13,7 +13,7 @@ public sealed record CreateExpenseIntegrationEventCommand(
     string InvestmentStrategyId,
     IReadOnlyCollection<InvestmentExpenseDto> Expenses) : ICommand;
 
-public sealed class CreateExpenseIntegrationEventCommandHandler(
+internal sealed class CreateExpenseIntegrationEventCommandHandler(
     IUnitOfWork unitOfWork,
     IExpenseTypeRepository expenseTypeRepository,
     IExpenseRepository expenseRepository,

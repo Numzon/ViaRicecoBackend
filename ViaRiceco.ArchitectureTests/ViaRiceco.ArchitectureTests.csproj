@@ -1,5 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-    
+
     <ItemGroup>
         <PackageReference Include="coverlet.collector"/>
         <PackageReference Include="Microsoft.NET.Test.Sdk"/>
@@ -14,10 +14,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\ViaRiceco.Modules.Accounting.Application\ViaRiceco.Modules.Accounting.Application.csproj" />
-      <ProjectReference Include="..\ViaRiceco.Modules.Accounting.Domain\ViaRiceco.Modules.Accounting.Domain.csproj" />
-      <ProjectReference Include="..\ViaRiceco.Modules.Accounting.Infrastructure\ViaRiceco.Modules.Accounting.Infrastructure.csproj" />
-      <ProjectReference Include="..\ViaRiceco.Modules.Accounting.Presentation\ViaRiceco.Modules.Accounting.Presentation.csproj" />
+      <ProjectReference Include="..\ViaRiceco.Api\ViaRiceco.Api.csproj" />
     </ItemGroup>
 
 </Project>
