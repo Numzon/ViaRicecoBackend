@@ -147,7 +147,7 @@ internal static class CommandHelpers
 
         name ??= Faker.Commerce.ProductName();
 
-        var command = new CreateExpenseCommand(name, expenseTypeId);
+        var command = new CreateExpenseCommand(name, expenseTypeId, null);
         Result<ExpenseDto> result = await sender.Send(command);
 
         result.IsSuccess.Should().BeTrue();

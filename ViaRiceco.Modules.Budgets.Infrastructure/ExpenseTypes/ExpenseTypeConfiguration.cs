@@ -37,6 +37,7 @@ internal sealed class ExpenseTypeConfiguration : IEntityTypeConfiguration<Expens
             ExpenseTypeSpecification.Investment.Id,
             ExpenseTypeSpecification.Investment.Name,
             IsSystemDefined = true, // Mark as system-defined
+            IsArchived = false,
             CreatedAtUtc = new DateTime(2025, 9, 18, 18, 37, 0, DateTimeKind.Utc),
             UpdatedAtUtc = (DateTime?)null
         });

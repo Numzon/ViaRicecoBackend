@@ -10,19 +10,20 @@ public sealed class Expense : Entity
 
     public string Name { get; private set; } = string.Empty;
     public string ExpenseTypeId { get; private set; } = string.Empty;
+    public bool IsArchived { get; private set; }
+    public string? BankId { get; private set; } 
 
     public string? InvestmentStrategyId { get; set; }
-
-    /// <summary>
-    /// Creates an expense with auto-generated ID for manual creation
-    /// </summary>
-    public static Expense Create(string name, string expenseTypeId, DateTime createdAtUtc)
+    
+    public static Expense Create(string name, string expenseTypeId, string? bankId, DateTime createdAtUtc)
     {
         var expense = new Expense
         {
             Id = $"e_{Guid.NewGuid()}",
             Name = name,
             ExpenseTypeId = expenseTypeId,
+            IsArchived = false,
+            BankId = bankId,
             InvestmentStrategyId = null,
             CreatedAtUtc = createdAtUtc
         };
@@ -46,6 +47,8 @@ public sealed class Expense : Entity
             Id = $"e_{Guid.NewGuid()}",
             Name = name,
             ExpenseTypeId = expenseTypeId,
+            IsArchived = false,
+            BankId = null,
             InvestmentStrategyId = investmentStrategyId,
             CreatedAtUtc = createdAtUtc
         };
@@ -55,17 +58,44 @@ public sealed class Expense : Entity
         return expense;
     }
 
-    public void Update(string name, string expenseTypeId, DateTime updatedAtUtc)
+    public void Update(string name, string expenseTypeId, string? bankId, DateTime updatedAtUtc)
     {
-        if (Name == name && ExpenseTypeId == expenseTypeId)
+        if (Name == name && ExpenseTypeId == expenseTypeId && BankId == bankId)
         {
             return; 
         }
 
         Name = name;
         ExpenseTypeId = expenseTypeId;
+        BankId = bankId;
         UpdatedAtUtc = updatedAtUtc;
 
         Raise(new ExpenseUpdatedDomainEvent(Id, Name, ExpenseTypeId, updatedAtUtc));
+    }
+
+    public void Archive(DateTime archivedAtUtc)
+    {
+        if (IsArchived)
+        {
+            return;
+        }
+
+        IsArchived = true;
+        UpdatedAtUtc = archivedAtUtc;
+
+        Raise(new ExpenseArchivedDomainEvent(Id, Name, ExpenseTypeId, archivedAtUtc));
+    }
+
+    public void Unarchive(DateTime unarchivedAtUtc)
+    {
+        if (!IsArchived)
+        {
+            return;
+        }
+
+        IsArchived = false;
+        UpdatedAtUtc = unarchivedAtUtc;
+
+        Raise(new ExpenseUnarchivedDomainEvent(Id, Name, ExpenseTypeId, unarchivedAtUtc));
     }
 }

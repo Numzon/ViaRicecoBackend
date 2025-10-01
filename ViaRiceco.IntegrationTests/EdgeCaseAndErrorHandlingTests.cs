@@ -254,7 +254,7 @@ public sealed class EdgeCaseAndErrorHandlingTests : BaseIntegrationTest
         verifyAfterTaxResult.Value.NetAmount.Should().Be(4000); // Still equals income
 
         // 3. Test expense creation with invalid expense type
-        var createExpenseInvalidTypeCommand = new CreateExpenseCommand("Invalid Expense", "et_00000000-0000-0000-0000-000000000000");
+        var createExpenseInvalidTypeCommand = new CreateExpenseCommand("Invalid Expense", "et_00000000-0000-0000-0000-000000000000", null);
         Result<ExpenseDto> createExpenseResult = await Sender.Send(createExpenseInvalidTypeCommand);
         
         createExpenseResult.IsFailure.Should().BeTrue("Creating expense with invalid type should fail");

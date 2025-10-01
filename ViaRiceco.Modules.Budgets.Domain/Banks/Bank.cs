@@ -1,7 +1,39 @@
-﻿namespace ViaRiceco.Modules.Budgets.Domain.Banks;
+﻿using ViaRiceco.Common.Domain.Models;
 
-public sealed class Bank
+namespace ViaRiceco.Modules.Budgets.Domain.Banks;
+
+public sealed class Bank : Entity
 {
-    //lookup table with name only and standard type crud, take care of the fact that banks that are in use in Expanse table can't be deleted
-    // bank can but doesn't have to be defined in expense - so the foreign key should be nullable 
+    private Bank()
+    {
+    }
+
+    public string Name { get; private set; } = string.Empty;
+
+    public static Bank Create(string name, DateTime createdAtUtc)
+    {
+        var bank = new Bank
+        {
+            Id = $"b_{Guid.NewGuid()}",
+            Name = name,
+            CreatedAtUtc = createdAtUtc
+        };
+
+        bank.Raise(new BankCreatedDomainEvent(bank.Id, name, createdAtUtc));
+
+        return bank;
+    }
+
+    public void Update(string name, DateTime updatedAtUtc)
+    {
+        if (Name == name)
+        {
+            return;
+        }
+
+        Name = name;
+        UpdatedAtUtc = updatedAtUtc;
+
+        Raise(new BankUpdatedDomainEvent(Id, name, updatedAtUtc));
+    }
 }

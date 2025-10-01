@@ -15,7 +15,7 @@ public sealed class ExpenseTests : BaseTest
         DateTime createdAtUtc = Faker.Date.RecentOffset().UtcDateTime;
 
         // Act
-        var expense = Expense.Create(name, expenseTypeId, createdAtUtc);
+        var expense = Expense.Create(name, expenseTypeId, null, createdAtUtc);
 
         // Assert
         expense.Should().NotBeNull();
@@ -35,8 +35,8 @@ public sealed class ExpenseTests : BaseTest
         DateTime createdAtUtc = Faker.Date.RecentOffset().UtcDateTime;
 
         // Act
-        var expense1 = Expense.Create(name, expenseTypeId, createdAtUtc);
-        var expense2 = Expense.Create(name, expenseTypeId, createdAtUtc);
+        var expense1 = Expense.Create(name, expenseTypeId, null, createdAtUtc);
+        var expense2 = Expense.Create(name, expenseTypeId, null, createdAtUtc);
 
         // Assert
         expense1.Id.Should().NotBe(expense2.Id);
@@ -53,7 +53,7 @@ public sealed class ExpenseTests : BaseTest
         DateTime createdAtUtc = Faker.Date.RecentOffset().UtcDateTime;
 
         // Act
-        var expense = Expense.Create(name, expenseTypeId, createdAtUtc);
+        var expense = Expense.Create(name, expenseTypeId, null, createdAtUtc);
 
         // Assert
         ExpenseCreatedDomainEvent domainEvent = AssertDomainEventWasPublished<ExpenseCreatedDomainEvent>(expense);
@@ -114,10 +114,10 @@ public sealed class ExpenseTests : BaseTest
         DateTime createdAtUtc = Faker.Date.PastOffset().UtcDateTime;
         DateTime updatedAtUtc = Faker.Date.RecentOffset().UtcDateTime;
 
-        var expense = Expense.Create(originalName, originalExpenseTypeId, createdAtUtc);
+        var expense = Expense.Create(originalName, originalExpenseTypeId, null, createdAtUtc);
 
         // Act
-        expense.Update(newName, newExpenseTypeId, updatedAtUtc);
+        expense.Update(newName, newExpenseTypeId, null, updatedAtUtc);
 
         // Assert
         expense.Name.Should().Be(newName);
@@ -136,10 +136,10 @@ public sealed class ExpenseTests : BaseTest
         DateTime createdAtUtc = Faker.Date.PastOffset().UtcDateTime;
         DateTime updatedAtUtc = Faker.Date.RecentOffset().UtcDateTime;
 
-        var expense = Expense.Create(originalName, originalExpenseTypeId, createdAtUtc);
+        var expense = Expense.Create(originalName, originalExpenseTypeId, null, createdAtUtc);
 
         // Act
-        expense.Update(newName, newExpenseTypeId, updatedAtUtc);
+        expense.Update(newName, newExpenseTypeId, null, updatedAtUtc);
 
         // Assert
         ExpenseUpdatedDomainEvent domainEvent = AssertDomainEventWasPublished<ExpenseUpdatedDomainEvent>(expense);
@@ -159,10 +159,10 @@ public sealed class ExpenseTests : BaseTest
         DateTime createdAtUtc = Faker.Date.PastOffset().UtcDateTime;
         DateTime updatedAtUtc = Faker.Date.RecentOffset().UtcDateTime;
 
-        var expense = Expense.Create(name, originalExpenseTypeId, createdAtUtc);
+        var expense = Expense.Create(name, originalExpenseTypeId, null, createdAtUtc);
 
         // Act - update only expense type, keep same name
-        expense.Update(name, newExpenseTypeId, updatedAtUtc);
+        expense.Update(name, newExpenseTypeId, null, updatedAtUtc);
 
         // Assert
         expense.Name.Should().Be(name);
@@ -179,7 +179,7 @@ public sealed class ExpenseTests : BaseTest
         DateTime createdAtUtc = Faker.Date.RecentOffset().UtcDateTime;
 
         // Act
-        var expense = Expense.Create(longName, expenseTypeId, createdAtUtc);
+        var expense = Expense.Create(longName, expenseTypeId, null, createdAtUtc);
 
         // Assert
         expense.Should().NotBeNull();
@@ -195,7 +195,7 @@ public sealed class ExpenseTests : BaseTest
         DateTime createdAtUtc = Faker.Date.RecentOffset().UtcDateTime;
 
         // Act
-        var expense = Expense.Create(nameWithSpecialChars, expenseTypeId, createdAtUtc);
+        var expense = Expense.Create(nameWithSpecialChars, expenseTypeId, null, createdAtUtc);
 
         // Assert
         expense.Should().NotBeNull();
@@ -214,11 +214,11 @@ public sealed class ExpenseTests : BaseTest
         DateTime firstUpdateUtc = Faker.Date.RecentOffset().UtcDateTime;
         DateTime secondUpdateUtc = Faker.Date.FutureOffset().UtcDateTime;
 
-        var expense = Expense.Create(originalName, expenseTypeId, createdAtUtc);
+        var expense = Expense.Create(originalName, expenseTypeId, null, createdAtUtc);
 
         // Act
-        expense.Update(secondName, expenseTypeId, firstUpdateUtc);
-        expense.Update(finalName, expenseTypeId, secondUpdateUtc);
+        expense.Update(secondName, expenseTypeId, null, firstUpdateUtc);
+        expense.Update(finalName, expenseTypeId, null, secondUpdateUtc);
 
         // Assert
         expense.Name.Should().Be(finalName);
@@ -238,7 +238,7 @@ public sealed class ExpenseTests : BaseTest
         DateTime createdAtUtc = Faker.Date.RecentOffset().UtcDateTime;
 
         // Act
-        var expense = Expense.Create(unicodeName, expenseTypeId, createdAtUtc);
+        var expense = Expense.Create(unicodeName, expenseTypeId, null, createdAtUtc);
 
         // Assert
         expense.Should().NotBeNull();
@@ -258,7 +258,7 @@ public sealed class ExpenseTests : BaseTest
         DateTime createdAtUtc = Faker.Date.RecentOffset().UtcDateTime;
 
         // Act
-        var expense = Expense.Create(expenseName, expenseTypeId, createdAtUtc);
+        var expense = Expense.Create(expenseName, expenseTypeId, null, createdAtUtc);
 
         // Assert
         expense.Should().NotBeNull();

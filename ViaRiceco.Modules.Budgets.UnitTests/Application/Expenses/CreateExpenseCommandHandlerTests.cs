@@ -6,6 +6,7 @@ using ViaRiceco.Modules.Budgets.Application.Expenses.CreateExpense;
 using ViaRiceco.Modules.Budgets.Application.Expenses.Models;
 using ViaRiceco.Modules.Budgets.Domain.Expenses;
 using ViaRiceco.Modules.Budgets.Domain.ExpenseTypes;
+using ViaRiceco.Modules.Budgets.Domain.Banks;
 using ViaRiceco.Modules.Budgets.UnitTests.Abstractions;
 
 namespace ViaRiceco.Modules.Budgets.UnitTests.Application.Expenses;
@@ -14,6 +15,7 @@ public sealed class CreateExpenseCommandHandlerTests : BaseTest
 {
     private readonly IExpenseRepository _expenseRepository;
     private readonly IExpenseTypeRepository _expenseTypeRepository;
+    private readonly IBankRepository _bankRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly TimeProvider _timeProvider;
     private readonly CreateExpenseCommandHandler _handler;
@@ -22,9 +24,10 @@ public sealed class CreateExpenseCommandHandlerTests : BaseTest
     {
         _expenseRepository = Substitute.For<IExpenseRepository>();
         _expenseTypeRepository = Substitute.For<IExpenseTypeRepository>();
+        _bankRepository = Substitute.For<IBankRepository>();
         _unitOfWork = Substitute.For<IUnitOfWork>();
         _timeProvider = Substitute.For<TimeProvider>();
-        _handler = new CreateExpenseCommandHandler(_expenseRepository, _expenseTypeRepository, _unitOfWork, _timeProvider);
+        _handler = new CreateExpenseCommandHandler(_expenseRepository, _expenseTypeRepository, _bankRepository, _unitOfWork, _timeProvider);
     }
 
     [Fact]
@@ -33,7 +36,7 @@ public sealed class CreateExpenseCommandHandlerTests : BaseTest
         // Arrange
         string name = Faker.Commerce.ProductName();
         string expenseTypeId = "et_" + Faker.Random.Guid();
-        var command = new CreateExpenseCommand(name, expenseTypeId);
+        var command = new CreateExpenseCommand(name, expenseTypeId, null);
 
         _expenseTypeRepository.GetAsync(expenseTypeId, Arg.Any<CancellationToken>()).Returns((ExpenseType?)null);
 
@@ -55,7 +58,7 @@ public sealed class CreateExpenseCommandHandlerTests : BaseTest
         string name = "Hotel Accommodation";
         string expenseTypeId = "et_" + Faker.Random.Guid();
         DateTime createdAtUtc = Faker.Date.PastOffset().UtcDateTime;
-        var command = new CreateExpenseCommand(name, expenseTypeId);
+        var command = new CreateExpenseCommand(name, expenseTypeId, null);
 
         var expenseType = ExpenseType.Create("Travel", createdAtUtc);
         
@@ -80,7 +83,7 @@ public sealed class CreateExpenseCommandHandlerTests : BaseTest
         string name = "Hotel Accommodation";
         string expenseTypeId = "et_" + Faker.Random.Guid();
         DateTime createdAtUtc = Faker.Date.RecentOffset().UtcDateTime;
-        var command = new CreateExpenseCommand(name, expenseTypeId);
+        var command = new CreateExpenseCommand(name, expenseTypeId, null);
 
         var expenseType = ExpenseType.Create("Travel", Faker.Date.PastOffset().UtcDateTime);
         
@@ -111,7 +114,7 @@ public sealed class CreateExpenseCommandHandlerTests : BaseTest
         string name = "Flight Tickets";
         string expenseTypeId = "et_" + Faker.Random.Guid();
         DateTime createdAtUtc = new(2024, 2, 15, 9, 30, 0, DateTimeKind.Utc);
-        var command = new CreateExpenseCommand(name, expenseTypeId);
+        var command = new CreateExpenseCommand(name, expenseTypeId, null);
 
         var expenseType = ExpenseType.Create("Travel", Faker.Date.PastOffset().UtcDateTime);
         
@@ -141,7 +144,7 @@ public sealed class CreateExpenseCommandHandlerTests : BaseTest
         // Arrange
         string expenseTypeId = "et_" + Faker.Random.Guid();
         DateTime createdAtUtc = Faker.Date.RecentOffset().UtcDateTime;
-        var command = new CreateExpenseCommand(name, expenseTypeId);
+        var command = new CreateExpenseCommand(name, expenseTypeId, null);
 
         var expenseType = ExpenseType.Create("Travel", Faker.Date.PastOffset().UtcDateTime);
         
@@ -166,8 +169,8 @@ public sealed class CreateExpenseCommandHandlerTests : BaseTest
         string expenseTypeId2 = "et_" + Faker.Random.Guid();
         DateTime createdAtUtc = Faker.Date.RecentOffset().UtcDateTime;
 
-        var command1 = new CreateExpenseCommand(name, expenseTypeId1);
-        var command2 = new CreateExpenseCommand(name, expenseTypeId2);
+        var command1 = new CreateExpenseCommand(name, expenseTypeId1, null);
+        var command2 = new CreateExpenseCommand(name, expenseTypeId2, null);
 
         var expenseType1 = ExpenseType.Create("Travel", Faker.Date.PastOffset().UtcDateTime);
         var expenseType2 = ExpenseType.Create("Education", Faker.Date.PastOffset().UtcDateTime);
@@ -197,7 +200,7 @@ public sealed class CreateExpenseCommandHandlerTests : BaseTest
         // Arrange
         string name = Faker.Commerce.ProductName();
         string expenseTypeId = "et_" + Faker.Random.Guid();
-        var command = new CreateExpenseCommand(name, expenseTypeId);
+        var command = new CreateExpenseCommand(name, expenseTypeId, null);
         var cancellationToken = new CancellationToken(true);
 
         var expenseType = ExpenseType.Create("Travel", Faker.Date.PastOffset().UtcDateTime);
@@ -224,7 +227,7 @@ public sealed class CreateExpenseCommandHandlerTests : BaseTest
         string name = "Software License";
         string expenseTypeId = "et_" + Faker.Random.Guid();
         DateTime createdAtUtc = new(2024, 4, 10, 11, 15, 45, DateTimeKind.Utc);
-        var command = new CreateExpenseCommand(name, expenseTypeId);
+        var command = new CreateExpenseCommand(name, expenseTypeId, null);
 
         var expenseType = ExpenseType.Create("Technology", Faker.Date.PastOffset().UtcDateTime);
         
@@ -251,7 +254,7 @@ public sealed class CreateExpenseCommandHandlerTests : BaseTest
         string name = "Hôtel à Paris (パリのホテル) - فندق في باريس";
         string expenseTypeId = "et_" + Faker.Random.Guid();
         DateTime createdAtUtc = Faker.Date.RecentOffset().UtcDateTime;
-        var command = new CreateExpenseCommand(name, expenseTypeId);
+        var command = new CreateExpenseCommand(name, expenseTypeId, null);
 
         var expenseType = ExpenseType.Create("Travel", Faker.Date.PastOffset().UtcDateTime);
         
@@ -274,7 +277,7 @@ public sealed class CreateExpenseCommandHandlerTests : BaseTest
         string name = string.Empty;
         string expenseTypeId = "et_" + Faker.Random.Guid();
         DateTime createdAtUtc = Faker.Date.RecentOffset().UtcDateTime;
-        var command = new CreateExpenseCommand(name, expenseTypeId);
+        var command = new CreateExpenseCommand(name, expenseTypeId, null);
 
         var expenseType = ExpenseType.Create("Travel", Faker.Date.PastOffset().UtcDateTime);
         
