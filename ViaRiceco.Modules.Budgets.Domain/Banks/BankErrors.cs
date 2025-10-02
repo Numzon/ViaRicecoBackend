@@ -12,6 +12,10 @@ public static class BankErrors
         "Bank.DuplicateName", 
         $"Bank with name '{name}' already exists.");
 
+    public static Error InUse(string bankId) => Error.Conflict(
+        "Bank.InUse",
+        $"Bank with ID '{bankId}' cannot be deleted because it is in use by one or more expenses.");
+
     public static Error InUseByExpenses(string bankId) => Error.Conflict(
         "Bank.InUseByExpenses",
         $"Bank with ID '{bankId}' cannot be deleted because it is referenced by one or more expenses.");
