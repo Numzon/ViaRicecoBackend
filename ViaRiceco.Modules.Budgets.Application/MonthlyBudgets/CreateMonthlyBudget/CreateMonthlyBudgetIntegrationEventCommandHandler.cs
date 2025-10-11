@@ -8,7 +8,7 @@ using ViaRiceco.Modules.Budgets.Domain.MonthlyBudgets;
 
 namespace ViaRiceco.Modules.Budgets.Application.MonthlyBudgets.CreateMonthlyBudget;
 
-public sealed record CreateMonthlyBudgetIntegrationEventCommand(string SettlementPeriodId, int Month, int Year) : ICommand;
+public sealed record CreateMonthlyBudgetIntegrationEventCommand(string SettlementPeriodId, int Month, int Year, decimal NetAmount) : ICommand;
 
 public sealed class CreateMonthlyBudgetIntegrationEventCommandHandler(
     IMonthlyBudgetRepository monthlyBudgetRepository,
@@ -46,6 +46,7 @@ public sealed class CreateMonthlyBudgetIntegrationEventCommandHandler(
             request.SettlementPeriodId,
             request.Month,
             request.Year,
+            request.NetAmount,
             expenseDataList,
             timeProvider.UtcNow());
 

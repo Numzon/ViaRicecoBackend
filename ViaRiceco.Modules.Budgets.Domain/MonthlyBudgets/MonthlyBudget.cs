@@ -15,7 +15,7 @@ public sealed class MonthlyBudget : Entity
     public int Month { get; private set; }
     public int Year { get; private set; }
     public bool IsDraft { get; private set; }
-    public decimal? NetValue { get; private set; }
+    public decimal NetValue { get; private set; }
 
     public IReadOnlyCollection<MonthlyBudgetExpense> Expenses => _expenses.AsReadOnly();
     
@@ -27,6 +27,7 @@ public sealed class MonthlyBudget : Entity
         string settlementPeriodId,
         int month,
         int year,
+        decimal netValue,
         IReadOnlyCollection<ExpenseData> activeExpenses,
         DateTime createdAtUtc)
     {
@@ -37,6 +38,7 @@ public sealed class MonthlyBudget : Entity
             Month = month,
             Year = year,
             IsDraft = true, 
+            NetValue = netValue,
             CreatedAtUtc = createdAtUtc
         };
 
@@ -182,7 +184,7 @@ public sealed class MonthlyBudget : Entity
         return Result.Success();
     }
 
-    public void UpdateNetValue(decimal? netValue, DateTime updatedAtUtc)
+    public void UpdateNetValue(decimal netValue, DateTime updatedAtUtc)
     {
         NetValue = netValue;
         UpdatedAtUtc = updatedAtUtc;

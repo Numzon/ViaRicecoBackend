@@ -7,10 +7,12 @@ public sealed class SettlementPeriodCreatedIntegrationEvent(
     DateTime occurredOnUtc,
     string settlementPeriodId,
     int month,
-    int year)
+    int year,
+    decimal netAmount)
     : IntegrationEvent(id, occurredOnUtc)
 {
     public string SettlementPeriodId { get; init; } = settlementPeriodId;
     public int Month { get; init; } = month;
     public int Year { get; init; } = year;
+    public decimal NetAmount { get; init; } = netAmount;
 }

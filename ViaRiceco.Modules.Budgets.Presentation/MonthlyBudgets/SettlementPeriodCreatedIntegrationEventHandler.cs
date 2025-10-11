@@ -14,7 +14,7 @@ public sealed class SettlementPeriodCreatedIntegrationEventHandler(
         CancellationToken cancellationToken = default)
     {
         var command = new CreateMonthlyBudgetIntegrationEventCommand(integrationEvent.SettlementPeriodId,
-            integrationEvent.Month, integrationEvent.Year);
+            integrationEvent.Month, integrationEvent.Year, integrationEvent.NetAmount);
 
         Result result = await sender.Send(command, cancellationToken);
 

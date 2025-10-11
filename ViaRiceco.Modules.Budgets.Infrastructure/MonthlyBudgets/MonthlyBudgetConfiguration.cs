@@ -28,7 +28,9 @@ internal sealed class MonthlyBudgetConfiguration : IEntityTypeConfiguration<Mont
                .IsRequired();
 
         builder.Property(mb => mb.NetValue)
-               .HasColumnType("decimal(18,2)");
+               .HasColumnType("decimal(18,2)")
+               .IsRequired()
+               .HasDefaultValue(0);
 
         builder.Property(mb => mb.CreatedAtUtc)
                .IsRequired();

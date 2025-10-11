@@ -22,7 +22,8 @@ public sealed class SettlementPeriodCreatedDomainEventHandler(
             domainEvent.OccurredOnUtc,
             settlementPeriod.Id,
             settlementPeriod.Month,
-            settlementPeriod.Year);
+            settlementPeriod.Year,
+            settlementPeriod.NetAmount);
 
         await bus.PublishAsync(integrationEvent, cancellationToken);
     }
