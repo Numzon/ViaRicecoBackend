@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using ViaRiceco.Modules.Budgets.Infrastructure.Database;
@@ -11,9 +12,11 @@ using ViaRiceco.Modules.Budgets.Infrastructure.Database;
 namespace ViaRiceco.Modules.Budgets.Infrastructure.Database.Migrations
 {
     [DbContext(typeof(BudgetsDbContext))]
-    partial class BudgetsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251003162007_Added_monthly_budget")]
+    partial class Added_monthly_budget
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

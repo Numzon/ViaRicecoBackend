@@ -4,6 +4,7 @@ public interface IExpenseRepository
 {
     Task<Expense?> GetAsync(string id, CancellationToken cancellationToken = default);
     Task<IReadOnlyCollection<Expense>> GetByExpenseTypeAsync(string expenseTypeId, CancellationToken cancellationToken = default);
+    Task<IReadOnlyCollection<Expense>> GetActiveExpensesAsync(CancellationToken cancellationToken = default);
     Task<IReadOnlyCollection<Expense>> GetPageAsync(string? search, string orderBy, int page, int pageSize,
         string? expenseTypeId, CancellationToken cancellationToken = default);
     Task<bool> ExistsByNameAndExpenseTypeAsync(string name, string expenseTypeId, CancellationToken cancellationToken = default);

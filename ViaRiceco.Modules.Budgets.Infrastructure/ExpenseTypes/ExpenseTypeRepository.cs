@@ -12,6 +12,13 @@ internal sealed class ExpenseTypeRepository(BudgetsDbContext context) : IExpense
         return context.ExpenseTypes.FirstOrDefaultAsync(et => et.Id == id, cancellationToken);
     }
 
+    public async Task<IReadOnlyCollection<ExpenseType>> GetByIdsAsync(IEnumerable<string> ids, CancellationToken cancellationToken = default)
+    {
+        return await context.ExpenseTypes
+            .Where(et => ids.Contains(et.Id))
+            .ToListAsync(cancellationToken);
+    }
+
     public async Task<IReadOnlyCollection<ExpenseType>> GetPageAsync(string? search, string orderBy, int page, int pageSize,
         CancellationToken cancellationToken = default)
     {

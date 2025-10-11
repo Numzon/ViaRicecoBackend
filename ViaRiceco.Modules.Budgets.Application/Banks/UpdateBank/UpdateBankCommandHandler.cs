@@ -31,7 +31,7 @@ internal sealed class UpdateBankCommandHandler(
             return Result.Failure<BankDto>(BankErrors.DuplicateName(request.Name));
         }
 
-        bank.Update(request.Name, DateTime.SpecifyKind(timeProvider.GetUtcNow().DateTime, DateTimeKind.Utc));
+        bank.Update(request.Name, timeProvider.UtcNow());
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 

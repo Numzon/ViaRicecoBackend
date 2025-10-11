@@ -10,20 +10,24 @@ using ViaRiceco.Common.Application.EventBus;
 using ViaRiceco.Common.Application.Messaging;
 using ViaRiceco.Common.Infrastructure.Enumerations;
 using ViaRiceco.Common.Infrastructure.Outbox;
+using ViaRiceco.Modules.Accounting.IntegrationEvents.SettlementPeriods;
 using ViaRiceco.Modules.Budgets.Application.Abstractions.Data;
+using ViaRiceco.Modules.Budgets.Domain.Banks;
 using ViaRiceco.Modules.Budgets.Domain.Expenses;
 using ViaRiceco.Modules.Budgets.Domain.ExpenseTypes;
-using ViaRiceco.Modules.Budgets.Domain.Banks;
 using ViaRiceco.Modules.Budgets.Domain.Inbox;
+using ViaRiceco.Modules.Budgets.Domain.MonthlyBudgetExpenses;
+using ViaRiceco.Modules.Budgets.Domain.MonthlyBudgets;
 using ViaRiceco.Modules.Budgets.Domain.Outbox;
+using ViaRiceco.Modules.Budgets.Infrastructure.Banks;
 using ViaRiceco.Modules.Budgets.Infrastructure.Database;
 using ViaRiceco.Modules.Budgets.Infrastructure.Expenses;
 using ViaRiceco.Modules.Budgets.Infrastructure.ExpenseTypes;
-using ViaRiceco.Modules.Budgets.Infrastructure.Banks;
 using ViaRiceco.Modules.Budgets.Infrastructure.Inbox;
+using ViaRiceco.Modules.Budgets.Infrastructure.MonthlyBudgetExpenses;
+using ViaRiceco.Modules.Budgets.Infrastructure.MonthlyBudgets;
 using ViaRiceco.Modules.Budgets.Infrastructure.Outbox;
 using ViaRiceco.Modules.Budgets.Presentation.Enumerations;
-using ViaRiceco.Modules.Portfolios.IntegrationEvents;
 using ViaRiceco.Modules.Portfolios.IntegrationEvents.InvestmentStrategies;
 
 namespace ViaRiceco.Modules.Budgets.Infrastructure;
@@ -44,6 +48,7 @@ public static class BudgetsModule
     public static void ConfigureConsumers(IRegistrationConfigurator registrationConfigurator)
     {
         registrationConfigurator.AddConsumer<IntegrationEventConsumer<InvestmentStrategyCreatedIntegrationEvent>>();
+        registrationConfigurator.AddConsumer<IntegrationEventConsumer<SettlementPeriodCreatedIntegrationEvent>>();
     }
     
     private static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
@@ -62,6 +67,8 @@ public static class BudgetsModule
         services.AddScoped<IExpenseTypeRepository, ExpenseTypeRepository>();
         services.AddScoped<IExpenseRepository, ExpenseRepository>();
         services.AddScoped<IBankRepository, BankRepository>();
+        services.AddScoped<IMonthlyBudgetRepository, MonthlyBudgetRepository>();
+        services.AddScoped<IMonthlyBudgetExpenseRepository, MonthlyBudgetExpenseRepository>();
         services.AddScoped<IOutboxMessageRepository, OutboxMessageRepository>();
         services.AddScoped<IOutboxMessageConsumerRepository, OutboxMessageConsumerRepository>();
         

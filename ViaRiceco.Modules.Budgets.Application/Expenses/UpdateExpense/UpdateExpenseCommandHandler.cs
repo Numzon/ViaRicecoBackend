@@ -1,6 +1,7 @@
 using FluentValidation;
 using JetBrains.Annotations;
 using ViaRiceco.Common.Application.Abstractions;
+using ViaRiceco.Common.Application.Extensions;
 using ViaRiceco.Common.Domain.Models;
 using ViaRiceco.Modules.Budgets.Application.Abstractions.Data;
 using ViaRiceco.Modules.Budgets.Application.Expenses.Models;
@@ -52,7 +53,7 @@ internal sealed class UpdateExpenseCommandHandler(
             return Result.Failure<ExpenseDto>(ExpenseErrors.DuplicateNameInExpenseType(request.Name, request.ExpenseTypeId));
         }
 
-        expense.Update(request.Name, request.ExpenseTypeId, request.BankId, DateTime.SpecifyKind(timeProvider.GetUtcNow().DateTime, DateTimeKind.Utc));
+        expense.Update(request.Name, request.ExpenseTypeId, request.BankId, timeProvider.UtcNow());
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 

@@ -25,7 +25,7 @@ internal sealed class CreateBankCommandHandler(
             return Result.Failure<BankDto>(BankErrors.DuplicateName(request.Name));
         }
 
-        var bank = Bank.Create(request.Name, DateTime.SpecifyKind(timeProvider.GetUtcNow().DateTime, DateTimeKind.Utc));
+        var bank = Bank.Create(request.Name, timeProvider.UtcNow());
         
         bankRepository.Insert(bank);
 

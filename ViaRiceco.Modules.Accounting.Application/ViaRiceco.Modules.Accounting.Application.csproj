@@ -3,6 +3,7 @@
     <ItemGroup>
       <ProjectReference Include="..\ViaRiceco.Modules.Accounting.Domain\ViaRiceco.Modules.Accounting.Domain.csproj" />
       <ProjectReference Include="..\ViaRiceco.Common.Application\ViaRiceco.Common.Application.csproj" />
+      <ProjectReference Include="..\ViaRiceco.Modules.Accounting.IntegrationEvents\ViaRiceco.Modules.Accounting.IntegrationEvents.csproj" />
     </ItemGroup>
 
     <ItemGroup>
