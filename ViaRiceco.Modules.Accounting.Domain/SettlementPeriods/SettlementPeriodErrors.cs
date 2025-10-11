@@ -21,4 +21,7 @@ public static class SettlementPeriodErrors
 
     public static Error TaxTypeAlreadyExists(string taxTypeId) =>
         Error.Conflict("SettlementPeriod.TaxTypeAlreadyExists", $"A tax of type {taxTypeId} already exists in this settlement period. Only one tax per type is allowed per period");
+
+    public static Error CannotModifyFinalizedPeriod() =>
+        Error.Conflict("SettlementPeriod.CannotModifyFinalizedPeriod", "Cannot modify a finalized settlement period. Set it as draft first to make changes");
 }

@@ -15,6 +15,7 @@ public sealed class SettlementPeriod : Entity
 
     public int Month { get; private set; }
     public int Year { get; private set; }
+    public bool IsDraft { get; private set; }
     
     public IReadOnlyCollection<Income> Incomes => _incomes.AsReadOnly();
     public IReadOnlyCollection<Tax> Taxes => _taxes.AsReadOnly();
@@ -35,6 +36,7 @@ public sealed class SettlementPeriod : Entity
             Id = $"sp_{Guid.NewGuid()}",
             Month = month,
             Year = year,
+            IsDraft = true, // New settlement periods start as drafts
             CreatedAtUtc = createdAtUtc
         };
 
@@ -45,6 +47,11 @@ public sealed class SettlementPeriod : Entity
 
     public Income AddIncome(decimal value, DateTime createdAtUtc)
     {
+        if (!IsDraft)
+        {
+            throw new InvalidOperationException("Cannot modify finalized settlement period");
+        }
+
         var income = Income.Create(value, Id, createdAtUtc);
         _incomes.Add(income);
 
@@ -56,6 +63,11 @@ public sealed class SettlementPeriod : Entity
 
     public Result AddTax(decimal value, string taxTypeId, DateTime createdAtUtc)
     {
+        if (!IsDraft)
+        {
+            return Result.Failure(SettlementPeriodErrors.CannotModifyFinalizedPeriod());
+        }
+
         if (SettlementPeriodSpecification.TaxTypeAlreadyExists(this, taxTypeId))
         {
             return Result.Failure(SettlementPeriodErrors.TaxTypeAlreadyExists(taxTypeId));
@@ -72,6 +84,11 @@ public sealed class SettlementPeriod : Entity
 
     public Result RemoveIncome(string incomeId, DateTime updatedAtUtc)
     {
+        if (!IsDraft)
+        {
+            return Result.Failure(SettlementPeriodErrors.CannotModifyFinalizedPeriod());
+        }
+
         Income income = _incomes.Find(i => i.Id == incomeId);
         if (income == null)
         {
@@ -89,6 +106,11 @@ public sealed class SettlementPeriod : Entity
 
     public Result RemoveTax(string taxId, DateTime updatedAtUtc)
     {
+        if (!IsDraft)
+        {
+            return Result.Failure(SettlementPeriodErrors.CannotModifyFinalizedPeriod());
+        }
+
         Tax tax = _taxes.Find(t => t.Id == taxId);
         if (tax == null)
         {
@@ -106,6 +128,11 @@ public sealed class SettlementPeriod : Entity
 
     public Result<Income> UpdateIncome(string incomeId, decimal value, DateTime updatedAtUtc)
     {
+        if (!IsDraft)
+        {
+            return Result.Failure<Income>(SettlementPeriodErrors.CannotModifyFinalizedPeriod());
+        }
+
         Income income = _incomes.Find(i => i.Id == incomeId);
         if (income == null)
         {
@@ -122,6 +149,11 @@ public sealed class SettlementPeriod : Entity
 
     public Result<Tax> UpdateTax(string taxId, decimal value, DateTime updatedAtUtc)
     {
+        if (!IsDraft)
+        {
+            return Result.Failure<Tax>(SettlementPeriodErrors.CannotModifyFinalizedPeriod());
+        }
+
         Tax tax = _taxes.Find(t => t.Id == taxId);
         if (tax == null)
         {
@@ -134,6 +166,43 @@ public sealed class SettlementPeriod : Entity
         RaiseNetAmountRecalculatedEvent(updatedAtUtc);
 
         return Result.Success(tax);
+    }
+
+    /// <summary>
+    /// Finalizes the settlement period, preventing further modifications
+    /// </summary>
+    public Result Finalize(DateTime finalizedAtUtc)
+    {
+        if (!IsDraft)
+        {
+            return Result.Success(); // Already finalized
+        }
+
+        IsDraft = false;
+        UpdatedAtUtc = finalizedAtUtc;
+
+        Raise(new SettlementPeriodFinalizedDomainEvent(Id, finalizedAtUtc));
+
+        return Result.Success();
+    }
+
+    /// <summary>
+    /// Sets the settlement period back to draft status, allowing modifications
+    /// This also triggers setting the monthly budget as draft
+    /// </summary>
+    public Result SetAsDraft(DateTime updatedAtUtc)
+    {
+        if (IsDraft)
+        {
+            return Result.Success(); // Already draft
+        }
+
+        IsDraft = true;
+        UpdatedAtUtc = updatedAtUtc;
+
+        Raise(new SettlementPeriodSetAsDraftDomainEvent(Id, updatedAtUtc));
+
+        return Result.Success();
     }
 
     /// <summary>

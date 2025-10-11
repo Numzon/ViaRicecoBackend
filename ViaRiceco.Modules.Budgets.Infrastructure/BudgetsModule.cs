@@ -49,6 +49,7 @@ public static class BudgetsModule
     {
         registrationConfigurator.AddConsumer<IntegrationEventConsumer<InvestmentStrategyCreatedIntegrationEvent>>();
         registrationConfigurator.AddConsumer<IntegrationEventConsumer<SettlementPeriodCreatedIntegrationEvent>>();
+        registrationConfigurator.AddConsumer<IntegrationEventConsumer<SettlementPeriodSetAsDraftIntegrationEvent>>();
     }
     
     private static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
