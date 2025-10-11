@@ -15,6 +15,7 @@ public sealed class MonthlyBudget : Entity
     public int Month { get; private set; }
     public int Year { get; private set; }
     public bool IsDraft { get; private set; }
+    public decimal? NetValue { get; private set; }
 
     public IReadOnlyCollection<MonthlyBudgetExpense> Expenses => _expenses.AsReadOnly();
     
@@ -179,5 +180,13 @@ public sealed class MonthlyBudget : Entity
         UpdatedAtUtc = updatedAtUtc;
 
         return Result.Success();
+    }
+
+    public void UpdateNetValue(decimal? netValue, DateTime updatedAtUtc)
+    {
+        NetValue = netValue;
+        UpdatedAtUtc = updatedAtUtc;
+
+        Raise(new MonthlyBudgetNetValueUpdatedDomainEvent(Id, netValue, updatedAtUtc));
     }
 }

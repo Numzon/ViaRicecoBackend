@@ -27,6 +27,9 @@ internal sealed class MonthlyBudgetConfiguration : IEntityTypeConfiguration<Mont
         builder.Property(mb => mb.IsDraft)
                .IsRequired();
 
+        builder.Property(mb => mb.NetValue)
+               .HasColumnType("decimal(18,2)");
+
         builder.Property(mb => mb.CreatedAtUtc)
                .IsRequired();
 
@@ -36,6 +39,7 @@ internal sealed class MonthlyBudgetConfiguration : IEntityTypeConfiguration<Mont
         builder.HasIndex(mb => mb.SettlementPeriodId);
         builder.HasIndex(mb => new { mb.Month, mb.Year });
         builder.HasIndex(mb => mb.IsDraft);
+        builder.HasIndex(mb => mb.NetValue);
         builder.HasIndex(mb => mb.CreatedAtUtc);
 
         // Unique constraint on SettlementPeriodId (one budget per settlement period)
