@@ -7,7 +7,7 @@ public sealed class MonthlyBudgetExpenseUpdatedDomainEvent(
     string monthlyBudgetId,
     string expenseId,
     string expenseName,
-    DateTime updatedAtUtc) : DomainEvent
+    DateTime updatedAtUtc) : DomainEvent(Guid.NewGuid(), updatedAtUtc)
 {
     public string MonthlyBudgetExpenseId { get; init; } = monthlyBudgetExpenseId;
     public string MonthlyBudgetId { get; init; } = monthlyBudgetId;

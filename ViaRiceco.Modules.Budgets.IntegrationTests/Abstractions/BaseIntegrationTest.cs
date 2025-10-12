@@ -28,6 +28,8 @@ public abstract class BaseIntegrationTest : IDisposable
     {
         await DbContext.Database.ExecuteSqlRawAsync(
             sql: """
+                 DELETE FROM budgets.monthly_budget_expenses;
+                 DELETE FROM budgets.monthly_budgets;
                  DELETE FROM budgets.expenses;
                  DELETE FROM budgets.expense_types WHERE is_system_defined = false;
                  """);

@@ -6,7 +6,7 @@ public sealed class MonthlyBudgetExpenseValueSetDomainEvent(
     string monthlyBudgetExpenseId,
     string monthlyBudgetId,
     decimal? value,
-    DateTime updatedAtUtc) : DomainEvent
+    DateTime updatedAtUtc) : DomainEvent(Guid.NewGuid(), updatedAtUtc)
 {
     public string MonthlyBudgetExpenseId { get; init; } = monthlyBudgetExpenseId;
     public string MonthlyBudgetId { get; init; } = monthlyBudgetId;
