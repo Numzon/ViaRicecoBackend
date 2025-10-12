@@ -198,6 +198,33 @@ public sealed class MonthlyBudget : Entity
         return Result.Success();
     }
 
+    public Result BulkSetExpenseValues(IReadOnlyCollection<ExpenseValueUpdate> expenseValueUpdates, DateTime updatedAtUtc)
+    {
+        bool hasChanges = false;
+
+        foreach (ExpenseValueUpdate update in expenseValueUpdates)
+        {
+            MonthlyBudgetExpense? expense = _expenses.Find(e => e.Id == update.MonthlyBudgetExpenseId);
+            if (expense == null)
+            {
+                return Result.Failure(MonthlyBudgetErrors.ExpenseNotFound(update.MonthlyBudgetExpenseId));
+            }
+
+            if (expense.Value != update.Value)
+            {
+                expense.SetValue(update.Value, updatedAtUtc);
+                hasChanges = true;
+            }
+        }
+
+        if (hasChanges)
+        {
+            UpdatedAtUtc = updatedAtUtc;
+        }
+
+        return Result.Success();
+    }
+
     public void UpdateNetValue(decimal netValue, DateTime updatedAtUtc)
     {
         NetValue = netValue;
