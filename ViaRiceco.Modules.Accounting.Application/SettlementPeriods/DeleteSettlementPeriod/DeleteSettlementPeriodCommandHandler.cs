@@ -1,4 +1,5 @@
 using ViaRiceco.Common.Application.Abstractions;
+using ViaRiceco.Common.Application.Extensions;
 using ViaRiceco.Common.Domain.Models;
 using ViaRiceco.Modules.Accounting.Application.Abstractions.Data;
 using ViaRiceco.Modules.Accounting.Domain.SettlementPeriods;
@@ -9,7 +10,8 @@ public sealed record DeleteSettlementPeriodCommand(string Id) : ICommand;
 
 internal sealed class DeleteSettlementPeriodCommandHandler(
     ISettlementPeriodRepository repository,
-    IUnitOfWork unitOfWork)
+    IUnitOfWork unitOfWork,
+    TimeProvider timeProvider)
     : ICommandHandler<DeleteSettlementPeriodCommand>
 {
     public async Task<Result> Handle(DeleteSettlementPeriodCommand request, CancellationToken cancellationToken)
@@ -25,6 +27,9 @@ internal sealed class DeleteSettlementPeriodCommandHandler(
         {
             return Result.Failure(SettlementPeriodErrors.CannotDeleteWithData());
         }
+
+        // Raise domain event before deletion
+        settlementPeriod.PrepareForDeletion(timeProvider.UtcNow());
 
         repository.Delete(settlementPeriod);
 

@@ -1,10 +1,11 @@
 ﻿using MassTransit;
+using MassTransit.Logging;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Quartz;
 using Npgsql;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
+using Quartz;
 using StackExchange.Redis;
 using ViaRiceco.Common.Application.Data;
 using ViaRiceco.Common.Application.EventBus;
@@ -84,7 +85,8 @@ public static class InfrastructureConfiguration
                     .AddHttpClientInstrumentation()
                     .AddEntityFrameworkCoreInstrumentation()
                     .AddRedisInstrumentation()
-                    .AddNpgsql();
+                    .AddNpgsql()
+                    .AddSource(DiagnosticHeaders.DefaultListenerName);
 
                 tracing.AddOtlpExporter();
             });

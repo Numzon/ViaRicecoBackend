@@ -212,4 +212,12 @@ public sealed class SettlementPeriod : Entity
     {
         Raise(new SettlementPeriodNetAmountRecalculatedDomainEvent(Id, TotalIncome, TotalTaxes, NetAmount, eventTimeUtc));
     }
+
+    /// <summary>
+    /// Prepares the settlement period for deletion by raising the appropriate domain event
+    /// </summary>
+    public void PrepareForDeletion(DateTime deletedAtUtc)
+    {
+        Raise(new SettlementPeriodDeletedDomainEvent(Id, Month, Year, deletedAtUtc));
+    }
 }
