@@ -184,20 +184,6 @@ public sealed class MonthlyBudget : Entity
         return Result.Success();
     }
 
-    public Result SetExpenseValueById(string monthlyBudgetExpenseId, decimal? value, DateTime updatedAtUtc)
-    {
-        MonthlyBudgetExpense? expense = _expenses.Find(e => e.Id == monthlyBudgetExpenseId);
-        if (expense == null)
-        {
-            return Result.Failure(MonthlyBudgetErrors.ExpenseNotFound(monthlyBudgetExpenseId));
-        }
-
-        expense.SetValue(value, updatedAtUtc);
-        UpdatedAtUtc = updatedAtUtc;
-
-        return Result.Success();
-    }
-
     public Result BulkSetExpenseValues(IReadOnlyCollection<ExpenseValueUpdate> expenseValueUpdates, DateTime updatedAtUtc)
     {
         bool hasChanges = false;
