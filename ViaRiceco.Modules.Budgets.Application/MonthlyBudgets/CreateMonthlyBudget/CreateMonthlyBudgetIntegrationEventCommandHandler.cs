@@ -10,7 +10,7 @@ namespace ViaRiceco.Modules.Budgets.Application.MonthlyBudgets.CreateMonthlyBudg
 
 public sealed record CreateMonthlyBudgetIntegrationEventCommand(string SettlementPeriodId, int Month, int Year, decimal NetAmount) : ICommand;
 
-public sealed class CreateMonthlyBudgetIntegrationEventCommandHandler(
+internal sealed class CreateMonthlyBudgetIntegrationEventCommandHandler(
     IMonthlyBudgetRepository monthlyBudgetRepository,
     IExpenseRepository expenseRepository,
     IExpenseTypeRepository expenseTypeRepository,

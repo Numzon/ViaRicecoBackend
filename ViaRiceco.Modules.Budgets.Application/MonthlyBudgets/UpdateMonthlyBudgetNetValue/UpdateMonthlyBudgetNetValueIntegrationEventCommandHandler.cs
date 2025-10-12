@@ -10,7 +10,7 @@ public sealed record UpdateMonthlyBudgetNetValueIntegrationEventCommand(
     string SettlementPeriodId,
     decimal NetAmount) : ICommand;
 
-public sealed class UpdateMonthlyBudgetNetValueIntegrationEventCommandHandler(
+internal sealed class UpdateMonthlyBudgetNetValueIntegrationEventCommandHandler(
     IMonthlyBudgetRepository monthlyBudgetRepository,
     IUnitOfWork unitOfWork,
     TimeProvider timeProvider) : ICommandHandler<UpdateMonthlyBudgetNetValueIntegrationEventCommand>

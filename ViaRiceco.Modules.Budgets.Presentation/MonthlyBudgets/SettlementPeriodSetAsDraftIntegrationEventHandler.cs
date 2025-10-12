@@ -7,7 +7,7 @@ using ViaRiceco.Modules.Budgets.Application.MonthlyBudgets.SetMonthlyBudgetAsDra
 
 namespace ViaRiceco.Modules.Budgets.Presentation.MonthlyBudgets;
 
-public sealed class SettlementPeriodSetAsDraftIntegrationEventHandler(
+internal sealed class SettlementPeriodSetAsDraftIntegrationEventHandler(
     ISender sender) : IntegrationEventHandler<SettlementPeriodSetAsDraftIntegrationEvent>
 {
     public override async Task Handle(SettlementPeriodSetAsDraftIntegrationEvent integrationEvent,

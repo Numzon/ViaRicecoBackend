@@ -8,7 +8,7 @@ namespace ViaRiceco.Modules.Budgets.Application.MonthlyBudgets.SetMonthlyBudgetA
 
 public sealed record SetMonthlyBudgetAsDraftIntegrationEventCommand(string SettlementPeriodId) : ICommand;
 
-public sealed class SetMonthlyBudgetAsDraftIntegrationEventCommandHandler(
+internal sealed class SetMonthlyBudgetAsDraftIntegrationEventCommandHandler(
     IMonthlyBudgetRepository monthlyBudgetRepository,
     IUnitOfWork unitOfWork,
     TimeProvider timeProvider) : ICommandHandler<SetMonthlyBudgetAsDraftIntegrationEventCommand>
