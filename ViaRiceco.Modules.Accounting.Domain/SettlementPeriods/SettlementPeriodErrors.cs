@@ -24,4 +24,7 @@ public static class SettlementPeriodErrors
 
     public static Error CannotModifyFinalizedPeriod() =>
         Error.Conflict("SettlementPeriod.CannotModifyFinalizedPeriod", "Cannot modify a finalized settlement period. Set it as draft first to make changes");
+
+    public static Error CannotSetAsNonRecentDraft(int month, int year) =>
+        Error.Conflict("SettlementPeriod.CannotSetAsNonRecentDraft", $"Cannot set settlement period {month:D2}/{year} as draft. Only the most recent settlement period can be set as draft");
 }

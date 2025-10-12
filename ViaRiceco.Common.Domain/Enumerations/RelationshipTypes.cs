@@ -11,4 +11,5 @@ public static class RelationshipTypes
     public const string NextPage = "next-page";
     public const string PreviousPage = "prev-page";
     public const string Finalize = "finalize";
+    public const string SetAsDraft = "set-as-draft";
 }

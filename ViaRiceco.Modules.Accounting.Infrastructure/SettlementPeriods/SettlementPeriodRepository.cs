@@ -64,6 +64,22 @@ internal sealed class SettlementPeriodRepository(AccountingDbContext context) : 
         return context.SettlementPeriods.AnyAsync(sp => sp.Month == month && sp.Year == year && sp.Id != excludeId, cancellationToken);
     }
 
+    public Task<SettlementPeriod?> GetMostRecentAsync(CancellationToken cancellationToken = default)
+    {
+        return context.SettlementPeriods
+            .Include(sp => sp.Incomes)
+            .Include(sp => sp.Taxes)
+            .OrderByDescending(sp => sp.Year)
+            .ThenByDescending(sp => sp.Month)
+            .FirstOrDefaultAsync(cancellationToken);
+    }
+
+    public Task<bool> IsNewerPeriodExistsAsync(int month, int year, CancellationToken cancellationToken = default)
+    {
+        return context.SettlementPeriods
+            .AnyAsync(sp => sp.Year > year || sp.Year == year && sp.Month > month, cancellationToken);
+    }
+
     public Task<int> CountAsync(string? search, int? month, int? year, CancellationToken cancellationToken = default)
     {
         int? searchYear = null;

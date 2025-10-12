@@ -39,4 +39,8 @@ public static class MonthlyBudgetErrors
     public static Error AlreadyExistsForPeriod(int month, int year) => Error.Conflict(
         "MonthlyBudget.AlreadyExistsForPeriod", 
         $"A monthly budget for {month:D2}/{year} already exists");
+
+    public static Error CannotSetAsNonRecentDraft(int month, int year) => Error.Conflict(
+        "MonthlyBudget.CannotSetAsNonRecentDraft", 
+        $"Cannot set monthly budget {month:D2}/{year} as draft. Only the most recent monthly budget can be set as draft");
 }

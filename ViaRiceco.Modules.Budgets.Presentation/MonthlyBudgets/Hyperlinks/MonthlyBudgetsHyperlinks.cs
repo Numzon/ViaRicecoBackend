@@ -12,7 +12,8 @@ public static class MonthlyBudgetsHyperlinks
         return
         [
             hyperlinkService.Create(nameof(GetMonthlyBudgetEndpoint), RelationshipTypes.Self, HttpMethods.Get, new { id }),
-            hyperlinkService.Create(nameof(FinalizeMonthlyBudgetEndpoint), RelationshipTypes.Finalize, HttpMethods.Post, new { id })
+            hyperlinkService.Create(nameof(FinalizeMonthlyBudgetEndpoint), RelationshipTypes.Finalize, HttpMethods.Post, new { id }),
+            hyperlinkService.Create(nameof(SetMonthlyBudgetAsDraftEndpoint), RelationshipTypes.SetAsDraft, HttpMethods.Post, new { id })
         ];
     }
 }

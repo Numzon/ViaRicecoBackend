@@ -48,6 +48,21 @@ internal sealed class MonthlyBudgetRepository(BudgetsDbContext context) : IMonth
             .AnyAsync(mb => mb.SettlementPeriodId == settlementPeriodId, cancellationToken);
     }
 
+    public async Task<MonthlyBudget?> GetMostRecentAsync(CancellationToken cancellationToken = default)
+    {
+        return await context.MonthlyBudgets
+            .Include(mb => mb.Expenses)
+            .OrderByDescending(mb => mb.Year)
+            .ThenByDescending(mb => mb.Month)
+            .FirstOrDefaultAsync(cancellationToken);
+    }
+
+    public async Task<bool> IsNewerPeriodExistsAsync(int month, int year, CancellationToken cancellationToken = default)
+    {
+        return await context.MonthlyBudgets
+            .AnyAsync(mb => mb.Year > year || mb.Year == year && mb.Month > month, cancellationToken);
+    }
+
     public async Task<int> CountAsync(string? search, CancellationToken cancellationToken = default)
     {
         string? cleanedSearch = search?.Trim().ToLowerInvariant();
