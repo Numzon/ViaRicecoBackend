@@ -100,6 +100,9 @@ public static class BudgetsModule
         VersionSets.CreateApi(CustomVersionSets.Banks, v => v
             .HasApiVersion(1.0));
         
+        VersionSets.CreateApi(CustomVersionSets.MonthlyBudgets, v => v
+            .HasApiVersion(1.0));
+        
         return services;
     }
     

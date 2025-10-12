@@ -33,7 +33,8 @@ internal sealed class GetSettlementPeriodsQueryHandler(ISettlementPeriodReposito
             .Select(sp => new SettlementPeriodDto(
                 sp.Id, 
                 sp.Month, 
-                sp.Year, 
+                sp.Year,
+                sp.IsDraft,
                 sp.TotalIncome,
                 sp.TotalTaxes,
                 sp.NetAmount,

@@ -10,6 +10,7 @@ internal sealed class MonthlyBudgetRepository(BudgetsDbContext context) : IMonth
     public async Task<MonthlyBudget?> GetAsync(string id, CancellationToken cancellationToken = default)
     {
         return await context.MonthlyBudgets
+            .Include(mb => mb.Expenses)
             .FirstOrDefaultAsync(mb => mb.Id == id, cancellationToken);
     }
 

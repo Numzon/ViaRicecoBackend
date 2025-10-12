@@ -3,7 +3,8 @@ namespace ViaRiceco.Modules.Accounting.Application.SettlementPeriods.Models;
 public sealed record SettlementPeriodDto(
     string Id, 
     int Month, 
-    int Year, 
+    int Year,
+    bool IsDraft,
     decimal TotalIncome, 
     decimal TotalTaxes, 
     decimal NetAmount,

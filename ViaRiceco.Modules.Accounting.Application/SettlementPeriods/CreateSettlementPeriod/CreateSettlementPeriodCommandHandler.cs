@@ -56,6 +56,7 @@ internal sealed class CreateSettlementPeriodCommandHandler(
             settlementPeriod.Id,
             settlementPeriod.Month,
             settlementPeriod.Year,
+            settlementPeriod.IsDraft,
             settlementPeriod.TotalIncome,
             settlementPeriod.TotalTaxes,
             settlementPeriod.NetAmount,

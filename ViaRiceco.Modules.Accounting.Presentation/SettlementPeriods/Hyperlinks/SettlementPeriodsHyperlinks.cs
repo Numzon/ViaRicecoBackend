@@ -15,6 +15,7 @@ public static class SettlementPeriodsHyperlinks
             hyperlinkService.Create(nameof(GetSettlementPeriodEndpoint), RelationshipTypes.Self, HttpMethods.Get, new { id }),
             hyperlinkService.Create(nameof(DeleteSettlementPeriodEndpoint), RelationshipTypes.Delete, HttpMethods.Delete, new { id }),
             hyperlinkService.Create(nameof(GetSettlementPeriodsEndpoint), RelationshipTypes.Collection, HttpMethods.Get),
+            hyperlinkService.Create(nameof(FinalizeSettlementPeriodEndpoint), RelationshipTypes.Finalize, HttpMethods.Post, new { id }),
             hyperlinkService.Create(nameof(AddIncomeEndpoint), "add-income", HttpMethods.Post, new { settlementPeriodId = id }),
             hyperlinkService.Create(nameof(AddTaxEndpoint), "add-tax", HttpMethods.Post, new { settlementPeriodId = id })
         ];
