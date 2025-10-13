@@ -12,6 +12,10 @@ public static class MonthlyBudgetErrors
         "MonthlyBudget.AlreadyFinalized",
         "Monthly budget is already finalized and cannot be modified.");
 
+    public static Error AlreadyDraft() => Error.Conflict(
+        "MonthlyBudget.AlreadyDraft",
+        "Monthly budget is already set as draft.");
+
     public static Error CannotFinalizeWithNullValues(int expensesWithoutValues) => Error.Validation(
         "MonthlyBudget.CannotFinalizeWithNullValues", 
         $"Cannot finalize monthly budget. {expensesWithoutValues} expense(s) do not have values set. All expenses must have values (including 0) before finalizing.");

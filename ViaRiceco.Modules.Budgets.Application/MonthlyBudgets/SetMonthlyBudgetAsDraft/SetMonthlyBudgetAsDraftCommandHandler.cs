@@ -35,7 +35,11 @@ internal sealed class SetMonthlyBudgetAsDraftCommandHandler(
                 monthlyBudget.Year));
         }
 
-        monthlyBudget.SetAsDraft(timeProvider.UtcNow());
+        Result result = monthlyBudget.SetAsDraft(timeProvider.UtcNow());
+        if (!result.IsSuccess)
+        {
+            return Result.Failure(result.Error);
+        }
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 

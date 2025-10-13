@@ -87,17 +87,19 @@ public sealed class MonthlyBudget : Entity
         return Result.Success();
     }
 
-    public void SetAsDraft(DateTime updatedAtUtc)
+    public Result SetAsDraft(DateTime updatedAtUtc)
     {
         if (IsDraft)
         {
-            return;
+            return Result.Failure(MonthlyBudgetErrors.AlreadyDraft());
         }
 
         IsDraft = true;
         UpdatedAtUtc = updatedAtUtc;
 
         Raise(new MonthlyBudgetSetAsDraftDomainEvent(Id, updatedAtUtc));
+        
+        return Result.Success();
     }
 
     public Result AddExpense(

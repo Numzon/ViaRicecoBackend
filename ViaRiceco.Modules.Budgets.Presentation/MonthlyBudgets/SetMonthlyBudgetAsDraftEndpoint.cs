@@ -12,19 +12,17 @@ using ViaRiceco.Modules.Budgets.Presentation.Enumerations;
 namespace ViaRiceco.Modules.Budgets.Presentation.MonthlyBudgets;
 
 internal sealed class SetMonthlyBudgetAsDraftEndpoint(ISender sender)
-    : Ep.Req<SetMonthlyBudgetAsDraftEndpoint.Request>.Res<Result>
+    : Ep.NoReq.Res<Result>
 {
-    [UsedImplicitly]
-    internal sealed record Request(string Id);
 
     public override void Configure()
     {
-        Post("/budgets/monthly-budgets/{id}/set-as-draft");
+        Post("/budgets/monthly-budgets/{id}/draft");
         AllowAnonymous();
+        DontAutoTag(); // No request body expected
         Description(d =>
         {
             d.WithName(nameof(SetMonthlyBudgetAsDraftEndpoint));
-            d.Accepts<Request>();
         });
         
         Options(x => x
@@ -32,9 +30,10 @@ internal sealed class SetMonthlyBudgetAsDraftEndpoint(ISender sender)
             .MapToApiVersion(1.0));
     }
 
-    public override async Task HandleAsync(Request req, CancellationToken ct)
+    public override async Task HandleAsync(CancellationToken ct)
     {
-        var command = new SetMonthlyBudgetAsDraftCommand(req.Id);
+        string id = Route<string>("id")!;
+        var command = new SetMonthlyBudgetAsDraftCommand(id);
         Result result = await sender.Send(command, ct);
 
         await Send.ResultAsync(result.Match(Results.NoContent, ApiResults.Problem));

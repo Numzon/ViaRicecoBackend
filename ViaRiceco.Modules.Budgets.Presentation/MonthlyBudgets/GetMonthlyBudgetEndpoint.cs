@@ -25,6 +25,7 @@ internal sealed class GetMonthlyBudgetEndpoint(ISender sender, IHyperlinkService
     internal sealed class Request : BaseAcceptHeader
     {
         public string Id { get; init; } = string.Empty;
+        public string? Fields { get; init; }
     }
 
     public override void Configure()
@@ -49,7 +50,7 @@ internal sealed class GetMonthlyBudgetEndpoint(ISender sender, IHyperlinkService
             return;
         }
         
-        ExpandoObject shapedObject = ShapeDataWithConditionalLinks(result.Value, req.IncludeLinks, result.Value.Id);
+        ExpandoObject shapedObject = ShapeDataWithConditionalLinks(result.Value, req.IncludeLinks, result.Value.Id, req.Fields);
         
         await Send.ResultAsync(Results.Ok(shapedObject));
     }

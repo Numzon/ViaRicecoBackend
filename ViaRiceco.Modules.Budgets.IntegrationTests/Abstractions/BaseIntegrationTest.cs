@@ -31,7 +31,10 @@ public abstract class BaseIntegrationTest : IDisposable
                  DELETE FROM budgets.monthly_budget_expenses;
                  DELETE FROM budgets.monthly_budgets;
                  DELETE FROM budgets.expenses;
+                 DELETE FROM budgets.banks;
                  DELETE FROM budgets.expense_types WHERE is_system_defined = false;
+                 DELETE FROM budgets.outbox_messages;
+                 DELETE FROM budgets.inbox_messages;
                  """);
     }
     
