@@ -189,6 +189,7 @@ public sealed class MonthlyBudget : Entity
     public Result BulkSetExpenseValues(IReadOnlyCollection<ExpenseValueUpdate> expenseValueUpdates, DateTime updatedAtUtc)
     {
         bool hasChanges = false;
+        var changedExpenseUpdates = new List<ExpenseValueUpdate>();
 
         foreach (ExpenseValueUpdate update in expenseValueUpdates)
         {
@@ -201,6 +202,7 @@ public sealed class MonthlyBudget : Entity
             if (expense.Value != update.Value)
             {
                 expense.SetValue(update.Value, updatedAtUtc);
+                changedExpenseUpdates.Add(update);
                 hasChanges = true;
             }
         }
@@ -208,6 +210,7 @@ public sealed class MonthlyBudget : Entity
         if (hasChanges)
         {
             UpdatedAtUtc = updatedAtUtc;
+            Raise(new MonthlyBudgetExpenseValuesBulkSetDomainEvent(Id, changedExpenseUpdates, updatedAtUtc));
         }
 
         return Result.Success();

@@ -7,6 +7,7 @@ public interface IMonthlyBudgetExpenseRepository
     Task<IReadOnlyCollection<MonthlyBudgetExpense>> GetByExpenseIdAsync(string expenseId, CancellationToken cancellationToken = default); 
     Task<MonthlyBudgetExpense?> GetByMonthlyBudgetAndExpenseAsync(string monthlyBudgetId, string expenseId, CancellationToken cancellationToken = default);
     Task<bool> ExistsForMonthlyBudgetAndExpenseAsync(string monthlyBudgetId, string expenseId, CancellationToken cancellationToken = default);
+    Task<IReadOnlyCollection<MonthlyBudgetExpenseWithExpense>> GetByIdsWithInvestmentExpensesAsync(IReadOnlyCollection<string> monthlyBudgetExpenseIds, CancellationToken cancellationToken = default);
     void Insert(MonthlyBudgetExpense monthlyBudgetExpense);
     void Delete(MonthlyBudgetExpense monthlyBudgetExpense);
 }

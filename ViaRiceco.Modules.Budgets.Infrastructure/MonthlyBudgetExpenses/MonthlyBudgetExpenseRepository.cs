@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using ViaRiceco.Modules.Budgets.Domain.ExpenseTypes;
 using ViaRiceco.Modules.Budgets.Domain.MonthlyBudgetExpenses;
 using ViaRiceco.Modules.Budgets.Infrastructure.Database;
 
@@ -36,6 +37,26 @@ internal sealed class MonthlyBudgetExpenseRepository(BudgetsDbContext context) :
     {
         return await context.MonthlyBudgetExpenses
             .AnyAsync(mbe => mbe.MonthlyBudgetId == monthlyBudgetId && mbe.ExpenseId == expenseId, cancellationToken);
+    }
+
+    public async Task<IReadOnlyCollection<MonthlyBudgetExpenseWithExpense>> GetByIdsWithInvestmentExpensesAsync(
+        IReadOnlyCollection<string> monthlyBudgetExpenseIds,
+        CancellationToken cancellationToken = default)
+    {
+        return await context.MonthlyBudgetExpenses
+            .Where(mbe => monthlyBudgetExpenseIds.Contains(mbe.Id))
+            .Join(context.Expenses,
+                mbe => mbe.ExpenseId,
+                expense => expense.Id,
+                (mbe, expense) => new { MonthlyBudgetExpense = mbe, Expense = expense })
+            .Where(joined => joined.Expense.ExpenseTypeId == ExpenseTypeSpecification.Investment.Id)
+            .Select(joined => new MonthlyBudgetExpenseWithExpense(
+                joined.MonthlyBudgetExpense.Id,
+                joined.MonthlyBudgetExpense.Value,
+                joined.Expense.Id,
+                joined.Expense.ExpenseTypeId,
+                joined.Expense.InvestmentStrategyId))
+            .ToListAsync(cancellationToken);
     }
 
     public void Insert(MonthlyBudgetExpense monthlyBudgetExpense)
