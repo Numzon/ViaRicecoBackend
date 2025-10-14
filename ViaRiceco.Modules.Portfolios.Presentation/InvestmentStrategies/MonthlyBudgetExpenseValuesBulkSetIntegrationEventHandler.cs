@@ -23,49 +23,96 @@ internal sealed class MonthlyBudgetExpenseValuesBulkSetIntegrationEventHandler(
         }
 
         DateTime now = timeProvider.UtcNow();
+        string investmentStrategyId = integrationEvent.InvestmentStrategyId;
 
-        foreach (ExpenseValueUpdateIntegrationModel expenseUpdate in integrationEvent.ExpenseValueUpdates)
+        await UpdateInvestedCashHistoryRecordsAsync(integrationEvent.ExpenseValueUpdates, investmentStrategyId, now, cancellationToken);
+        
+        await RecalculateAndUpdateUninvestedAmountAsync(investmentStrategyId, now, cancellationToken);
+        
+        await unitOfWork.SaveChangesAsync(cancellationToken);
+    }
+
+    /// <summary>
+    /// Updates or creates InvestedCashHistory records for the given expense updates
+    /// </summary>
+    private async Task UpdateInvestedCashHistoryRecordsAsync(
+        IReadOnlyCollection<ExpenseValueUpdateIntegrationModel> expenseUpdates,
+        string investmentStrategyId,
+        DateTime updatedAtUtc,
+        CancellationToken cancellationToken)
+    {
+        foreach (ExpenseValueUpdateIntegrationModel expenseUpdate in expenseUpdates)
         {
-            InvestedCashHistory existingInvestedCashHistory = await investedCashHistoryRepository
-                .GetByInvestmentStrategyAndMonthlyBudgetExpenseAsync(
-                    integrationEvent.InvestmentStrategyId, 
-                    expenseUpdate.MonthlyBudgetExpenseId, 
-                    cancellationToken);
-
-            if (existingInvestedCashHistory != null)
-            {
-                existingInvestedCashHistory.UpdateAmount(expenseUpdate.Value ?? 0m, now);
-            }
-            else
-            {
-                var newInvestedCashHistory = InvestedCashHistory.Create(
-                    integrationEvent.InvestmentStrategyId,
-                    expenseUpdate.MonthlyBudgetExpenseId,
-                    expenseUpdate.Value ?? 0m,
-                    now);
-                
-                investedCashHistoryRepository.Insert(newInvestedCashHistory);
-            }
+            await UpdateOrCreateInvestedCashHistoryAsync(expenseUpdate, investmentStrategyId, updatedAtUtc, cancellationToken);
         }
+    }
 
+    /// <summary>
+    /// Updates existing InvestedCashHistory record or creates a new one if it doesn't exist
+    /// </summary>
+    private async Task UpdateOrCreateInvestedCashHistoryAsync(
+        ExpenseValueUpdateIntegrationModel expenseUpdate,
+        string investmentStrategyId,
+        DateTime updatedAtUtc,
+        CancellationToken cancellationToken)
+    {
+        InvestedCashHistory? existingRecord = await investedCashHistoryRepository
+            .GetByInvestmentStrategyAndMonthlyBudgetExpenseAsync(
+                investmentStrategyId, 
+                expenseUpdate.MonthlyBudgetExpenseId, 
+                cancellationToken);
+
+        decimal amount = expenseUpdate.Value ?? 0m;
+
+        if (existingRecord != null)
+        {
+            existingRecord.UpdateAmount(amount, updatedAtUtc);
+        }
+        else
+        {
+            var newRecord = InvestedCashHistory.Create(
+                investmentStrategyId,
+                expenseUpdate.MonthlyBudgetExpenseId,
+                amount,
+                updatedAtUtc);
+            
+            investedCashHistoryRepository.Insert(newRecord);
+        }
+    }
+
+    /// <summary>
+    /// Recalculates and updates the UninvestedAmount for the investment strategy
+    /// Formula: Total Invested Cash - Money Spent on Stocks
+    /// </summary>
+    private async Task RecalculateAndUpdateUninvestedAmountAsync(
+        string investmentStrategyId,
+        DateTime updatedAtUtc,
+        CancellationToken cancellationToken)
+    {
         decimal totalInvestedCash = await investedCashHistoryRepository
-            .GetTotalInvestedCashByInvestmentStrategyAsync(integrationEvent.InvestmentStrategyId, cancellationToken);
+            .GetTotalInvestedCashByInvestmentStrategyAsync(investmentStrategyId, cancellationToken);
 
         InvestmentStrategy? strategy = await investmentStrategyRepository
-            .GetAsync(integrationEvent.InvestmentStrategyId, cancellationToken);
+            .GetAsync(investmentStrategyId, cancellationToken);
 
-        if (strategy != null)
+        if (strategy == null)
         {
-            decimal uninvestedAmount = totalInvestedCash - strategy.TotalInvestedAmount;
-            
-            if (uninvestedAmount < 0)
-            {
-                uninvestedAmount = 0;
-            }
-
-            strategy.UpdateUninvestedAmount(uninvestedAmount, now);
+            return; // Strategy not found, nothing to update
         }
 
-        await unitOfWork.SaveChangesAsync(cancellationToken);
+        decimal uninvestedAmount = CalculateUninvestedAmount(totalInvestedCash, strategy.TotalInvestedAmount);
+        
+        strategy.UpdateUninvestedAmount(uninvestedAmount, updatedAtUtc);
+    }
+
+    /// <summary>
+    /// Calculates uninvested amount ensuring it never goes negative
+    /// </summary>
+    private static decimal CalculateUninvestedAmount(decimal totalInvestedCash, decimal totalInvestedAmount)
+    {
+        decimal uninvestedAmount = totalInvestedCash - totalInvestedAmount;
+        
+        // Ensure uninvested amount doesn't go negative
+        return Math.Max(uninvestedAmount, 0m);
     }
 }
