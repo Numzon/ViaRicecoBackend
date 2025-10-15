@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Quartz;
 using ViaRiceco.Common.Application.EventBus;
+using ViaRiceco.Common.Application.Extensions;
 using ViaRiceco.Common.Application.Messaging;
 using ViaRiceco.Common.Domain.Interfaces;
 using ViaRiceco.Common.Domain.Outbox;
@@ -62,7 +63,7 @@ internal sealed class ProcessOutboxJob(
                     exception = caughtException;
                 }
 
-                outboxMessage.Update(timeProvider.GetUtcNow().DateTime, exception);
+                outboxMessage.Update(timeProvider.UtcNow(), exception);
             }
 
             await unitOfWork.SaveChangesAsync(context.CancellationToken);

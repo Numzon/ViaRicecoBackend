@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using ViaRiceco.Modules.Portfolios.Infrastructure.Database;
@@ -11,9 +12,11 @@ using ViaRiceco.Modules.Portfolios.Infrastructure.Database;
 namespace ViaRiceco.Modules.Portfolios.Infrastructure.Database.Migrations
 {
     [DbContext(typeof(PortfoliosDbContext))]
-    partial class PortfoliosDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251015172012_Invested_cash_history")]
+    partial class Invested_cash_history
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -237,19 +240,19 @@ namespace ViaRiceco.Modules.Portfolios.Infrastructure.Database.Migrations
                         .HasColumnName("updated_at_utc");
 
                     b.HasKey("Id")
-                        .HasName("pk_invested_cash_histories");
+                        .HasName("pk_invested_cash");
 
                     b.HasIndex("InvestmentStrategyId")
-                        .HasDatabaseName("ix_invested_cash_histories_investment_strategy_id");
+                        .HasDatabaseName("ix_invested_cash_investment_strategy_id");
 
                     b.HasIndex("MonthlyBudgetExpenseId")
-                        .HasDatabaseName("ix_invested_cash_histories_monthly_budget_expense_id");
+                        .HasDatabaseName("ix_invested_cash_monthly_budget_expense_id");
 
                     b.HasIndex("InvestmentStrategyId", "MonthlyBudgetExpenseId")
                         .IsUnique()
-                        .HasDatabaseName("ix_invested_cash_histories_investment_strategy_id_monthly_budg");
+                        .HasDatabaseName("ix_invested_cash_investment_strategy_id_monthly_budget_expense");
 
-                    b.ToTable("invested_cash_histories", "portfolios");
+                    b.ToTable("invested_cash", "portfolios");
                 });
 
             modelBuilder.Entity("ViaRiceco.Modules.Portfolios.Domain.InvestmentStrategies.InvestmentStrategy", b =>

@@ -1,5 +1,6 @@
 using FluentAssertions;
 using NSubstitute;
+using ViaRiceco.Common.Application.Extensions;
 using ViaRiceco.Common.Domain.Models;
 using ViaRiceco.Modules.Accounting.Application.Abstractions.Data;
 using ViaRiceco.Modules.Accounting.Application.TaxTypes.CreateTaxType;
@@ -33,7 +34,7 @@ public sealed class CreateTaxTypeCommandHandlerTests : BaseTest
         var command = new CreateTaxTypeCommand(name);
 
         _repository.ExistsByNameAsync(name, Arg.Any<CancellationToken>()).Returns(false);
-        _timeProvider.GetUtcNow().Returns(createdAtUtc);
+        _timeProvider.UtcNow().Returns(createdAtUtc);
 
         // Act
         Result<TaxTypeDto> result = await _handler.Handle(command, CancellationToken.None);
@@ -79,7 +80,7 @@ public sealed class CreateTaxTypeCommandHandlerTests : BaseTest
         var command = new CreateTaxTypeCommand(name);
 
         _repository.ExistsByNameAsync(name, Arg.Any<CancellationToken>()).Returns(false);
-        _timeProvider.GetUtcNow().Returns(createdAtUtc);
+        _timeProvider.UtcNow().Returns(createdAtUtc);
 
         // Act
         Result<TaxTypeDto> result = await _handler.Handle(command, CancellationToken.None);
@@ -122,7 +123,7 @@ public sealed class CreateTaxTypeCommandHandlerTests : BaseTest
         var command = new CreateTaxTypeCommand(name);
 
         _repository.ExistsByNameAsync(name, Arg.Any<CancellationToken>()).Returns(false);
-        _timeProvider.GetUtcNow().Returns(expectedCreatedAt);
+        _timeProvider.UtcNow().Returns(expectedCreatedAt);
 
         // Act
         await _handler.Handle(command, CancellationToken.None);

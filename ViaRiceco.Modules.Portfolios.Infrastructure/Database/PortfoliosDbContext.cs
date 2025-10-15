@@ -33,7 +33,7 @@ public sealed class PortfoliosDbContext(DbContextOptions<PortfoliosDbContext> op
     internal DbSet<InvestmentStrategy> InvestmentStrategies { get; set; }
     internal DbSet<Investment> Investments { get; set; }
     internal DbSet<PurchaseRecord> PurchaseRecords { get; set; }
-    internal DbSet<InvestedCashHistory> InvestedCash { get; set; }
+    internal DbSet<InvestedCashHistory> InvestedCashHistories { get; set; }
     internal DbSet<OutboxMessage> OutboxMessages { get; set; }
     internal DbSet<OutboxMessageConsumer> OutboxMessageConsumers { get; set; }
     

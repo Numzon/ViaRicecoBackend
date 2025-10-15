@@ -1,5 +1,6 @@
 using FluentAssertions;
 using NSubstitute;
+using ViaRiceco.Common.Application.Extensions;
 using ViaRiceco.Common.Domain.Models;
 using ViaRiceco.Modules.Budgets.Application.Abstractions.Data;
 using ViaRiceco.Modules.Budgets.Application.MonthlyBudgets.BulkSetExpenseValues;
@@ -92,7 +93,7 @@ public sealed class BulkSetExpenseValuesCommandHandlerTests : BaseTest
 
         _monthlyBudgetRepository.GetAsync(monthlyBudgetId, Arg.Any<CancellationToken>())
             .Returns(monthlyBudget);
-        _timeProvider.GetUtcNow().Returns(utcNow);
+        _timeProvider.UtcNow().Returns(utcNow);
 
         // Act
         Result result = await _handler.Handle(command, CancellationToken.None);
@@ -122,7 +123,7 @@ public sealed class BulkSetExpenseValuesCommandHandlerTests : BaseTest
 
         _monthlyBudgetRepository.GetAsync(monthlyBudgetId, Arg.Any<CancellationToken>())
             .Returns(monthlyBudget);
-        _timeProvider.GetUtcNow().Returns(utcNow);
+        _timeProvider.UtcNow().Returns(utcNow);
 
         // Act
         await _handler.Handle(command, CancellationToken.None);
@@ -153,7 +154,7 @@ public sealed class BulkSetExpenseValuesCommandHandlerTests : BaseTest
 
         _monthlyBudgetRepository.GetAsync(monthlyBudgetId, Arg.Any<CancellationToken>())
             .Returns(monthlyBudget);
-        _timeProvider.GetUtcNow().Returns(utcNow);
+        _timeProvider.UtcNow().Returns(utcNow);
 
         // Act
         Result result = await _handler.Handle(command, CancellationToken.None);
@@ -175,7 +176,7 @@ public sealed class BulkSetExpenseValuesCommandHandlerTests : BaseTest
 
         _monthlyBudgetRepository.GetAsync(monthlyBudgetId, Arg.Any<CancellationToken>())
             .Returns(monthlyBudget);
-        _timeProvider.GetUtcNow().Returns(Faker.Date.RecentOffset().UtcDateTime);
+        _timeProvider.UtcNow().Returns(Faker.Date.RecentOffset().UtcDateTime);
 
         // Act
         Result result = await _handler.Handle(command, CancellationToken.None);

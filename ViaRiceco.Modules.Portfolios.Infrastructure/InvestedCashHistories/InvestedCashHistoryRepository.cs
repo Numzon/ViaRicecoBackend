@@ -8,7 +8,7 @@ internal sealed class InvestedCashHistoryRepository(PortfoliosDbContext context)
 {
     public Task<InvestedCashHistory?> GetAsync(string id, CancellationToken cancellationToken = default)
     {
-        return context.InvestedCash
+        return context.InvestedCashHistories
             .FirstOrDefaultAsync(ic => ic.Id == id, cancellationToken);
     }
 
@@ -17,7 +17,7 @@ internal sealed class InvestedCashHistoryRepository(PortfoliosDbContext context)
         string monthlyBudgetExpenseId, 
         CancellationToken cancellationToken = default)
     {
-        return context.InvestedCash
+        return context.InvestedCashHistories
             .FirstOrDefaultAsync(ic => ic.InvestmentStrategyId == investmentStrategyId && 
                                      ic.MonthlyBudgetExpenseId == monthlyBudgetExpenseId, 
                                cancellationToken);
@@ -27,7 +27,7 @@ internal sealed class InvestedCashHistoryRepository(PortfoliosDbContext context)
         string investmentStrategyId, 
         CancellationToken cancellationToken = default)
     {
-        return await context.InvestedCash
+        return await context.InvestedCashHistories
             .Where(ic => ic.InvestmentStrategyId == investmentStrategyId)
             .ToListAsync(cancellationToken);
     }
@@ -36,18 +36,18 @@ internal sealed class InvestedCashHistoryRepository(PortfoliosDbContext context)
         string investmentStrategyId, 
         CancellationToken cancellationToken = default)
     {
-        return context.InvestedCash
+        return context.InvestedCashHistories
             .Where(ic => ic.InvestmentStrategyId == investmentStrategyId)
             .SumAsync(ic => ic.Amount, cancellationToken);
     }
 
     public void Insert(InvestedCashHistory investedCashHistory)
     {
-        context.InvestedCash.Add(investedCashHistory);
+        context.InvestedCashHistories.Add(investedCashHistory);
     }
 
     public void Delete(InvestedCashHistory investedCashHistory)
     {
-        context.InvestedCash.Remove(investedCashHistory);
+        context.InvestedCashHistories.Remove(investedCashHistory);
     }
 }

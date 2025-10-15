@@ -1,5 +1,6 @@
 using FluentAssertions;
 using NSubstitute;
+using ViaRiceco.Common.Application.Extensions;
 using ViaRiceco.Common.Domain.Models;
 using ViaRiceco.Modules.Budgets.Application.Abstractions.Data;
 using ViaRiceco.Modules.Budgets.Application.Expenses.CreateExpense;
@@ -89,7 +90,7 @@ public sealed class CreateExpenseCommandHandlerTests : BaseTest
         
         _expenseTypeRepository.GetAsync(expenseTypeId, Arg.Any<CancellationToken>()).Returns(expenseType);
         _expenseRepository.ExistsByNameAndExpenseTypeAsync(name, expenseTypeId, Arg.Any<CancellationToken>()).Returns(false);
-        _timeProvider.GetUtcNow().Returns(createdAtUtc);
+        _timeProvider.UtcNow().Returns(createdAtUtc);
 
         // Act
         Result<ExpenseDto> result = await _handler.Handle(command, CancellationToken.None);
@@ -120,7 +121,7 @@ public sealed class CreateExpenseCommandHandlerTests : BaseTest
         
         _expenseTypeRepository.GetAsync(expenseTypeId, Arg.Any<CancellationToken>()).Returns(expenseType);
         _expenseRepository.ExistsByNameAndExpenseTypeAsync(name, expenseTypeId, Arg.Any<CancellationToken>()).Returns(false);
-        _timeProvider.GetUtcNow().Returns(createdAtUtc);
+        _timeProvider.UtcNow().Returns(createdAtUtc);
 
         // Act
         await _handler.Handle(command, CancellationToken.None);
@@ -150,7 +151,7 @@ public sealed class CreateExpenseCommandHandlerTests : BaseTest
         
         _expenseTypeRepository.GetAsync(expenseTypeId, Arg.Any<CancellationToken>()).Returns(expenseType);
         _expenseRepository.ExistsByNameAndExpenseTypeAsync(name, expenseTypeId, Arg.Any<CancellationToken>()).Returns(false);
-        _timeProvider.GetUtcNow().Returns(createdAtUtc);
+        _timeProvider.UtcNow().Returns(createdAtUtc);
 
         // Act
         Result<ExpenseDto> result = await _handler.Handle(command, CancellationToken.None);
@@ -179,7 +180,7 @@ public sealed class CreateExpenseCommandHandlerTests : BaseTest
         _expenseTypeRepository.GetAsync(expenseTypeId2, Arg.Any<CancellationToken>()).Returns(expenseType2);
         _expenseRepository.ExistsByNameAndExpenseTypeAsync(name, expenseTypeId1, Arg.Any<CancellationToken>()).Returns(false);
         _expenseRepository.ExistsByNameAndExpenseTypeAsync(name, expenseTypeId2, Arg.Any<CancellationToken>()).Returns(false);
-        _timeProvider.GetUtcNow().Returns(createdAtUtc);
+        _timeProvider.UtcNow().Returns(createdAtUtc);
 
         // Act
         Result<ExpenseDto> result1 = await _handler.Handle(command1, CancellationToken.None);
@@ -233,7 +234,7 @@ public sealed class CreateExpenseCommandHandlerTests : BaseTest
         
         _expenseTypeRepository.GetAsync(expenseTypeId, Arg.Any<CancellationToken>()).Returns(expenseType);
         _expenseRepository.ExistsByNameAndExpenseTypeAsync(name, expenseTypeId, Arg.Any<CancellationToken>()).Returns(false);
-        _timeProvider.GetUtcNow().Returns(createdAtUtc);
+        _timeProvider.UtcNow().Returns(createdAtUtc);
 
         // Act
         Result<ExpenseDto> result = await _handler.Handle(command, CancellationToken.None);
@@ -260,7 +261,7 @@ public sealed class CreateExpenseCommandHandlerTests : BaseTest
         
         _expenseTypeRepository.GetAsync(expenseTypeId, Arg.Any<CancellationToken>()).Returns(expenseType);
         _expenseRepository.ExistsByNameAndExpenseTypeAsync(name, expenseTypeId, Arg.Any<CancellationToken>()).Returns(false);
-        _timeProvider.GetUtcNow().Returns(createdAtUtc);
+        _timeProvider.UtcNow().Returns(createdAtUtc);
 
         // Act
         Result<ExpenseDto> result = await _handler.Handle(command, CancellationToken.None);
@@ -283,7 +284,7 @@ public sealed class CreateExpenseCommandHandlerTests : BaseTest
         
         _expenseTypeRepository.GetAsync(expenseTypeId, Arg.Any<CancellationToken>()).Returns(expenseType);
         _expenseRepository.ExistsByNameAndExpenseTypeAsync(name, expenseTypeId, Arg.Any<CancellationToken>()).Returns(false);
-        _timeProvider.GetUtcNow().Returns(createdAtUtc);
+        _timeProvider.UtcNow().Returns(createdAtUtc);
 
         // Act
         Result<ExpenseDto> result = await _handler.Handle(command, CancellationToken.None);

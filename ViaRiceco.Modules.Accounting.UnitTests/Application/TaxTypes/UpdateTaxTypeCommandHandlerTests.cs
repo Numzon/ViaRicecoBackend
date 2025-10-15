@@ -1,5 +1,6 @@
 using FluentAssertions;
 using NSubstitute;
+using ViaRiceco.Common.Application.Extensions;
 using ViaRiceco.Common.Domain.Models;
 using ViaRiceco.Modules.Accounting.Application.Abstractions.Data;
 using ViaRiceco.Modules.Accounting.Application.TaxTypes.Models;
@@ -39,7 +40,7 @@ public sealed class UpdateTaxTypeCommandHandlerTests : BaseTest
 
         _repository.GetAsync(taxTypeId, Arg.Any<CancellationToken>()).Returns(taxType);
         _repository.ExistsByNameAsync(newName, taxTypeId, Arg.Any<CancellationToken>()).Returns(false);
-        _timeProvider.GetUtcNow().Returns(updatedAtUtc);
+        _timeProvider.UtcNow().Returns(updatedAtUtc);
 
         // Act
         Result<TaxTypeDto> result = await _handler.Handle(command, CancellationToken.None);
@@ -113,7 +114,7 @@ public sealed class UpdateTaxTypeCommandHandlerTests : BaseTest
 
         _repository.GetAsync(taxTypeId, Arg.Any<CancellationToken>()).Returns(taxType);
         _repository.ExistsByNameAsync(newName, taxTypeId, Arg.Any<CancellationToken>()).Returns(false);
-        _timeProvider.GetUtcNow().Returns(updatedAtUtc);
+        _timeProvider.UtcNow().Returns(updatedAtUtc);
 
         // Act
         Result<TaxTypeDto> result = await _handler.Handle(command, CancellationToken.None);
@@ -164,7 +165,7 @@ public sealed class UpdateTaxTypeCommandHandlerTests : BaseTest
 
         _repository.GetAsync(taxTypeId, Arg.Any<CancellationToken>()).Returns(taxType);
         _repository.ExistsByNameAsync(newName, taxTypeId, Arg.Any<CancellationToken>()).Returns(false);
-        _timeProvider.GetUtcNow().Returns(expectedUpdatedAt);
+        _timeProvider.UtcNow().Returns(expectedUpdatedAt);
 
         // Act
         Result<TaxTypeDto> result = await _handler.Handle(command, CancellationToken.None);
@@ -191,7 +192,7 @@ public sealed class UpdateTaxTypeCommandHandlerTests : BaseTest
 
         _repository.GetAsync(taxTypeId, Arg.Any<CancellationToken>()).Returns(taxType);
         _repository.ExistsByNameAsync(newName, taxTypeId, Arg.Any<CancellationToken>()).Returns(false);
-        _timeProvider.GetUtcNow().Returns(updatedAtUtc);
+        _timeProvider.UtcNow().Returns(updatedAtUtc);
 
         // Act
         Result<TaxTypeDto> result = await _handler.Handle(command, CancellationToken.None);
@@ -241,7 +242,7 @@ public sealed class UpdateTaxTypeCommandHandlerTests : BaseTest
 
         _repository.GetAsync(taxTypeId, Arg.Any<CancellationToken>()).Returns(taxType);
         _repository.ExistsByNameAsync(sameName, taxTypeId, Arg.Any<CancellationToken>()).Returns(false);
-        _timeProvider.GetUtcNow().Returns(updatedAtUtc);
+        _timeProvider.UtcNow().Returns(updatedAtUtc);
 
         // Act
         Result<TaxTypeDto> result = await _handler.Handle(command, CancellationToken.None);
