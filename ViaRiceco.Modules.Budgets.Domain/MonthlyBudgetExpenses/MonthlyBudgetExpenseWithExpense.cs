@@ -6,3 +6,4 @@ public sealed record MonthlyBudgetExpenseWithExpense(
     string ExpenseId,
     string ExpenseTypeId,
     string? InvestmentStrategyId);
+

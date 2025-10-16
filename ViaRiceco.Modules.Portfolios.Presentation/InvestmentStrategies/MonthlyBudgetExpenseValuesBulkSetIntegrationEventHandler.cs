@@ -31,10 +31,7 @@ internal sealed class MonthlyBudgetExpenseValuesBulkSetIntegrationEventHandler(
         
         await unitOfWork.SaveChangesAsync(cancellationToken);
     }
-
-    /// <summary>
-    /// Updates or creates InvestedCashHistory records for the given expense updates
-    /// </summary>
+    
     private async Task UpdateInvestedCashHistoryRecordsAsync(
         IReadOnlyCollection<ExpenseValueUpdateIntegrationModel> expenseUpdates,
         string investmentStrategyId,
@@ -46,10 +43,7 @@ internal sealed class MonthlyBudgetExpenseValuesBulkSetIntegrationEventHandler(
             await UpdateOrCreateInvestedCashHistoryAsync(expenseUpdate, investmentStrategyId, updatedAtUtc, cancellationToken);
         }
     }
-
-    /// <summary>
-    /// Updates existing InvestedCashHistory record or creates a new one if it doesn't exist
-    /// </summary>
+    
     private async Task UpdateOrCreateInvestedCashHistoryAsync(
         ExpenseValueUpdateIntegrationModel expenseUpdate,
         string investmentStrategyId,
@@ -79,11 +73,7 @@ internal sealed class MonthlyBudgetExpenseValuesBulkSetIntegrationEventHandler(
             investedCashHistoryRepository.Insert(newRecord);
         }
     }
-
-    /// <summary>
-    /// Recalculates and updates the UninvestedAmount for the investment strategy
-    /// Formula: Total Invested Cash - Money Spent on Stocks
-    /// </summary>
+    
     private async Task RecalculateAndUpdateUninvestedAmountAsync(
         string investmentStrategyId,
         DateTime updatedAtUtc,
@@ -97,22 +87,18 @@ internal sealed class MonthlyBudgetExpenseValuesBulkSetIntegrationEventHandler(
 
         if (strategy == null)
         {
-            return; // Strategy not found, nothing to update
+            return;
         }
 
         decimal uninvestedAmount = CalculateUninvestedAmount(totalInvestedCash, strategy.TotalInvestedAmount);
         
         strategy.UpdateUninvestedAmount(uninvestedAmount, updatedAtUtc);
     }
-
-    /// <summary>
-    /// Calculates uninvested amount ensuring it never goes negative
-    /// </summary>
+    
     private static decimal CalculateUninvestedAmount(decimal totalInvestedCash, decimal totalInvestedAmount)
     {
         decimal uninvestedAmount = totalInvestedCash - totalInvestedAmount;
         
-        // Ensure uninvested amount doesn't go negative
         return Math.Max(uninvestedAmount, 0m);
     }
 }

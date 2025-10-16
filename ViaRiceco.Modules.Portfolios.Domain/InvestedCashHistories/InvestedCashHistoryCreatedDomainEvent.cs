@@ -15,3 +15,4 @@ public sealed class InvestedCashHistoryCreatedDomainEvent(
     public decimal Amount { get; init; } = amount;
     public DateTime CreatedAtUtc { get; init; } = createdAtUtc;
 }
+

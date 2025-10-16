@@ -54,3 +54,4 @@ internal sealed class BulkSetExpenseValuesEndpoint(ISender sender)
         await Send.ResultAsync(result.Match(Results.NoContent, ApiResults.Problem));
     }
 }
+    

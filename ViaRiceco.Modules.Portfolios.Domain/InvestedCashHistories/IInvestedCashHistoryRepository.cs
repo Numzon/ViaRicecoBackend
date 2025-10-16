@@ -9,3 +9,4 @@ public interface IInvestedCashHistoryRepository
     void Insert(InvestedCashHistory investedCashHistory);
     void Delete(InvestedCashHistory investedCashHistory);
 }
+

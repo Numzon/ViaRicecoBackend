@@ -40,3 +40,4 @@ internal sealed class InvestedCashHistoryConfiguration : IEntityTypeConfiguratio
                .IsUnique();
     }
 }
+

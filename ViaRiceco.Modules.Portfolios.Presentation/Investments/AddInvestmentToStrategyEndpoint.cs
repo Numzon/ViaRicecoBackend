@@ -9,14 +9,13 @@ using ViaRiceco.Common.Application.Services.DataShapers;
 using ViaRiceco.Common.Application.Services.Hyperlinks;
 using ViaRiceco.Common.Domain.Models;
 using ViaRiceco.Common.Presentation.Abstractions.Headers;
-using ViaRiceco.Common.Presentation.Enumerations;
 using ViaRiceco.Common.Presentation.Results;
 using ViaRiceco.Modules.Portfolios.Application.InvestmentStrategies.AddInvestmentToStrategy;
 using ViaRiceco.Modules.Portfolios.Application.InvestmentStrategies.Models;
 using ViaRiceco.Modules.Portfolios.Presentation.Enumerations;
 using ViaRiceco.Modules.Portfolios.Presentation.InvestmentStrategies.Hyperlinks;
 
-namespace ViaRiceco.Modules.Portfolios.Presentation.InvestmentStrategies;
+namespace ViaRiceco.Modules.Portfolios.Presentation.Investments;
 
 internal sealed class AddInvestmentToStrategyEndpoint(ISender sender, IHyperlinkService hyperlinkService, IDataShapingService dataShapingService)
     : Ep.Req<AddInvestmentToStrategyEndpoint.Request>.Res<Result<InvestmentStrategyDto>>
@@ -35,7 +34,7 @@ internal sealed class AddInvestmentToStrategyEndpoint(ISender sender, IHyperlink
         Description(d => d.WithName(nameof(AddInvestmentToStrategyEndpoint)));
         
         Options(x => x
-            .WithVersionSet(CustomVersionSets.InvestmentStrategies)
+            .WithVersionSet(CustomVersionSets.Investments)
             .MapToApiVersion(1.0));
     }
 
