@@ -27,13 +27,6 @@ public sealed class InvestedCashHistory : Entity
             CreatedAtUtc = createdAtUtc
         };
 
-        investedCashHistory.Raise(new InvestedCashHistoryCreatedDomainEvent(
-            investedCashHistory.Id,
-            investmentStrategyId,
-            monthlyBudgetExpenseId,
-            amount,
-            createdAtUtc));
-
         return investedCashHistory;
     }
 
@@ -46,12 +39,5 @@ public sealed class InvestedCashHistory : Entity
 
         Amount = amount;
         UpdatedAtUtc = updatedAtUtc;
-
-        Raise(new InvestedCashHistoryAmountUpdatedDomainEvent(
-            Id,
-            InvestmentStrategyId,
-            MonthlyBudgetExpenseId,
-            amount,
-            updatedAtUtc));
     }
 }

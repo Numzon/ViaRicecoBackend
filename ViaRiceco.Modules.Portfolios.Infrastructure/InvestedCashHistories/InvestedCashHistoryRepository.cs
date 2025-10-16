@@ -51,3 +51,4 @@ internal sealed class InvestedCashHistoryRepository(PortfoliosDbContext context)
         context.InvestedCashHistories.Remove(investedCashHistory);
     }
 }
+

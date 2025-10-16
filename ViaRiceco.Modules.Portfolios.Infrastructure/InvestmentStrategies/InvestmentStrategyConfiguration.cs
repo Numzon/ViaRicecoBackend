@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using ViaRiceco.Modules.Portfolios.Domain.Investments;
 using ViaRiceco.Modules.Portfolios.Domain.InvestmentStrategies;
 
 namespace ViaRiceco.Modules.Portfolios.Infrastructure.InvestmentStrategies;
@@ -40,6 +39,16 @@ internal sealed class InvestmentStrategyConfiguration : IEntityTypeConfiguration
         builder.HasMany(strategy => strategy.Investments)
                .WithOne()
                .HasForeignKey(i => i.InvestmentStrategyId)
+               .OnDelete(DeleteBehavior.Cascade);
+
+        // Configure relationship with InvestedCashHistories collection using the backing field
+        builder.Navigation(strategy => strategy.InvestedCashHistories)
+               .HasField("_investedCashHistories")
+               .UsePropertyAccessMode(PropertyAccessMode.Field);
+               
+        builder.HasMany(strategy => strategy.InvestedCashHistories)
+               .WithOne()
+               .HasForeignKey(h => h.InvestmentStrategyId)
                .OnDelete(DeleteBehavior.Cascade);
 
         // Index on financial goal for efficient queries

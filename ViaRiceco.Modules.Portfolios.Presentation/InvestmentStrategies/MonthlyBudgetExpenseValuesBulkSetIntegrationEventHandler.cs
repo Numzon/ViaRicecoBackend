@@ -27,7 +27,9 @@ internal sealed class MonthlyBudgetExpenseValuesBulkSetIntegrationEventHandler(
 
         await UpdateInvestedCashHistoryRecordsAsync(integrationEvent.ExpenseValueUpdates, investmentStrategyId, now, cancellationToken);
         
-        await RecalculateAndUpdateUninvestedAmountAsync(investmentStrategyId, now, cancellationToken);
+        // Notify that invested cash histories were updated - triggers single recalculation
+        InvestmentStrategy? strategy = await investmentStrategyRepository.GetAsync(investmentStrategyId, cancellationToken);
+        strategy?.NotifyInvestedCashHistoriesUpdated(now);
         
         await unitOfWork.SaveChangesAsync(cancellationToken);
     }
@@ -40,65 +42,28 @@ internal sealed class MonthlyBudgetExpenseValuesBulkSetIntegrationEventHandler(
     {
         foreach (ExpenseValueUpdateIntegrationModel expenseUpdate in expenseUpdates)
         {
-            await UpdateOrCreateInvestedCashHistoryAsync(expenseUpdate, investmentStrategyId, updatedAtUtc, cancellationToken);
-        }
-    }
-    
-    private async Task UpdateOrCreateInvestedCashHistoryAsync(
-        ExpenseValueUpdateIntegrationModel expenseUpdate,
-        string investmentStrategyId,
-        DateTime updatedAtUtc,
-        CancellationToken cancellationToken)
-    {
-        InvestedCashHistory? existingRecord = await investedCashHistoryRepository
-            .GetByInvestmentStrategyAndMonthlyBudgetExpenseAsync(
-                investmentStrategyId, 
-                expenseUpdate.MonthlyBudgetExpenseId, 
-                cancellationToken);
+            InvestedCashHistory? existingRecord = await investedCashHistoryRepository
+                .GetByInvestmentStrategyAndMonthlyBudgetExpenseAsync(
+                    investmentStrategyId, 
+                    expenseUpdate.MonthlyBudgetExpenseId, 
+                    cancellationToken);
 
-        decimal amount = expenseUpdate.Value ?? 0m;
+            decimal amount = expenseUpdate.Value ?? 0m;
 
-        if (existingRecord != null)
-        {
-            existingRecord.UpdateAmount(amount, updatedAtUtc);
-        }
-        else
-        {
-            var newRecord = InvestedCashHistory.Create(
-                investmentStrategyId,
-                expenseUpdate.MonthlyBudgetExpenseId,
-                amount,
-                updatedAtUtc);
+            if (existingRecord != null)
+            {
+                existingRecord.UpdateAmount(amount, updatedAtUtc);
+            }
+            else
+            {
+                var newRecord = InvestedCashHistory.Create(
+                    investmentStrategyId,
+                    expenseUpdate.MonthlyBudgetExpenseId,
+                    amount,
+                    updatedAtUtc);
             
-            investedCashHistoryRepository.Insert(newRecord);
+                investedCashHistoryRepository.Insert(newRecord);
+            }
         }
-    }
-    
-    private async Task RecalculateAndUpdateUninvestedAmountAsync(
-        string investmentStrategyId,
-        DateTime updatedAtUtc,
-        CancellationToken cancellationToken)
-    {
-        decimal totalInvestedCash = await investedCashHistoryRepository
-            .GetTotalInvestedCashByInvestmentStrategyAsync(investmentStrategyId, cancellationToken);
-
-        InvestmentStrategy? strategy = await investmentStrategyRepository
-            .GetAsync(investmentStrategyId, cancellationToken);
-
-        if (strategy == null)
-        {
-            return;
-        }
-
-        decimal uninvestedAmount = CalculateUninvestedAmount(totalInvestedCash, strategy.TotalInvestedAmount);
-        
-        strategy.UpdateUninvestedAmount(uninvestedAmount, updatedAtUtc);
-    }
-    
-    private static decimal CalculateUninvestedAmount(decimal totalInvestedCash, decimal totalInvestedAmount)
-    {
-        decimal uninvestedAmount = totalInvestedCash - totalInvestedAmount;
-        
-        return Math.Max(uninvestedAmount, 0m);
     }
 }

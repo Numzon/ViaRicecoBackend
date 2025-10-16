@@ -1,11 +1,13 @@
 ﻿using ViaRiceco.Common.Domain.Models;
 using ViaRiceco.Modules.Portfolios.Domain.Investments;
+using ViaRiceco.Modules.Portfolios.Domain.InvestedCashHistories;
 
 namespace ViaRiceco.Modules.Portfolios.Domain.InvestmentStrategies;
 
 public sealed class InvestmentStrategy : Entity
 {
     private readonly List<Investment> _investments = [];
+    private readonly List<InvestedCashHistory> _investedCashHistories = [];
 
     private InvestmentStrategy()
     {
@@ -16,10 +18,12 @@ public sealed class InvestmentStrategy : Entity
     public decimal UninvestedAmount { get; private set; } // Free amount that can be used to buy new assets
 
     public IReadOnlyCollection<Investment> Investments => _investments.AsReadOnly();
+    public IReadOnlyCollection<InvestedCashHistory> InvestedCashHistories => _investedCashHistories.AsReadOnly();
     
     // Calculated properties
     public decimal TotalInvestedAmount => _investments.Sum(i => i.InvestedAmount);
     public decimal TotalCurrentAmount => _investments.Sum(i => i.CurrentAmount);
+    public decimal TotalInvestedCash => _investedCashHistories.Sum(h => h.Amount);
     public decimal TotalAmount => TotalCurrentAmount + UninvestedAmount;
 
     public static InvestmentStrategy Create(
@@ -53,6 +57,12 @@ public sealed class InvestmentStrategy : Entity
         UpdatedAtUtc = updatedAtUtc;
 
         Raise(new InvestmentStrategyUninvestedAmountUpdatedDomainEvent(Id, UninvestedAmount, updatedAtUtc));
+    }
+
+    public void NotifyInvestedCashHistoriesUpdated(DateTime updatedAtUtc)
+    {
+        UpdatedAtUtc = updatedAtUtc;
+        Raise(new InvestedCashHistoriesUpdatedDomainEvent(Id, updatedAtUtc));
     }
 
     public Result<Investment> AddInvestment(

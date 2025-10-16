@@ -1,18 +1,17 @@
-﻿using ViaRiceco.Common.Application.Extensions;
+using ViaRiceco.Common.Application.Extensions;
 using ViaRiceco.Common.Application.Messaging;
 using ViaRiceco.Modules.Portfolios.Application.Abstractions.Data;
-using ViaRiceco.Modules.Portfolios.Domain.Investments;
 using ViaRiceco.Modules.Portfolios.Domain.InvestmentStrategies;
 
-namespace ViaRiceco.Modules.Portfolios.Application.InvestmentStrategies.UninvestedMoneyUsed;
+namespace ViaRiceco.Modules.Portfolios.Application.InvestmentStrategies.InvestedCashHistoriesUpdated;
 
-internal sealed class UninvestedMoneyUsedDomainEventHandler(
+internal sealed class InvestedCashHistoriesUpdatedDomainEventHandler(
     TimeProvider timeProvider,
     IUnitOfWork unitOfWork,
     IInvestmentStrategyRepository investmentStrategyRepository)
-    : DomainEventHandler<PurchaseRecordAddedToInvestmentDomainEvent>
+    : DomainEventHandler<InvestedCashHistoriesUpdatedDomainEvent>
 {
-    public override async Task Handle(PurchaseRecordAddedToInvestmentDomainEvent domainEvent, CancellationToken cancellationToken = default)
+    public override async Task Handle(InvestedCashHistoriesUpdatedDomainEvent domainEvent, CancellationToken cancellationToken = default)
     {
         InvestmentStrategy? strategy = await investmentStrategyRepository
             .GetAsync(domainEvent.InvestmentStrategyId, cancellationToken);
@@ -31,3 +30,4 @@ internal sealed class UninvestedMoneyUsedDomainEventHandler(
         return Math.Max(totalInvestedCash - totalInvestedAmount, 0m);
     }
 }
+
