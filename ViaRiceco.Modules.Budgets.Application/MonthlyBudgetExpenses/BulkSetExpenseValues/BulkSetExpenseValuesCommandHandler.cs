@@ -6,7 +6,7 @@ using ViaRiceco.Common.Domain.Models;
 using ViaRiceco.Modules.Budgets.Application.Abstractions.Data;
 using ViaRiceco.Modules.Budgets.Domain.MonthlyBudgets;
 
-namespace ViaRiceco.Modules.Budgets.Application.MonthlyBudgets.BulkSetExpenseValues;
+namespace ViaRiceco.Modules.Budgets.Application.MonthlyBudgetExpenses.BulkSetExpenseValues;
 
 public sealed record BulkSetExpenseValuesCommand(string MonthlyBudgetId, IReadOnlyCollection<ExpenseValueUpdateDto> ExpenseValueUpdates) : ICommand;
 

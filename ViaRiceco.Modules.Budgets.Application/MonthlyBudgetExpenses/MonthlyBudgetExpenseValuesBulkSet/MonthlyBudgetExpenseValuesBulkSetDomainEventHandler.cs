@@ -4,7 +4,7 @@ using ViaRiceco.Modules.Budgets.Domain.MonthlyBudgetExpenses;
 using ViaRiceco.Modules.Budgets.Domain.MonthlyBudgets;
 using ViaRiceco.Modules.Budgets.IntegrationEvents.MonthlyBudgets;
 
-namespace ViaRiceco.Modules.Budgets.Application.MonthlyBudgets.MonthlyBudgetExpenseValuesBulkSet;
+namespace ViaRiceco.Modules.Budgets.Application.MonthlyBudgetExpenses.MonthlyBudgetExpenseValuesBulkSet;
 
 public sealed class MonthlyBudgetExpenseValuesBulkSetDomainEventHandler(
     IEventBus eventBus,

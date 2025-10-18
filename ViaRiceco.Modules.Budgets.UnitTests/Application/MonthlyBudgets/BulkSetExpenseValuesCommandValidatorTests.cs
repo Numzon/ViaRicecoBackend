@@ -1,5 +1,5 @@
 using FluentAssertions;
-using ViaRiceco.Modules.Budgets.Application.MonthlyBudgets.BulkSetExpenseValues;
+using ViaRiceco.Modules.Budgets.Application.MonthlyBudgetExpenses.BulkSetExpenseValues;
 using ViaRiceco.Modules.Budgets.UnitTests.Abstractions;
 
 namespace ViaRiceco.Modules.Budgets.UnitTests.Application.MonthlyBudgets;

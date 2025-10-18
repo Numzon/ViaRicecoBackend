@@ -3,7 +3,7 @@ using NSubstitute;
 using ViaRiceco.Common.Application.Extensions;
 using ViaRiceco.Common.Domain.Models;
 using ViaRiceco.Modules.Budgets.Application.Abstractions.Data;
-using ViaRiceco.Modules.Budgets.Application.MonthlyBudgets.BulkSetExpenseValues;
+using ViaRiceco.Modules.Budgets.Application.MonthlyBudgetExpenses.BulkSetExpenseValues;
 using ViaRiceco.Modules.Budgets.Domain.MonthlyBudgets;
 using ViaRiceco.Modules.Budgets.Domain.MonthlyBudgetExpenses;
 using ViaRiceco.Modules.Budgets.Domain.Expenses;

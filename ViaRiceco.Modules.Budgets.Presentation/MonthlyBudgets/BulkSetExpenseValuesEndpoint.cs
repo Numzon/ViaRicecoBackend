@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using ViaRiceco.Common.Domain.Models;
 using ViaRiceco.Common.Presentation.Results;
-using ViaRiceco.Modules.Budgets.Application.MonthlyBudgets.BulkSetExpenseValues;
+using ViaRiceco.Modules.Budgets.Application.MonthlyBudgetExpenses.BulkSetExpenseValues;
 using ViaRiceco.Modules.Budgets.Presentation.Enumerations;
 
 namespace ViaRiceco.Modules.Budgets.Presentation.MonthlyBudgets;
