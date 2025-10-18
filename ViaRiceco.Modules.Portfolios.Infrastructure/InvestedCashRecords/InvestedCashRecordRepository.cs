@@ -12,6 +12,12 @@ internal sealed class InvestedCashRecordRepository(PortfoliosDbContext context) 
             .FirstOrDefaultAsync(ic => ic.Id == id, cancellationToken);
     }
 
+    public Task<InvestedCashRecord?> GetByMonthlyBudgetExpenseIdAsync(string monthlyBudgetExpenseId, CancellationToken cancellationToken = default)
+    {
+        return context.InvestedCashRecords
+            .FirstOrDefaultAsync(ic => ic.MonthlyBudgetExpenseId == monthlyBudgetExpenseId, cancellationToken);
+    }
+
     public Task<InvestedCashRecord?> GetByInvestmentStrategyAndMonthlyBudgetExpenseAsync(
         string investmentStrategyId, 
         string monthlyBudgetExpenseId, 

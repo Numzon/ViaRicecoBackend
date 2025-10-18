@@ -6,6 +6,7 @@ using ViaRiceco.Common.Domain.Models;
 using ViaRiceco.Modules.Budgets.Application.Abstractions.Data;
 using ViaRiceco.Modules.Budgets.Application.MonthlyBudgetExpenses.Models;
 using ViaRiceco.Modules.Budgets.Application.MonthlyBudgets.Models;
+using ViaRiceco.Modules.Budgets.Domain.MonthlyBudgetExpenses;
 using ViaRiceco.Modules.Budgets.Domain.MonthlyBudgets;
 
 namespace ViaRiceco.Modules.Budgets.Application.MonthlyBudgetExpenses.RemoveMonthlyBudgetExpense;
@@ -28,7 +29,7 @@ internal sealed class RemoveMonthlyBudgetExpenseCommandHandler(
         {
             return Result.Failure<MonthlyBudgetDto>(MonthlyBudgetErrors.NotFound(request.MonthlyBudgetId));
         }
-        
+
         Result result = monthlyBudget.RemoveExpense(request.MonthlyBudgetExpenseId, timeProvider.UtcNow());
 
         if (result.IsFailure)
