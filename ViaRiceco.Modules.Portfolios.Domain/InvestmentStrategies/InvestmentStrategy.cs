@@ -177,7 +177,7 @@ public sealed class InvestmentStrategy : Entity
         foreach (KeyValuePair<string, decimal> record in investedCashRecords)
         {
             InvestedCashRecord? existingRecord =
-                _investedCashRecords.Find(i => i.MonthlyBudgetExpenseId == record.Key);
+_investedCashRecords.Find(i => i.MonthlyBudgetExpenseId == record.Key);
 
             if (existingRecord != null)
             {
@@ -200,6 +200,23 @@ public sealed class InvestmentStrategy : Entity
         Raise(new InvestmentStrategyBalanceUpdatedDomainEvent(Id, now));
 
         return Result.Success(InvestedCashRecords);
+    }
+
+    public Result RemoveInvestedCashRecord(string monthlyBudgetExpenseId, DateTime now)
+    {
+        InvestedCashRecord? investedCashRecord = _investedCashRecords.Find(i => i.MonthlyBudgetExpenseId == monthlyBudgetExpenseId);
+
+        if (investedCashRecord == null)
+        {
+            return Result.Success();
+        }
+
+        _investedCashRecords.Remove(investedCashRecord);
+        UpdateUninvestedAmount(now);
+
+        Raise(new InvestmentStrategyBalanceUpdatedDomainEvent(Id, now));
+
+        return Result.Success();
     }
 
     public Result RemovePurchaseRecordFromInvestment(string investmentId, string purchaseRecordId, DateTime now)

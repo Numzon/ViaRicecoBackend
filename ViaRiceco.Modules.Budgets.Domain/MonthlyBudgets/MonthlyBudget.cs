@@ -151,23 +151,23 @@ public sealed class MonthlyBudget : Entity
         return Result.Success();
     }
 
-    public Result RemoveExpense(string expenseId, DateTime removedAtUtc)
+    public Result RemoveExpense(string monthlyBudgetExpenseId, DateTime removedAtUtc)
     {
         if (!IsDraft)
         {
             return Result.Success(); 
         }
 
-        MonthlyBudgetExpense? expense = _expenses.Find(e => e.ExpenseId == expenseId);
+        MonthlyBudgetExpense? expense = _expenses.Find(e => e.Id == monthlyBudgetExpenseId);
         if (expense == null)
         {
-            return Result.Failure(MonthlyBudgetErrors.ExpenseNotFound(expenseId));
+            return Result.Failure(MonthlyBudgetErrors.ExpenseNotFound(monthlyBudgetExpenseId));
         }
 
         _expenses.Remove(expense);
         UpdatedAtUtc = removedAtUtc;
 
-        Raise(new ExpenseRemovedFromMonthlyBudgetDomainEvent(Id, expenseId, removedAtUtc));
+        Raise(new ExpenseRemovedFromMonthlyBudgetDomainEvent(Id, monthlyBudgetExpenseId, removedAtUtc));
 
         return Result.Success();
     }

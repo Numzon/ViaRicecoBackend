@@ -18,7 +18,6 @@ internal sealed class DeleteMonthlyBudgetIntegrationEventCommandHandler(
 
         if (monthlyBudget is null)
         {
-            // If MonthlyBudget doesn't exist, consider it success (idempotent)
             return Result.Success();
         }
 

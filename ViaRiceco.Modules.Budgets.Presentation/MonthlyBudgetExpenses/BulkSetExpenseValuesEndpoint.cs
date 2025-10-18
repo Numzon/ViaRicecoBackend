@@ -38,7 +38,7 @@ internal sealed class BulkSetExpenseValuesEndpoint(ISender sender)
         });
         
         Options(x => x
-            .WithVersionSet(CustomVersionSets.MonthlyBudgets)
+            .WithVersionSet(CustomVersionSets.MonthlyBudgetsExpenses)
             .MapToApiVersion(1.0));
     }
 

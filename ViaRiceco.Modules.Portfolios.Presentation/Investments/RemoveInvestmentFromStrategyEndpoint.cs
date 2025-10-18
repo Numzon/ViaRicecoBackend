@@ -9,7 +9,6 @@ using ViaRiceco.Common.Application.Services.DataShapers;
 using ViaRiceco.Common.Application.Services.Hyperlinks;
 using ViaRiceco.Common.Domain.Models;
 using ViaRiceco.Common.Presentation.Abstractions.Headers;
-using ViaRiceco.Common.Presentation.Enumerations;
 using ViaRiceco.Common.Presentation.Results;
 using ViaRiceco.Modules.Portfolios.Application.Investments.RemoveInvestment;
 using ViaRiceco.Modules.Portfolios.Application.InvestmentStrategies.Models;
