@@ -42,7 +42,8 @@ internal sealed class GetPurchaseRecordQueryHandler(
             purchaseRecord.PricePerUnit,
             purchaseRecord.TotalPrice,
             purchaseRecord.CurrencyId,
-            purchaseRecord.InvestmentId);
+            purchaseRecord.InvestmentId,
+            purchaseRecord.CurrencyConvertValue);
 
         return dto;
     }

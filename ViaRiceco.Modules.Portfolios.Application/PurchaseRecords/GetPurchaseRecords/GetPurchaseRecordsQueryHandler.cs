@@ -67,7 +67,8 @@ internal sealed class GetPurchaseRecordsQueryHandler(
                 record.PricePerUnit,
                 record.TotalPrice,
                 record.CurrencyId,
-                record.InvestmentId)).ToList();
+                record.InvestmentId,
+                record.CurrencyConvertValue)).ToList();
 
         int totalCount = await repository.CountAsync(
             baseQueryParameters, 

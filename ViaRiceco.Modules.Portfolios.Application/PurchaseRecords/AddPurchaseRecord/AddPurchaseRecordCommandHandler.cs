@@ -17,7 +17,8 @@ public sealed record AddPurchaseRecordToInvestmentCommand(
     DateTime PurchaseDate,
     decimal Amount,
     decimal PricePerUnit,
-    string CurrencyId) : ICommand<PurchaseRecordDto>;
+    string CurrencyId,
+    decimal? CurrencyConvertValue) : ICommand<PurchaseRecordDto>;
 
 internal sealed class AddPurchaseRecordCommandHandler(
     IInvestmentStrategyRepository investmentStrategyRepository,
@@ -49,6 +50,7 @@ internal sealed class AddPurchaseRecordCommandHandler(
             request.Amount,
             request.PricePerUnit,
             request.CurrencyId,
+            request.CurrencyConvertValue,
             timeProvider.UtcNow());
 
         if (addResult.IsFailure)
@@ -65,7 +67,8 @@ internal sealed class AddPurchaseRecordCommandHandler(
             addResult.Value.PricePerUnit,
             addResult.Value.TotalPrice,
             addResult.Value.CurrencyId,
-            addResult.Value.InvestmentId);
+            addResult.Value.InvestmentId,
+            addResult.Value.CurrencyConvertValue);
 
         return dto;
     }
@@ -97,5 +100,10 @@ internal sealed class
             .NotEmpty()
             .LessThanOrEqualTo(DateTime.UtcNow)
             .WithMessage("Purchase date cannot be in the future");
+
+        RuleFor(x => x.CurrencyConvertValue)
+            .GreaterThan(0)
+            .When(x => x.CurrencyConvertValue.HasValue)
+            .WithMessage("Currency convert value must be greater than zero when provided");
     }
 }

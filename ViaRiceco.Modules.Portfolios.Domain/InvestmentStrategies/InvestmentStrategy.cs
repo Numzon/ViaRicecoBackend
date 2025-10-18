@@ -247,6 +247,7 @@ _investedCashRecords.Find(i => i.MonthlyBudgetExpenseId == record.Key);
         decimal amount,
         decimal pricePerUnit,
         string currencyId,
+        decimal? currencyConvertValue,
         DateTime now)
     {
         Investment? investment = _investments.Find(i => i.Id == investmentId);
@@ -257,7 +258,7 @@ _investedCashRecords.Find(i => i.MonthlyBudgetExpenseId == record.Key);
         }
 
         Result<PurchaseRecord> result =
-            investment.AddPurchaseRecord(purchaseDate, amount, pricePerUnit, currencyId, UninvestedAmount, now);
+            investment.AddPurchaseRecord(purchaseDate, amount, pricePerUnit, currencyId, UninvestedAmount, currencyConvertValue, now);
 
         if (result.IsFailure)
         {
@@ -278,6 +279,7 @@ _investedCashRecords.Find(i => i.MonthlyBudgetExpenseId == record.Key);
         decimal amount,
         decimal pricePerUnit,
         string currencyId,
+        decimal? currencyConvertValue,
         DateTime now)
     {
         Investment? investment = _investments.Find(i => i.Id == investmentId);
@@ -288,7 +290,7 @@ _investedCashRecords.Find(i => i.MonthlyBudgetExpenseId == record.Key);
         }
 
         Result<PurchaseRecord> result =
-            investment.UpdatePurchaseRecord(purchaseRecordId, purchaseDate, amount, pricePerUnit, currencyId, UninvestedAmount, now);
+            investment.UpdatePurchaseRecord(purchaseRecordId, purchaseDate, amount, pricePerUnit, currencyId, UninvestedAmount, currencyConvertValue, now);
         
         if (result.IsFailure)
         {

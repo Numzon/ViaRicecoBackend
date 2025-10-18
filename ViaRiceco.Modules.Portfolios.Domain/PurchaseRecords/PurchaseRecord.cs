@@ -14,6 +14,7 @@ public sealed class PurchaseRecord : Entity
     public decimal TotalPrice { get; private set; }
     public string CurrencyId { get; private set; } = string.Empty;
     public string InvestmentId { get; private set; } = string.Empty;
+    public decimal? CurrencyConvertValue { get; private set; }
 
     public static Result<PurchaseRecord> Create(
         DateTime purchaseDate,
@@ -22,13 +23,13 @@ public sealed class PurchaseRecord : Entity
         string currencyId,
         string investmentId,
         decimal uninvestedAmount,
+        decimal? currencyConvertValue,
         DateTime createdAtUtc)
     {
-        // Calculate total price to ensure consistency
-        decimal totalPrice = amount * pricePerUnit;
+        decimal totalPrice = CalculateTotalPrice(amount, pricePerUnit, currencyConvertValue);
 
         Result validationResult = ValidateCreateParameters(purchaseDate, amount, pricePerUnit, currencyId, investmentId,
-            totalPrice, uninvestedAmount);
+            totalPrice, uninvestedAmount, currencyConvertValue);
         if (validationResult.IsFailure)
         {
             return Result.Failure<PurchaseRecord>(validationResult.Error);
@@ -43,6 +44,7 @@ public sealed class PurchaseRecord : Entity
             TotalPrice = totalPrice,
             CurrencyId = currencyId,
             InvestmentId = investmentId,
+            CurrencyConvertValue = currencyConvertValue,
             CreatedAtUtc = createdAtUtc
         };
 
@@ -57,21 +59,23 @@ public sealed class PurchaseRecord : Entity
         decimal pricePerUnit,
         string currencyId,
         decimal uninvestedAmount,
+        decimal? currencyConvertValue,
         DateTime updatedAtUtc)
     {
         Result validationResult =
-            ValidateUpdateParameters(purchaseDate, amount, pricePerUnit, uninvestedAmount, currencyId);
+            ValidateUpdateParameters(purchaseDate, amount, pricePerUnit, uninvestedAmount, currencyId, currencyConvertValue);
         if (validationResult.IsFailure)
         {
             return Result.Failure<PurchaseRecord>(validationResult.Error);
         }
 
-        decimal totalPrice = amount * pricePerUnit;
+        decimal totalPrice = CalculateTotalPrice(amount, pricePerUnit, currencyConvertValue);
 
         if (PurchaseDate == purchaseDate &&
             Amount == amount &&
             PricePerUnit == pricePerUnit &&
-            CurrencyId == currencyId)
+            CurrencyId == currencyId &&
+            CurrencyConvertValue == currencyConvertValue)
         {
             return Result.Success(this);
         }
@@ -81,6 +85,7 @@ public sealed class PurchaseRecord : Entity
         PricePerUnit = pricePerUnit;
         TotalPrice = totalPrice;
         CurrencyId = currencyId;
+        CurrencyConvertValue = currencyConvertValue;
         UpdatedAtUtc = updatedAtUtc;
 
         Raise(new PurchaseRecordUpdatedDomainEvent(
@@ -90,6 +95,7 @@ public sealed class PurchaseRecord : Entity
             PricePerUnit,
             TotalPrice,
             CurrencyId,
+            CurrencyConvertValue,
             updatedAtUtc));
 
         return Result.Success(this);
@@ -102,7 +108,8 @@ public sealed class PurchaseRecord : Entity
         string currencyId,
         string investmentId,
         decimal totalPrice,
-        decimal uninvestedAmount)
+        decimal uninvestedAmount,
+        decimal? currencyConvertValue)
     {
         if (!PurchaseRecordSpecification.IsValidAmount(amount))
         {
@@ -129,6 +136,11 @@ public sealed class PurchaseRecord : Entity
             return Result.Failure(PurchaseRecordErrors.InvalidInvestment(investmentId));
         }
 
+        if (currencyConvertValue.HasValue && currencyConvertValue.Value <= 0)
+        {
+            return Result.Failure(PurchaseRecordErrors.InvalidCurrencyConvertValue(currencyConvertValue.Value));
+        }
+
         // Business rule: Purchase cost cannot exceed available uninvested amount
         if (!PurchaseRecordSpecification.HasSufficientUninvestedAmount(totalPrice, uninvestedAmount))
         {
@@ -143,7 +155,8 @@ public sealed class PurchaseRecord : Entity
         decimal amount,
         decimal pricePerUnit,
         decimal uninvestedAmount,
-        string currencyId)
+        string currencyId,
+        decimal? currencyConvertValue)
     {
         if (!PurchaseRecordSpecification.IsValidAmount(amount))
         {
@@ -165,12 +178,26 @@ public sealed class PurchaseRecord : Entity
             return Result.Failure(PurchaseRecordErrors.InvalidCurrency(currencyId));
         }
 
-        decimal totalPrice = amount * pricePerUnit;
+        if (currencyConvertValue.HasValue && currencyConvertValue.Value <= 0)
+        {
+            return Result.Failure(PurchaseRecordErrors.InvalidCurrencyConvertValue(currencyConvertValue.Value));
+        }
+
+        decimal totalPrice = CalculateTotalPrice(amount, pricePerUnit, currencyConvertValue);
+
         if (!PurchaseRecordSpecification.HasSufficientUninvestedAmount(totalPrice, uninvestedAmount))
         {
             return Result.Failure(PurchaseRecordErrors.InsufficientUninvestedAmount(totalPrice, uninvestedAmount));
         }
 
         return Result.Success();
+    }
+
+    private static decimal CalculateTotalPrice(decimal amount, decimal pricePerUnit, decimal? currencyConvertValue)
+    {
+        // When currency conversion is provided, multiply by the conversion rate
+        return currencyConvertValue.HasValue
+            ? amount * pricePerUnit * currencyConvertValue.Value
+            : amount * pricePerUnit;
     }
 }

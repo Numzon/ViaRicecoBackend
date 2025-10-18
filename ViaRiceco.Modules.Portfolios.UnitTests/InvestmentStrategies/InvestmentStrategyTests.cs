@@ -468,8 +468,8 @@ public sealed class InvestmentStrategyTests : BaseTest
         Investment investment2 = addResult2.Value;
 
         // Act - Add purchase records to investments
-        investment1.AddPurchaseRecord(Faker.Date.PastOffset().UtcDateTime, 100m, 150m, currencyId, 50000.0m, purchaseCreatedAtUtc).IsSuccess.Should().BeTrue(); // 15,000
-        investment2.AddPurchaseRecord(Faker.Date.PastOffset().UtcDateTime, 80m, 100m, currencyId, 50000.0m, purchaseCreatedAtUtc).IsSuccess.Should().BeTrue();  // 8,000
+        investment1.AddPurchaseRecord(Faker.Date.PastOffset().UtcDateTime, 100m, 150m, currencyId, 50000.0m, null, purchaseCreatedAtUtc).IsSuccess.Should().BeTrue(); // 15,000
+        investment2.AddPurchaseRecord(Faker.Date.PastOffset().UtcDateTime, 80m, 100m, currencyId, 50000.0m, null, purchaseCreatedAtUtc).IsSuccess.Should().BeTrue();  // 8,000
 
         // Assert
         strategy.TotalInvestedAmount.Should().Be(23000m); // 15,000 + 8,000

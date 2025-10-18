@@ -91,6 +91,7 @@ public sealed class Investment : Entity
         decimal pricePerUnit,
         string currencyId,
         decimal uninvestedAmount,
+        decimal? currencyConvertValue,
         DateTime createdAtUtc)
     {
         Result<PurchaseRecord> createResult = PurchaseRecord.Create(
@@ -100,6 +101,7 @@ public sealed class Investment : Entity
             currencyId,
             Id,
             uninvestedAmount,
+            currencyConvertValue,
             createdAtUtc);
 
         if (createResult.IsFailure)
@@ -134,6 +136,7 @@ public sealed class Investment : Entity
         decimal pricePerUnit,
         string currencyId,
         decimal uninvestedAmount,
+        decimal? currencyConvertValue,
         DateTime now)
     {
         PurchaseRecord? purchaseRecord = _purchaseRecords.Find(i => i.Id == purchaseRecordId);
@@ -143,7 +146,7 @@ public sealed class Investment : Entity
             return Result.Failure<PurchaseRecord>(InvestmentErrors.PurchaseRecordNotFound(purchaseRecordId));
         }
         
-        Result<PurchaseRecord> result = purchaseRecord.Update(purchaseDate, amount, pricePerUnit, currencyId, uninvestedAmount, now);
+        Result<PurchaseRecord> result = purchaseRecord.Update(purchaseDate, amount, pricePerUnit, currencyId, uninvestedAmount, currencyConvertValue, now);
         
         if (result.IsFailure)
         {

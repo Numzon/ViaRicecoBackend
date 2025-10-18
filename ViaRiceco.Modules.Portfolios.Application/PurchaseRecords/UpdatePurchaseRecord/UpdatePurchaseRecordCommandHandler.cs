@@ -18,7 +18,8 @@ public sealed record UpdatePurchaseRecordCommand(
     DateTime PurchaseDate,
     decimal Amount,
     decimal PricePerUnit,
-    string CurrencyId) : ICommand<PurchaseRecordDto>;
+    string CurrencyId,
+    decimal? CurrencyConvertValue) : ICommand<PurchaseRecordDto>;
 
 internal sealed class UpdatePurchaseRecordCommandHandler(
     IInvestmentStrategyRepository investmentStrategyRepository,
@@ -46,7 +47,7 @@ internal sealed class UpdatePurchaseRecordCommandHandler(
 
         Result<PurchaseRecord> result = investmentStrategy.UpdatePurchaseRecordOfGivenInvestment(
             request.InvestmentId, request.PurchaseRecordId, request.PurchaseDate, request.Amount, request.PricePerUnit,
-            request.CurrencyId, timeProvider.UtcNow());
+            request.CurrencyId, request.CurrencyConvertValue, timeProvider.UtcNow());
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
@@ -57,7 +58,8 @@ internal sealed class UpdatePurchaseRecordCommandHandler(
             result.Value.PricePerUnit,
             result.Value.TotalPrice,
             result.Value.CurrencyId,
-            result.Value.InvestmentId);
+            result.Value.InvestmentId,
+            result.Value.CurrencyConvertValue);
 
         return dto;
     }
@@ -88,5 +90,10 @@ internal sealed class UpdatePurchaseRecordCommandValidator : AbstractValidator<U
             .NotEmpty()
             .LessThanOrEqualTo(DateTime.UtcNow)
             .WithMessage("Purchase date cannot be in the future");
+
+        RuleFor(x => x.CurrencyConvertValue)
+            .GreaterThan(0)
+            .When(x => x.CurrencyConvertValue.HasValue)
+            .WithMessage("Currency convert value must be greater than zero when provided");
     }
 }

@@ -9,6 +9,7 @@ public sealed class PurchaseRecordUpdatedDomainEvent(
     decimal pricePerUnit, 
     decimal totalPrice, 
     string currencyId, 
+    decimal? currencyConvertValue,
     DateTime updatedAtUtc) : DomainEvent
 {
     public string RecordId { get; init; } = recordId;
@@ -17,5 +18,6 @@ public sealed class PurchaseRecordUpdatedDomainEvent(
     public decimal PricePerUnit { get; init; } = pricePerUnit;
     public decimal TotalPrice { get; init; } = totalPrice;
     public string CurrencyId { get; init; } = currencyId;
+    public decimal? CurrencyConvertValue { get; init; } = currencyConvertValue;
     public DateTime UpdatedAtUtc { get; init; } = updatedAtUtc;
 }
