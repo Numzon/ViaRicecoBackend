@@ -12,7 +12,7 @@ using ViaRiceco.Modules.Portfolios.Domain.FinancialGoals;
 using ViaRiceco.Modules.Portfolios.Domain.Investments;
 using ViaRiceco.Modules.Portfolios.Domain.InvestmentStrategies;
 using ViaRiceco.Modules.Portfolios.Domain.InvestmentStrategyTypes;
-using ViaRiceco.Modules.Portfolios.Domain.InvestedCashHistories;
+using ViaRiceco.Modules.Portfolios.Domain.InvestedCashRecords;
 using ViaRiceco.Modules.Portfolios.Domain.Inbox;
 using ViaRiceco.Modules.Portfolios.Domain.Outbox;
 using ViaRiceco.Modules.Portfolios.Domain.PurchaseRecords;
@@ -22,7 +22,7 @@ using ViaRiceco.Modules.Portfolios.Infrastructure.FinancialGoals;
 using ViaRiceco.Modules.Portfolios.Infrastructure.Investments;
 using ViaRiceco.Modules.Portfolios.Infrastructure.InvestmentStrategies;
 using ViaRiceco.Modules.Portfolios.Infrastructure.InvestmentStrategyTypes;
-using ViaRiceco.Modules.Portfolios.Infrastructure.InvestedCashHistories;
+using ViaRiceco.Modules.Portfolios.Infrastructure.InvestedCashRecords;
 using ViaRiceco.Modules.Portfolios.Infrastructure.Inbox;
 using ViaRiceco.Modules.Portfolios.Infrastructure.Outbox;
 using ViaRiceco.Modules.Portfolios.Infrastructure.PurchaseRecords;
@@ -72,7 +72,7 @@ public static class PortfoliosModule
         services.AddScoped<IPurchaseRecordRepository, PurchaseRecordRepository>();
         services.AddScoped<IInvestmentRepository, InvestmentRepository>();
         services.AddScoped<IInvestmentStrategyRepository, InvestmentStrategyRepository>();
-        services.AddScoped<IInvestedCashHistoryRepository, InvestedCashHistoryRepository>();
+        services.AddScoped<IInvestedCashRecordRepository, InvestedCashRecordRepository>();
         services.AddScoped<IOutboxMessageRepository, OutboxMessageRepository>();
         services.AddScoped<IOutboxMessageConsumerRepository, OutboxMessageConsumerRepository>();
         

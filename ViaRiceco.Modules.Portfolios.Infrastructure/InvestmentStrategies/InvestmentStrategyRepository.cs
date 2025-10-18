@@ -12,7 +12,7 @@ internal sealed class InvestmentStrategyRepository(PortfoliosDbContext context) 
         return context.InvestmentStrategies
             .Include(strategy => strategy.Investments)
                 .ThenInclude(investment => investment.PurchaseRecords)
-            .Include(strategy => strategy.InvestedCashHistories)
+            .Include(strategy => strategy.InvestedCashRecords)
             .FirstOrDefaultAsync(strategy => strategy.Id == id, cancellationToken);
     }
 
@@ -21,7 +21,7 @@ internal sealed class InvestmentStrategyRepository(PortfoliosDbContext context) 
         return await context.InvestmentStrategies
             .Include(strategy => strategy.Investments)
                 .ThenInclude(investment => investment.PurchaseRecords)
-            .Include(strategy => strategy.InvestedCashHistories)
+            .Include(strategy => strategy.InvestedCashRecords)
             .Where(strategy => strategy.FinancialGoalId == financialGoalId)
             .ToListAsync(cancellationToken);
     }
@@ -31,7 +31,7 @@ internal sealed class InvestmentStrategyRepository(PortfoliosDbContext context) 
         return await context.InvestmentStrategies
             .Include(strategy => strategy.Investments)
                 .ThenInclude(investment => investment.PurchaseRecords)
-            .Include(strategy => strategy.InvestedCashHistories)
+            .Include(strategy => strategy.InvestedCashRecords)
             .Where(strategy => strategy.InvestmentStrategyTypeId == strategyTypeId)
             .ToListAsync(cancellationToken);
     }
@@ -42,7 +42,7 @@ internal sealed class InvestmentStrategyRepository(PortfoliosDbContext context) 
         IQueryable<InvestmentStrategy> query = context.InvestmentStrategies
             .Include(strategy => strategy.Investments)
                 .ThenInclude(investment => investment.PurchaseRecords)
-            .Include(strategy => strategy.InvestedCashHistories)
+            .Include(strategy => strategy.InvestedCashRecords)
             .AsQueryable();
 
         // Apply filters - search is limited since there's no name on InvestmentStrategy

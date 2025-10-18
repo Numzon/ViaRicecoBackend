@@ -1,14 +1,14 @@
 using Microsoft.EntityFrameworkCore;
-using ViaRiceco.Modules.Portfolios.Domain.InvestedCashHistories;
+using ViaRiceco.Modules.Portfolios.Domain.InvestedCashRecords;
 using ViaRiceco.Modules.Portfolios.Infrastructure.Database;
 
-namespace ViaRiceco.Modules.Portfolios.Infrastructure.InvestedCashHistories;
+namespace ViaRiceco.Modules.Portfolios.Infrastructure.InvestedCashRecords;
 
-internal sealed class InvestedCashHistoryRepository(PortfoliosDbContext context) : IInvestedCashHistoryRepository
+internal sealed class InvestedCashRecordRepository(PortfoliosDbContext context) : IInvestedCashRecordRepository
 {
     public Task<InvestedCashRecord?> GetAsync(string id, CancellationToken cancellationToken = default)
     {
-        return context.InvestedCashHistories
+        return context.InvestedCashRecords
             .FirstOrDefaultAsync(ic => ic.Id == id, cancellationToken);
     }
 
@@ -17,7 +17,7 @@ internal sealed class InvestedCashHistoryRepository(PortfoliosDbContext context)
         string monthlyBudgetExpenseId, 
         CancellationToken cancellationToken = default)
     {
-        return context.InvestedCashHistories
+        return context.InvestedCashRecords
             .FirstOrDefaultAsync(ic => ic.InvestmentStrategyId == investmentStrategyId && 
                                      ic.MonthlyBudgetExpenseId == monthlyBudgetExpenseId, 
                                cancellationToken);
@@ -27,7 +27,7 @@ internal sealed class InvestedCashHistoryRepository(PortfoliosDbContext context)
         string investmentStrategyId, 
         CancellationToken cancellationToken = default)
     {
-        return await context.InvestedCashHistories
+        return await context.InvestedCashRecords
             .Where(ic => ic.InvestmentStrategyId == investmentStrategyId)
             .ToListAsync(cancellationToken);
     }
@@ -36,19 +36,19 @@ internal sealed class InvestedCashHistoryRepository(PortfoliosDbContext context)
         string investmentStrategyId, 
         CancellationToken cancellationToken = default)
     {
-        return context.InvestedCashHistories
+        return context.InvestedCashRecords
             .Where(ic => ic.InvestmentStrategyId == investmentStrategyId)
             .SumAsync(ic => ic.Amount, cancellationToken);
     }
 
     public void Insert(InvestedCashRecord investedCashRecord)
     {
-        context.InvestedCashHistories.Add(investedCashRecord);
+        context.InvestedCashRecords.Add(investedCashRecord);
     }
 
     public void Delete(InvestedCashRecord investedCashRecord)
     {
-        context.InvestedCashHistories.Remove(investedCashRecord);
+        context.InvestedCashRecords.Remove(investedCashRecord);
     }
 }
 

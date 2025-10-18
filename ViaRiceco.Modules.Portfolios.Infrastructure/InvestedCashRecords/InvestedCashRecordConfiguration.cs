@@ -1,10 +1,10 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using ViaRiceco.Modules.Portfolios.Domain.InvestedCashHistories;
+using ViaRiceco.Modules.Portfolios.Domain.InvestedCashRecords;
 
-namespace ViaRiceco.Modules.Portfolios.Infrastructure.InvestedCashHistories;
+namespace ViaRiceco.Modules.Portfolios.Infrastructure.InvestedCashRecords;
 
-internal sealed class InvestedCashHistoryConfiguration : IEntityTypeConfiguration<InvestedCashRecord>
+internal sealed class InvestedCashRecordConfiguration : IEntityTypeConfiguration<InvestedCashRecord>
 {
     public void Configure(EntityTypeBuilder<InvestedCashRecord> builder)
     {

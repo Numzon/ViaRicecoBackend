@@ -1,14 +1,14 @@
 ﻿using System.Transactions;
 using ViaRiceco.Common.Domain.Models;
 using ViaRiceco.Modules.Portfolios.Domain.Investments;
-using ViaRiceco.Modules.Portfolios.Domain.InvestedCashHistories;
+using ViaRiceco.Modules.Portfolios.Domain.InvestedCashRecords;
 
 namespace ViaRiceco.Modules.Portfolios.Domain.InvestmentStrategies;
 
 public sealed class InvestmentStrategy : Entity
 {
     private readonly List<Investment> _investments = [];
-    private readonly List<InvestedCashRecord> _investedCashHistories = [];
+    private readonly List<InvestedCashRecord> _investedCashRecords = [];
 
     private InvestmentStrategy()
     {
@@ -19,12 +19,12 @@ public sealed class InvestmentStrategy : Entity
     public decimal UninvestedAmount { get; private set; } // Free amount that can be used to buy new assets
 
     public IReadOnlyCollection<Investment> Investments => _investments.AsReadOnly();
-    public IReadOnlyCollection<InvestedCashRecord> InvestedCashHistories => _investedCashHistories.AsReadOnly();
-
+    public IReadOnlyCollection<InvestedCashRecord> InvestedCashRecords => _investedCashRecords.AsReadOnly();
+    
     // Calculated properties
     public decimal TotalInvestedAmount => _investments.Sum(i => i.InvestedAmount);
     public decimal TotalCurrentAmount => _investments.Sum(i => i.CurrentAmount);
-    public decimal TotalInvestedCash => _investedCashHistories.Sum(h => h.Amount);
+    public decimal TotalInvestedCash => _investedCashRecords.Sum(h => h.Amount);
     public decimal TotalAmount => TotalCurrentAmount + UninvestedAmount;
 
     public static InvestmentStrategy Create(
@@ -176,7 +176,7 @@ public sealed class InvestmentStrategy : Entity
         foreach (KeyValuePair<string, decimal> record in investedCashRecords)
         {
             InvestedCashRecord? existingRecord =
-                _investedCashHistories.Find(i => i.MonthlyBudgetExpenseId == record.Key);
+                _investedCashRecords.Find(i => i.MonthlyBudgetExpenseId == record.Key);
 
             if (existingRecord != null)
             {
@@ -190,12 +190,18 @@ public sealed class InvestmentStrategy : Entity
                     record.Value,
                     now);
 
-                _investedCashHistories.Add(newRecord);
+                _investedCashRecords.Add(newRecord);
             }
         }
 
         Raise(new InvestmentStrategyBalanceUpdatedDomainEvent(Id, now));
         
-        return Result.Success(InvestedCashHistories);
+        return Result.Success(InvestedCashRecords);
+    }
+    
+    public void NotifyInvestedCashRecordsUpdated(DateTime updatedAtUtc)
+    {
+        UpdatedAtUtc = updatedAtUtc;
+        Raise(new InvestedCashRecordsUpdatedDomainEvent(Id, updatedAtUtc));
     }
 }

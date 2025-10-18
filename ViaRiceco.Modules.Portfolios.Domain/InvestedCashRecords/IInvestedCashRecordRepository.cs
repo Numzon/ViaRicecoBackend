@@ -1,6 +1,6 @@
-namespace ViaRiceco.Modules.Portfolios.Domain.InvestedCashHistories;
+namespace ViaRiceco.Modules.Portfolios.Domain.InvestedCashRecords;
 
-public interface IInvestedCashHistoryRepository
+public interface IInvestedCashRecordRepository
 {
     Task<InvestedCashRecord?> GetAsync(string id, CancellationToken cancellationToken = default);
     Task<InvestedCashRecord?> GetByInvestmentStrategyAndMonthlyBudgetExpenseAsync(string investmentStrategyId, string monthlyBudgetExpenseId, CancellationToken cancellationToken = default);

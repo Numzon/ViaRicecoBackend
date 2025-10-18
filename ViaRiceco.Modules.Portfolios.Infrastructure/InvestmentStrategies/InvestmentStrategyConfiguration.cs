@@ -41,12 +41,12 @@ internal sealed class InvestmentStrategyConfiguration : IEntityTypeConfiguration
                .HasForeignKey(i => i.InvestmentStrategyId)
                .OnDelete(DeleteBehavior.Cascade);
 
-        // Configure relationship with InvestedCashHistories collection using the backing field
-        builder.Navigation(strategy => strategy.InvestedCashHistories)
-               .HasField("_investedCashHistories")
+        // Configure relationship with InvestedCashRecords collection using the backing field
+        builder.Navigation(strategy => strategy.InvestedCashRecords)
+               .HasField("_investedCashRecords")
                .UsePropertyAccessMode(PropertyAccessMode.Field);
                
-        builder.HasMany(strategy => strategy.InvestedCashHistories)
+        builder.HasMany(strategy => strategy.InvestedCashRecords)
                .WithOne()
                .HasForeignKey(h => h.InvestmentStrategyId)
                .OnDelete(DeleteBehavior.Cascade);

@@ -1,6 +1,6 @@
 using ViaRiceco.Common.Domain.Models;
 
-namespace ViaRiceco.Modules.Portfolios.Domain.InvestedCashHistories;
+namespace ViaRiceco.Modules.Portfolios.Domain.InvestedCashRecords;
 
 public sealed class InvestedCashRecord : Entity
 {
@@ -18,16 +18,16 @@ public sealed class InvestedCashRecord : Entity
         decimal amount,
         DateTime createdAtUtc)
     {
-        var investedCashHistory = new InvestedCashRecord
+        var investedCashRecord = new InvestedCashRecord
         {
-            Id = $"ich_{Guid.NewGuid()}",
+            Id = $"icr_{Guid.NewGuid()}",
             InvestmentStrategyId = investmentStrategyId,
             MonthlyBudgetExpenseId = monthlyBudgetExpenseId,
             Amount = amount,
             CreatedAtUtc = createdAtUtc
         };
 
-        return investedCashHistory;
+        return investedCashRecord;
     }
 
     public void UpdateAmount(decimal amount, DateTime updatedAtUtc)
@@ -41,3 +41,4 @@ public sealed class InvestedCashRecord : Entity
         UpdatedAtUtc = updatedAtUtc;
     }
 }
+
