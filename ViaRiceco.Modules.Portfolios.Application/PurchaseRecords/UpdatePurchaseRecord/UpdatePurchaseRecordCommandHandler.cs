@@ -6,60 +6,30 @@ using ViaRiceco.Common.Domain.Models;
 using ViaRiceco.Modules.Portfolios.Application.Abstractions.Data;
 using ViaRiceco.Modules.Portfolios.Application.PurchaseRecords.Models;
 using ViaRiceco.Modules.Portfolios.Domain.Currencies;
-using ViaRiceco.Modules.Portfolios.Domain.PurchaseRecords;
 using ViaRiceco.Modules.Portfolios.Domain.InvestmentStrategies;
-using ViaRiceco.Modules.Portfolios.Domain.Investments;
+using ViaRiceco.Modules.Portfolios.Domain.PurchaseRecords;
 
 namespace ViaRiceco.Modules.Portfolios.Application.PurchaseRecords.UpdatePurchaseRecord;
 
 public sealed record UpdatePurchaseRecordCommand(
     string InvestmentStrategyId,
     string InvestmentId,
-    string Id,
+    string PurchaseRecordId,
     DateTime PurchaseDate,
     decimal Amount,
     decimal PricePerUnit,
     string CurrencyId) : ICommand<PurchaseRecordDto>;
 
 internal sealed class UpdatePurchaseRecordCommandHandler(
-    IPurchaseRecordRepository repository,
     IInvestmentStrategyRepository investmentStrategyRepository,
-    IInvestmentRepository investmentRepository,
     ICurrencyRepository currencyRepository,
     IUnitOfWork unitOfWork,
     TimeProvider timeProvider)
     : ICommandHandler<UpdatePurchaseRecordCommand, PurchaseRecordDto>
 {
-    public async Task<Result<PurchaseRecordDto>> Handle(UpdatePurchaseRecordCommand request, CancellationToken cancellationToken)
+    public async Task<Result<PurchaseRecordDto>> Handle(UpdatePurchaseRecordCommand request,
+        CancellationToken cancellationToken)
     {
-        InvestmentStrategy? investmentStrategy = await investmentStrategyRepository.GetAsync(request.InvestmentStrategyId, cancellationToken);
-        if (investmentStrategy is null)
-        {
-            return Result.Failure<PurchaseRecordDto>(InvestmentStrategyErrors.NotFound(request.InvestmentStrategyId));
-        }
-
-        Investment? investment = await investmentRepository.GetAsync(request.InvestmentId, cancellationToken);
-        if (investment is null)
-        {
-            return Result.Failure<PurchaseRecordDto>(InvestmentErrors.NotFound(request.InvestmentId));
-        }
-
-        if (investment.InvestmentStrategyId != request.InvestmentStrategyId)
-        {
-            return Result.Failure<PurchaseRecordDto>(InvestmentErrors.NotFound(request.InvestmentId));
-        }
-
-        PurchaseRecord? purchaseRecord = await repository.GetAsync(request.Id, cancellationToken);
-        if (purchaseRecord is null)
-        {
-            return Result.Failure<PurchaseRecordDto>(PurchaseRecordErrors.NotFound(request.Id));
-        }
-
-        if (purchaseRecord.InvestmentId != request.InvestmentId)
-        {
-            return Result.Failure<PurchaseRecordDto>(PurchaseRecordErrors.NotFound(request.Id));
-        }
-
         Currency? currency = await currencyRepository.GetAsync(request.CurrencyId, cancellationToken);
 
         if (currency is null)
@@ -67,23 +37,27 @@ internal sealed class UpdatePurchaseRecordCommandHandler(
             return Result.Failure<PurchaseRecordDto>(CurrencyErrors.NotFound(request.CurrencyId));
         }
 
-        purchaseRecord.Update(
-            request.PurchaseDate,
-            request.Amount,
-            request.PricePerUnit,
-            request.CurrencyId,
-            timeProvider.UtcNow());
+        InvestmentStrategy? investmentStrategy =
+            await investmentStrategyRepository.GetAsync(request.InvestmentStrategyId, cancellationToken);
+        if (investmentStrategy is null)
+        {
+            return Result.Failure<PurchaseRecordDto>(InvestmentStrategyErrors.NotFound(request.InvestmentStrategyId));
+        }
+
+        Result<PurchaseRecord> result = investmentStrategy.UpdatePurchaseRecordOfGivenInvestment(
+            request.InvestmentId, request.PurchaseRecordId, request.PurchaseDate, request.Amount, request.PricePerUnit,
+            request.CurrencyId, timeProvider.UtcNow());
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
         var dto = new PurchaseRecordDto(
-            purchaseRecord.Id,
-            purchaseRecord.PurchaseDate,
-            purchaseRecord.Amount,
-            purchaseRecord.PricePerUnit,
-            purchaseRecord.TotalPrice,
-            purchaseRecord.CurrencyId,
-            purchaseRecord.InvestmentId);
+            result.Value.Id,
+            result.Value.PurchaseDate,
+            result.Value.Amount,
+            result.Value.PricePerUnit,
+            result.Value.TotalPrice,
+            result.Value.CurrencyId,
+            result.Value.InvestmentId);
 
         return dto;
     }
@@ -94,7 +68,7 @@ internal sealed class UpdatePurchaseRecordCommandValidator : AbstractValidator<U
 {
     public UpdatePurchaseRecordCommandValidator()
     {
-        RuleFor(x => x.Id)
+        RuleFor(x => x.PurchaseRecordId)
             .NotEmpty()
             .WithMessage("Purchase record ID is required");
 

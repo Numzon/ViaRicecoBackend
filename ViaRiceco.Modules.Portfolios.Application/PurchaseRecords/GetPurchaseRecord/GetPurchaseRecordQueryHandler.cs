@@ -12,9 +12,7 @@ namespace ViaRiceco.Modules.Portfolios.Application.PurchaseRecords.GetPurchaseRe
 public sealed record GetPurchaseRecordQuery(string InvestmentStrategyId, string InvestmentId, string Id) : IQuery<PurchaseRecordDto>;
 
 internal sealed class GetPurchaseRecordQueryHandler(
-    IPurchaseRecordRepository repository,
-    IInvestmentStrategyRepository investmentStrategyRepository,
-    IInvestmentRepository investmentRepository)
+    IInvestmentStrategyRepository investmentStrategyRepository)
     : IQueryHandler<GetPurchaseRecordQuery, PurchaseRecordDto>
 {
     public async Task<Result<PurchaseRecordDto>> Handle(GetPurchaseRecordQuery request, CancellationToken cancellationToken)
@@ -25,24 +23,14 @@ internal sealed class GetPurchaseRecordQueryHandler(
             return Result.Failure<PurchaseRecordDto>(InvestmentStrategyErrors.NotFound(request.InvestmentStrategyId));
         }
 
-        Investment? investment = await investmentRepository.GetAsync(request.InvestmentId, cancellationToken);
+        Investment? investment = investmentStrategy.Investments.FirstOrDefault(i => i.Id == request.InvestmentId);
         if (investment is null)
         {
             return Result.Failure<PurchaseRecordDto>(InvestmentErrors.NotFound(request.InvestmentId));
         }
 
-        if (investment.InvestmentStrategyId != request.InvestmentStrategyId)
-        {
-            return Result.Failure<PurchaseRecordDto>(InvestmentErrors.NotFound(request.InvestmentId));
-        }
-
-        PurchaseRecord? purchaseRecord = await repository.GetAsync(request.Id, cancellationToken);
+        PurchaseRecord? purchaseRecord = investment.PurchaseRecords.FirstOrDefault(pr => pr.Id == request.Id);
         if (purchaseRecord is null)
-        {
-            return Result.Failure<PurchaseRecordDto>(PurchaseRecordErrors.NotFound(request.Id));
-        }
-
-        if (purchaseRecord.InvestmentId != request.InvestmentId)
         {
             return Result.Failure<PurchaseRecordDto>(PurchaseRecordErrors.NotFound(request.Id));
         }

@@ -2,6 +2,7 @@
 using ViaRiceco.Common.Domain.Models;
 using ViaRiceco.Modules.Portfolios.Domain.Investments;
 using ViaRiceco.Modules.Portfolios.Domain.InvestedCashRecords;
+using ViaRiceco.Modules.Portfolios.Domain.PurchaseRecords;
 
 namespace ViaRiceco.Modules.Portfolios.Domain.InvestmentStrategies;
 
@@ -20,7 +21,7 @@ public sealed class InvestmentStrategy : Entity
 
     public IReadOnlyCollection<Investment> Investments => _investments.AsReadOnly();
     public IReadOnlyCollection<InvestedCashRecord> InvestedCashRecords => _investedCashRecords.AsReadOnly();
-    
+
     // Calculated properties
     public decimal TotalInvestedAmount => _investments.Sum(i => i.InvestedAmount);
     public decimal TotalCurrentAmount => _investments.Sum(i => i.CurrentAmount);
@@ -195,13 +196,90 @@ public sealed class InvestmentStrategy : Entity
         }
 
         Raise(new InvestmentStrategyBalanceUpdatedDomainEvent(Id, now));
-        
+
         return Result.Success(InvestedCashRecords);
     }
-    
-    public void NotifyInvestedCashRecordsUpdated(DateTime updatedAtUtc)
+
+    public Result RemovePurchaseRecordFromInvestment(string investmentId, string purchaseRecordId, DateTime now)
     {
-        UpdatedAtUtc = updatedAtUtc;
-        Raise(new InvestedCashRecordsUpdatedDomainEvent(Id, updatedAtUtc));
+        Investment? investment = _investments.Find(i => i.Id == investmentId);
+        if (investment == null)
+        {
+            return Result.Failure(InvestmentStrategyErrors.InvestmentNotFound(investmentId));
+        }
+
+        Result result = investment.RemovePurchaseRecord(purchaseRecordId, now);
+
+        if (result.IsFailure)
+        {
+            return result;
+        }
+
+        UpdateUninvestedAmount(now);
+
+        Raise(new InvestmentStrategyBalanceUpdatedDomainEvent(Id, now));
+
+        return Result.Success();
+    }
+
+    public Result<PurchaseRecord> AddPurchaseRecordToInvestment(
+        string investmentId,
+        DateTime purchaseDate,
+        decimal amount,
+        decimal pricePerUnit,
+        string currencyId,
+        DateTime now)
+    {
+        Investment? investment = _investments.Find(i => i.Id == investmentId);
+
+        if (investment == null)
+        {
+            return Result.Failure<PurchaseRecord>(InvestmentStrategyErrors.InvestmentNotFound(investmentId));
+        }
+
+        Result<PurchaseRecord> result =
+            investment.AddPurchaseRecord(purchaseDate, amount, pricePerUnit, currencyId, UninvestedAmount, now);
+
+        if (result.IsFailure)
+        {
+            return result;
+        }
+        
+        UpdateUninvestedAmount(now);
+
+        Raise(new InvestmentStrategyBalanceUpdatedDomainEvent(Id, now));
+
+        return Result.Success(result.Value);
+    }
+
+    public Result<PurchaseRecord> UpdatePurchaseRecordOfGivenInvestment(  
+        string investmentId,
+        string purchaseRecordId,
+        DateTime purchaseDate,
+        decimal amount,
+        decimal pricePerUnit,
+        string currencyId,
+        DateTime now)
+    {
+        Investment? investment = _investments.Find(i => i.Id == investmentId);
+
+        if (investment == null)
+        {
+            return Result.Failure<PurchaseRecord>(InvestmentStrategyErrors.InvestmentNotFound(investmentId));
+        }
+
+        Result<PurchaseRecord> result =
+            investment.UpdatePurchaseRecord(purchaseRecordId, purchaseDate, amount, pricePerUnit, currencyId, UninvestedAmount, now);
+        
+        if (result.IsFailure)
+        {
+            return result;
+        }
+        
+        UpdateUninvestedAmount(now);
+
+        Raise(new InvestmentStrategyBalanceUpdatedDomainEvent(Id, now));
+
+        return Result.Success(result.Value);
     }
 }

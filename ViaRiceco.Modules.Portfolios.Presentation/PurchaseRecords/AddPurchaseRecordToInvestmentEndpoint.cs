@@ -10,7 +10,7 @@ using ViaRiceco.Common.Application.Services.Hyperlinks;
 using ViaRiceco.Common.Domain.Models;
 using ViaRiceco.Common.Presentation.Abstractions.Headers;
 using ViaRiceco.Common.Presentation.Results;
-using ViaRiceco.Modules.Portfolios.Application.PurchaseRecords.AddPurchaseRecordToInvestment;
+using ViaRiceco.Modules.Portfolios.Application.PurchaseRecords.AddPurchaseRecord;
 using ViaRiceco.Modules.Portfolios.Application.PurchaseRecords.Models;
 using ViaRiceco.Modules.Portfolios.Presentation.Enumerations;
 using ViaRiceco.Modules.Portfolios.Presentation.PurchaseRecords.Hyperlinks;

@@ -219,6 +219,7 @@ public sealed class PurchaseRecordTests : BaseTest
         DateTime originalPurchaseDate = Faker.Date.PastOffset().UtcDateTime;
         decimal originalAmount = 100m;
         decimal originalPricePerUnit = 25.50m;
+        decimal uninvestedAmount = 1000.50m;
         string originalCurrencyId = $"c_{Guid.NewGuid()}";
         string investmentId = $"i_{Guid.NewGuid()}";
         DateTime createdAtUtc = Faker.Date.PastOffset().UtcDateTime;
@@ -233,7 +234,7 @@ public sealed class PurchaseRecordTests : BaseTest
         PurchaseRecord record = createResult.Value;
 
         // Act
-        Result result = record.Update(newPurchaseDate, newAmount, newPricePerUnit, newCurrencyId, updatedAtUtc);
+        Result result = record.Update(newPurchaseDate, newAmount, newPricePerUnit, newCurrencyId, uninvestedAmount, updatedAtUtc);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -252,6 +253,7 @@ public sealed class PurchaseRecordTests : BaseTest
         DateTime originalPurchaseDate = Faker.Date.PastOffset().UtcDateTime;
         decimal originalAmount = 100m;
         decimal originalPricePerUnit = 25.50m;
+        decimal uninvestedAmount = 1000.50m;
         string originalCurrencyId = $"c_{Guid.NewGuid()}";
         string investmentId = $"i_{Guid.NewGuid()}";
         DateTime createdAtUtc = Faker.Date.PastOffset().UtcDateTime;
@@ -266,7 +268,7 @@ public sealed class PurchaseRecordTests : BaseTest
         PurchaseRecord record = createResult.Value;
 
         // Act
-        Result result = record.Update(newPurchaseDate, newAmount, newPricePerUnit, newCurrencyId, updatedAtUtc);
+        Result result = record.Update(newPurchaseDate, newAmount, newPricePerUnit, newCurrencyId, uninvestedAmount, updatedAtUtc);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -289,6 +291,7 @@ public sealed class PurchaseRecordTests : BaseTest
         decimal pricePerUnit = 25.50m;
         string currencyId = $"c_{Guid.NewGuid()}";
         string investmentId = $"i_{Guid.NewGuid()}";
+        decimal uninvestedAmount = 1000.50m;
         DateTime createdAtUtc = Faker.Date.PastOffset().UtcDateTime;
         DateTime updatedAtUtc = Faker.Date.RecentOffset().UtcDateTime;
 
@@ -297,7 +300,7 @@ public sealed class PurchaseRecordTests : BaseTest
         PurchaseRecord record = createResult.Value;
 
         // Act
-        Result result = record.Update(purchaseDate, amount, pricePerUnit, currencyId, updatedAtUtc);
+        Result result = record.Update(purchaseDate, amount, pricePerUnit, currencyId, uninvestedAmount, updatedAtUtc);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -312,6 +315,7 @@ public sealed class PurchaseRecordTests : BaseTest
         DateTime originalPurchaseDate = Faker.Date.PastOffset().UtcDateTime;
         decimal originalAmount = 100m;
         decimal originalPricePerUnit = 25.50m;
+        decimal uninvestedAmount = 1000.50m;
         string originalCurrencyId = $"c_{Guid.NewGuid()}";
         string investmentId = $"i_{Guid.NewGuid()}";
         DateTime createdAtUtc = Faker.Date.PastOffset().UtcDateTime;
@@ -321,7 +325,7 @@ public sealed class PurchaseRecordTests : BaseTest
         PurchaseRecord record = createResult.Value;
 
         // Act - Try to update with invalid amount
-        Result result = record.Update(originalPurchaseDate, -100m, originalPricePerUnit, originalCurrencyId, updatedAtUtc);
+        Result result = record.Update(originalPurchaseDate, -100m, originalPricePerUnit, originalCurrencyId, uninvestedAmount, updatedAtUtc);
 
         // Assert
         result.IsFailure.Should().BeTrue();
@@ -378,6 +382,7 @@ public sealed class PurchaseRecordTests : BaseTest
         DateTime originalPurchaseDate = Faker.Date.PastOffset().UtcDateTime;
         decimal originalAmount = 100m;
         decimal originalPricePerUnit = 10m;
+        decimal uninvestedAmount = 1000.50m;
         string originalCurrencyId = $"c_{Guid.NewGuid()}";
         string investmentId = $"i_{Guid.NewGuid()}";
         DateTime createdAtUtc = Faker.Date.PastOffset().UtcDateTime;
@@ -391,8 +396,8 @@ public sealed class PurchaseRecordTests : BaseTest
         PurchaseRecord record = createResult.Value;
 
         // Act
-        Result result1 = record.Update(firstUpdateDate, 150m, 15m, originalCurrencyId, firstUpdatedAtUtc);
-        Result result2 = record.Update(secondUpdateDate, 200m, 20m, originalCurrencyId, secondUpdatedAtUtc);
+        Result result1 = record.Update(firstUpdateDate, 150m, 15m, originalCurrencyId, uninvestedAmount, firstUpdatedAtUtc);
+        Result result2 = record.Update(secondUpdateDate, 200m, 20m, originalCurrencyId, uninvestedAmount, secondUpdatedAtUtc);
 
         // Assert
         result1.IsSuccess.Should().BeTrue();

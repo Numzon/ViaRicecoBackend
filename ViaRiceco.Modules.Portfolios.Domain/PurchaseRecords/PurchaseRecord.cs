@@ -16,22 +16,24 @@ public sealed class PurchaseRecord : Entity
     public string InvestmentId { get; private set; } = string.Empty;
 
     public static Result<PurchaseRecord> Create(
-        DateTime purchaseDate, 
-        decimal amount, 
-        decimal pricePerUnit, 
-        string currencyId, 
+        DateTime purchaseDate,
+        decimal amount,
+        decimal pricePerUnit,
+        string currencyId,
         string investmentId,
         decimal uninvestedAmount,
         DateTime createdAtUtc)
     {
         // Calculate total price to ensure consistency
         decimal totalPrice = amount * pricePerUnit;
-        
-        Result validationResult = ValidateCreateParameters(purchaseDate, amount, pricePerUnit, currencyId, investmentId, totalPrice, uninvestedAmount);
+
+        Result validationResult = ValidateCreateParameters(purchaseDate, amount, pricePerUnit, currencyId, investmentId,
+            totalPrice, uninvestedAmount);
         if (validationResult.IsFailure)
         {
             return Result.Failure<PurchaseRecord>(validationResult.Error);
         }
+
         var record = new PurchaseRecord
         {
             Id = $"pr_{Guid.NewGuid()}",
@@ -49,27 +51,29 @@ public sealed class PurchaseRecord : Entity
         return Result.Success(record);
     }
 
-    public Result Update(
-        DateTime purchaseDate, 
-        decimal amount, 
-        decimal pricePerUnit, 
-        string currencyId, 
+    public Result<PurchaseRecord> Update(
+        DateTime purchaseDate,
+        decimal amount,
+        decimal pricePerUnit,
+        string currencyId,
+        decimal uninvestedAmount,
         DateTime updatedAtUtc)
     {
-        Result validationResult = ValidateUpdateParameters(purchaseDate, amount, pricePerUnit, currencyId);
+        Result validationResult =
+            ValidateUpdateParameters(purchaseDate, amount, pricePerUnit, uninvestedAmount, currencyId);
         if (validationResult.IsFailure)
         {
-            return validationResult;
+            return Result.Failure<PurchaseRecord>(validationResult.Error);
         }
 
         decimal totalPrice = amount * pricePerUnit;
-        
-        if (PurchaseDate == purchaseDate && 
-            Amount == amount && 
-            PricePerUnit == pricePerUnit && 
+
+        if (PurchaseDate == purchaseDate &&
+            Amount == amount &&
+            PricePerUnit == pricePerUnit &&
             CurrencyId == currencyId)
         {
-            return Result.Success();
+            return Result.Success(this);
         }
 
         PurchaseDate = purchaseDate;
@@ -80,22 +84,22 @@ public sealed class PurchaseRecord : Entity
         UpdatedAtUtc = updatedAtUtc;
 
         Raise(new PurchaseRecordUpdatedDomainEvent(
-            Id, 
-            PurchaseDate, 
-            Amount, 
-            PricePerUnit, 
-            TotalPrice, 
-            CurrencyId, 
+            Id,
+            PurchaseDate,
+            Amount,
+            PricePerUnit,
+            TotalPrice,
+            CurrencyId,
             updatedAtUtc));
-            
-        return Result.Success();
+
+        return Result.Success(this);
     }
 
     private static Result ValidateCreateParameters(
-        DateTime purchaseDate, 
-        decimal amount, 
-        decimal pricePerUnit, 
-        string currencyId, 
+        DateTime purchaseDate,
+        decimal amount,
+        decimal pricePerUnit,
+        string currencyId,
         string investmentId,
         decimal totalPrice,
         decimal uninvestedAmount)
@@ -104,22 +108,22 @@ public sealed class PurchaseRecord : Entity
         {
             return Result.Failure(PurchaseRecordErrors.InvalidAmount(amount));
         }
-        
+
         if (!PurchaseRecordSpecification.IsValidPricePerUnit(pricePerUnit))
         {
             return Result.Failure(PurchaseRecordErrors.InvalidPricePerUnit(pricePerUnit));
         }
-        
+
         if (!PurchaseRecordSpecification.IsValidPurchaseDate(purchaseDate))
         {
             return Result.Failure(PurchaseRecordErrors.FuturePurchaseDate(purchaseDate));
         }
-        
+
         if (!PurchaseRecordSpecification.IsValidCurrencyId(currencyId))
         {
             return Result.Failure(PurchaseRecordErrors.InvalidCurrency(currencyId));
         }
-        
+
         if (!PurchaseRecordSpecification.IsValidInvestmentId(investmentId))
         {
             return Result.Failure(PurchaseRecordErrors.InvalidInvestment(investmentId));
@@ -135,29 +139,36 @@ public sealed class PurchaseRecord : Entity
     }
 
     private static Result ValidateUpdateParameters(
-        DateTime purchaseDate, 
-        decimal amount, 
-        decimal pricePerUnit, 
+        DateTime purchaseDate,
+        decimal amount,
+        decimal pricePerUnit,
+        decimal uninvestedAmount,
         string currencyId)
     {
         if (!PurchaseRecordSpecification.IsValidAmount(amount))
         {
             return Result.Failure(PurchaseRecordErrors.InvalidAmount(amount));
         }
-        
+
         if (!PurchaseRecordSpecification.IsValidPricePerUnit(pricePerUnit))
         {
             return Result.Failure(PurchaseRecordErrors.InvalidPricePerUnit(pricePerUnit));
         }
-        
+
         if (!PurchaseRecordSpecification.IsValidPurchaseDate(purchaseDate))
         {
             return Result.Failure(PurchaseRecordErrors.FuturePurchaseDate(purchaseDate));
         }
-        
+
         if (!PurchaseRecordSpecification.IsValidCurrencyId(currencyId))
         {
             return Result.Failure(PurchaseRecordErrors.InvalidCurrency(currencyId));
+        }
+
+        decimal totalPrice = amount * pricePerUnit;
+        if (!PurchaseRecordSpecification.HasSufficientUninvestedAmount(totalPrice, uninvestedAmount))
+        {
+            return Result.Failure(PurchaseRecordErrors.InsufficientUninvestedAmount(totalPrice, uninvestedAmount));
         }
 
         return Result.Success();

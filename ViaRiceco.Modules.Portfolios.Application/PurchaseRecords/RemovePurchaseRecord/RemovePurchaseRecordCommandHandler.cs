@@ -4,43 +4,33 @@ using ViaRiceco.Common.Application.Abstractions;
 using ViaRiceco.Common.Application.Extensions;
 using ViaRiceco.Common.Domain.Models;
 using ViaRiceco.Modules.Portfolios.Application.Abstractions.Data;
-using ViaRiceco.Modules.Portfolios.Domain.Investments;
 using ViaRiceco.Modules.Portfolios.Domain.InvestmentStrategies;
 
-namespace ViaRiceco.Modules.Portfolios.Application.PurchaseRecords.RemovePurchaseRecordFromInvestment;
+namespace ViaRiceco.Modules.Portfolios.Application.PurchaseRecords.RemovePurchaseRecord;
 
-public sealed record RemovePurchaseRecordFromInvestmentCommand(
+public sealed record RemovePurchaseRecordCommand(
     string InvestmentStrategyId,
     string InvestmentId,
     string PurchaseRecordId) : ICommand;
 
-internal sealed class RemovePurchaseRecordFromInvestmentCommandHandler(
-    IInvestmentRepository repository,
+internal sealed class RemovePurchaseRecordCommandHandler(
     IInvestmentStrategyRepository investmentStrategyRepository,
     IUnitOfWork unitOfWork,
     TimeProvider timeProvider)
-    : ICommandHandler<RemovePurchaseRecordFromInvestmentCommand>
+    : ICommandHandler<RemovePurchaseRecordCommand>
 {
-    public async Task<Result> Handle(RemovePurchaseRecordFromInvestmentCommand request, CancellationToken cancellationToken)
+    public async Task<Result> Handle(RemovePurchaseRecordCommand request,
+        CancellationToken cancellationToken)
     {
-        InvestmentStrategy? investmentStrategy = await investmentStrategyRepository.GetAsync(request.InvestmentStrategyId, cancellationToken);
+        InvestmentStrategy? investmentStrategy =
+            await investmentStrategyRepository.GetAsync(request.InvestmentStrategyId, cancellationToken);
         if (investmentStrategy is null)
         {
             return Result.Failure(InvestmentStrategyErrors.NotFound(request.InvestmentStrategyId));
         }
 
-        Investment? investment = await repository.GetAsync(request.InvestmentId, cancellationToken);
-        if (investment is null)
-        {
-            return Result.Failure(InvestmentErrors.NotFound(request.InvestmentId));
-        }
-
-        if (investment.InvestmentStrategyId != request.InvestmentStrategyId)
-        {
-            return Result.Failure(InvestmentErrors.NotFound(request.InvestmentId));
-        }
-
-        Result removeResult = investment.RemovePurchaseRecord(request.PurchaseRecordId, timeProvider.UtcNow());
+        Result removeResult = investmentStrategy.RemovePurchaseRecordFromInvestment(request.InvestmentId,
+            request.PurchaseRecordId, timeProvider.UtcNow());
 
         if (removeResult.IsFailure)
         {
@@ -54,7 +44,8 @@ internal sealed class RemovePurchaseRecordFromInvestmentCommandHandler(
 }
 
 [UsedImplicitly]
-internal sealed class RemovePurchaseRecordFromInvestmentCommandValidator : AbstractValidator<RemovePurchaseRecordFromInvestmentCommand>
+internal sealed class
+    RemovePurchaseRecordFromInvestmentCommandValidator : AbstractValidator<RemovePurchaseRecordCommand>
 {
     public RemovePurchaseRecordFromInvestmentCommandValidator()
     {

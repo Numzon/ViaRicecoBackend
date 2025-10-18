@@ -58,6 +58,11 @@ internal sealed class InvestmentRepository(PortfoliosDbContext context) : IInves
         return context.Investments.AnyAsync(i => i.Name == name && i.InvestmentStrategyId == strategyId && i.Id != excludeId, cancellationToken);
     }
 
+    public Task<bool> ExistsWithStrategyAsync(string investmentId, string strategyId, CancellationToken cancellationToken = default)
+    {
+        return context.Investments.AnyAsync(i => i.Id == investmentId && i.InvestmentStrategyId == strategyId, cancellationToken);
+    }
+
     public Task<int> CountAsync(string? search, string? strategyId, CancellationToken cancellationToken = default)
     {
         IQueryable<Investment> query = context.Investments.AsQueryable();

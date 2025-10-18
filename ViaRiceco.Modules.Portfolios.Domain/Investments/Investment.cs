@@ -107,13 +107,10 @@ public sealed class Investment : Entity
             return createResult;
         }
 
-        PurchaseRecord purchaseRecord = createResult.Value;
-        _purchaseRecords.Add(purchaseRecord);
+        _purchaseRecords.Add(createResult.Value);
         UpdatedAtUtc = createdAtUtc;
         
-        Raise(new InvestmentStrategyBalanceUpdatedDomainEvent(InvestmentStrategyId,  createdAtUtc));
-
-        return Result.Success(purchaseRecord);
+        return createResult;
     }
 
     public Result RemovePurchaseRecord(string purchaseRecordId, DateTime updatedAtUtc)
@@ -127,8 +124,34 @@ public sealed class Investment : Entity
         _purchaseRecords.Remove(purchaseRecord);
         UpdatedAtUtc = updatedAtUtc;
 
-        Raise(new InvestmentStrategyBalanceUpdatedDomainEvent(Id, updatedAtUtc));
-
         return Result.Success();
+    }
+
+    public Result<PurchaseRecord> UpdatePurchaseRecord(
+        string purchaseRecordId,
+        DateTime purchaseDate,
+        decimal amount,
+        decimal pricePerUnit,
+        string currencyId,
+        decimal uninvestedAmount,
+        DateTime now)
+    {
+        PurchaseRecord? purchaseRecord = _purchaseRecords.Find(i => i.Id == purchaseRecordId);
+
+        if (purchaseRecord == null)
+        {
+            return Result.Failure<PurchaseRecord>(InvestmentErrors.PurchaseRecordNotFound(purchaseRecordId));
+        }
+        
+        Result<PurchaseRecord> result = purchaseRecord.Update(purchaseDate, amount, pricePerUnit, currencyId, uninvestedAmount, now);
+        
+        if (result.IsFailure)
+        {
+            return result;
+        }
+        
+        UpdatedAtUtc = now;
+        
+        return result;
     }
 }

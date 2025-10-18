@@ -6,11 +6,10 @@ using ViaRiceco.Common.Domain.Models;
 using ViaRiceco.Modules.Portfolios.Application.Abstractions.Data;
 using ViaRiceco.Modules.Portfolios.Application.PurchaseRecords.Models;
 using ViaRiceco.Modules.Portfolios.Domain.Currencies;
-using ViaRiceco.Modules.Portfolios.Domain.Investments;
 using ViaRiceco.Modules.Portfolios.Domain.InvestmentStrategies;
 using ViaRiceco.Modules.Portfolios.Domain.PurchaseRecords;
 
-namespace ViaRiceco.Modules.Portfolios.Application.PurchaseRecords.AddPurchaseRecordToInvestment;
+namespace ViaRiceco.Modules.Portfolios.Application.PurchaseRecords.AddPurchaseRecord;
 
 public sealed record AddPurchaseRecordToInvestmentCommand(
     string InvestmentStrategyId,
@@ -20,33 +19,16 @@ public sealed record AddPurchaseRecordToInvestmentCommand(
     decimal PricePerUnit,
     string CurrencyId) : ICommand<PurchaseRecordDto>;
 
-internal sealed class AddPurchaseRecordToInvestmentCommandHandler(
-    IInvestmentRepository investmentRepository,
+internal sealed class AddPurchaseRecordCommandHandler(
     IInvestmentStrategyRepository investmentStrategyRepository,
     ICurrencyRepository currencyRepository,
     IUnitOfWork unitOfWork,
     TimeProvider timeProvider)
     : ICommandHandler<AddPurchaseRecordToInvestmentCommand, PurchaseRecordDto>
 {
-    public async Task<Result<PurchaseRecordDto>> Handle(AddPurchaseRecordToInvestmentCommand request, CancellationToken cancellationToken)
+    public async Task<Result<PurchaseRecordDto>> Handle(AddPurchaseRecordToInvestmentCommand request,
+        CancellationToken cancellationToken)
     {
-        InvestmentStrategy? investmentStrategy = await investmentStrategyRepository.GetAsync(request.InvestmentStrategyId, cancellationToken);
-        if (investmentStrategy is null)
-        {
-            return Result.Failure<PurchaseRecordDto>(InvestmentStrategyErrors.NotFound(request.InvestmentStrategyId));
-        }
-
-        Investment? investment = await investmentRepository.GetAsync(request.InvestmentId, cancellationToken);
-        if (investment is null)
-        {
-            return Result.Failure<PurchaseRecordDto>(InvestmentErrors.NotFound(request.InvestmentId));
-        }
-
-        if (investment.InvestmentStrategyId != request.InvestmentStrategyId)
-        {
-            return Result.Failure<PurchaseRecordDto>(InvestmentErrors.NotFound(request.InvestmentId));
-        }
-
         Currency? currency = await currencyRepository.GetAsync(request.CurrencyId, cancellationToken);
 
         if (currency is null)
@@ -54,12 +36,19 @@ internal sealed class AddPurchaseRecordToInvestmentCommandHandler(
             return Result.Failure<PurchaseRecordDto>(CurrencyErrors.NotFound(request.CurrencyId));
         }
 
-        Result<PurchaseRecord> addResult = investment.AddPurchaseRecord(
+        InvestmentStrategy? investmentStrategy =
+            await investmentStrategyRepository.GetAsync(request.InvestmentStrategyId, cancellationToken);
+        if (investmentStrategy is null)
+        {
+            return Result.Failure<PurchaseRecordDto>(InvestmentStrategyErrors.NotFound(request.InvestmentStrategyId));
+        }
+
+        Result<PurchaseRecord> addResult = investmentStrategy.AddPurchaseRecordToInvestment(
+            request.InvestmentId,
             request.PurchaseDate,
             request.Amount,
             request.PricePerUnit,
             request.CurrencyId,
-            investmentStrategy.UninvestedAmount,
             timeProvider.UtcNow());
 
         if (addResult.IsFailure)
@@ -83,7 +72,8 @@ internal sealed class AddPurchaseRecordToInvestmentCommandHandler(
 }
 
 [UsedImplicitly]
-internal sealed class AddPurchaseRecordToInvestmentCommandValidator : AbstractValidator<AddPurchaseRecordToInvestmentCommand>
+internal sealed class
+    AddPurchaseRecordToInvestmentCommandValidator : AbstractValidator<AddPurchaseRecordToInvestmentCommand>
 {
     public AddPurchaseRecordToInvestmentCommandValidator()
     {
