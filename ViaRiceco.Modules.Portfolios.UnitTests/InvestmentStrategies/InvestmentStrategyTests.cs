@@ -85,7 +85,7 @@ public sealed class InvestmentStrategyTests : BaseTest
         var strategy = InvestmentStrategy.Create(financialGoalId, investmentStrategyTypeId, originalAmount, createdAtUtc);
 
         // Act
-        strategy.UpdateUninvestedAmount(newAmount, updatedAtUtc);
+        strategy.UpdateUninvestedAmount(updatedAtUtc);
 
         // Assert
         strategy.UninvestedAmount.Should().Be(newAmount);
@@ -107,7 +107,7 @@ public sealed class InvestmentStrategyTests : BaseTest
         var strategy = InvestmentStrategy.Create(financialGoalId, investmentStrategyTypeId, originalAmount, createdAtUtc);
 
         // Act
-        strategy.UpdateUninvestedAmount(newAmount, updatedAtUtc);
+        strategy.UpdateUninvestedAmount(updatedAtUtc);
 
         // Assert
         InvestmentStrategyUninvestedAmountUpdatedDomainEvent domainEvent = AssertDomainEventWasPublished<InvestmentStrategyUninvestedAmountUpdatedDomainEvent>(strategy);
@@ -129,7 +129,7 @@ public sealed class InvestmentStrategyTests : BaseTest
         var strategy = InvestmentStrategy.Create(financialGoalId, investmentStrategyTypeId, amount, createdAtUtc);
 
         // Act
-        strategy.UpdateUninvestedAmount(amount, updatedAtUtc);
+        strategy.UpdateUninvestedAmount(updatedAtUtc);
 
         // Assert
         strategy.DomainEvents.OfType<InvestmentStrategyUninvestedAmountUpdatedDomainEvent>().Should().BeEmpty();

@@ -1,4 +1,5 @@
-﻿using ViaRiceco.Common.Domain.Models;
+﻿using System.Transactions;
+using ViaRiceco.Common.Domain.Models;
 using ViaRiceco.Modules.Portfolios.Domain.Investments;
 using ViaRiceco.Modules.Portfolios.Domain.InvestedCashHistories;
 
@@ -7,7 +8,7 @@ namespace ViaRiceco.Modules.Portfolios.Domain.InvestmentStrategies;
 public sealed class InvestmentStrategy : Entity
 {
     private readonly List<Investment> _investments = [];
-    private readonly List<InvestedCashHistory> _investedCashHistories = [];
+    private readonly List<InvestedCashRecord> _investedCashHistories = [];
 
     private InvestmentStrategy()
     {
@@ -18,8 +19,8 @@ public sealed class InvestmentStrategy : Entity
     public decimal UninvestedAmount { get; private set; } // Free amount that can be used to buy new assets
 
     public IReadOnlyCollection<Investment> Investments => _investments.AsReadOnly();
-    public IReadOnlyCollection<InvestedCashHistory> InvestedCashHistories => _investedCashHistories.AsReadOnly();
-    
+    public IReadOnlyCollection<InvestedCashRecord> InvestedCashHistories => _investedCashHistories.AsReadOnly();
+
     // Calculated properties
     public decimal TotalInvestedAmount => _investments.Sum(i => i.InvestedAmount);
     public decimal TotalCurrentAmount => _investments.Sum(i => i.CurrentAmount);
@@ -27,9 +28,9 @@ public sealed class InvestmentStrategy : Entity
     public decimal TotalAmount => TotalCurrentAmount + UninvestedAmount;
 
     public static InvestmentStrategy Create(
-        string financialGoalId, 
-        string investmentStrategyTypeId, 
-        decimal uninvestedAmount, 
+        string financialGoalId,
+        string investmentStrategyTypeId,
+        decimal uninvestedAmount,
         DateTime createdAtUtc)
     {
         var strategy = new InvestmentStrategy
@@ -46,8 +47,10 @@ public sealed class InvestmentStrategy : Entity
         return strategy;
     }
 
-    public void UpdateUninvestedAmount(decimal uninvestedAmount, DateTime updatedAtUtc)
+    public void UpdateUninvestedAmount(DateTime updatedAtUtc)
     {
+        decimal uninvestedAmount = Math.Max(TotalInvestedCash - TotalInvestedAmount, 0m);
+
         if (UninvestedAmount == uninvestedAmount)
         {
             return;
@@ -59,18 +62,10 @@ public sealed class InvestmentStrategy : Entity
         Raise(new InvestmentStrategyUninvestedAmountUpdatedDomainEvent(Id, UninvestedAmount, updatedAtUtc));
     }
 
-    public void NotifyInvestedCashHistoriesUpdated(DateTime updatedAtUtc)
-    {
-        UpdatedAtUtc = updatedAtUtc;
-        Raise(new InvestedCashHistoriesUpdatedDomainEvent(Id, updatedAtUtc));
-    }
-
     public Result<Investment> AddInvestment(
-        string name, 
+        string name,
         DateTime createdAtUtc)
     {
-        // Business rule: Investments are created with 0% model portfolio percentage
-        // The actual percentages are set later via UpdateInvestmentsModelPercentages
         var investment = Investment.Create(name, Id, createdAtUtc);
         _investments.Add(investment);
         UpdatedAtUtc = createdAtUtc;
@@ -101,7 +96,7 @@ public sealed class InvestmentStrategy : Entity
     }
 
     public Result UpdateInvestmentsModelPercentages(
-        Dictionary<string, decimal> investmentPercentages, 
+        Dictionary<string, decimal> investmentPercentages,
         DateTime updatedAtUtc)
     {
         if (!InvestmentStrategySpecification.AllInvestmentsExist(this, investmentPercentages.Keys))
@@ -138,7 +133,8 @@ public sealed class InvestmentStrategy : Entity
         return Result.Success();
     }
 
-    public void UpdateInvestmentCurrentAmounts(Dictionary<string, decimal> investmentCurrentAmounts, DateTime updatedAtUtc)
+    public void UpdateInvestmentCurrentAmounts(Dictionary<string, decimal> investmentCurrentAmounts,
+        DateTime updatedAtUtc)
     {
         foreach (KeyValuePair<string, decimal> kvp in investmentCurrentAmounts)
         {
@@ -149,7 +145,8 @@ public sealed class InvestmentStrategy : Entity
         UpdatedAtUtc = updatedAtUtc;
         RecalculateRealPortfolioPercentages(updatedAtUtc);
 
-        Raise(new InvestmentStrategyCurrentAmountsUpdatedDomainEvent(Id, TotalCurrentAmount, TotalAmount, updatedAtUtc));
+        Raise(new InvestmentStrategyCurrentAmountsUpdatedDomainEvent(Id, TotalCurrentAmount, TotalAmount,
+            updatedAtUtc));
     }
 
     private void RecalculateRealPortfolioPercentages(DateTime updatedAtUtc)
@@ -160,10 +157,10 @@ public sealed class InvestmentStrategy : Entity
             {
                 investment.UpdateRealPortfolioPercentage(0, updatedAtUtc);
             }
+
             return;
         }
 
-        // Calculate real percentages based on current amounts
         foreach (Investment investment in _investments)
         {
             decimal realPercentage = investment.CurrentAmount / TotalCurrentAmount * 100;
@@ -171,5 +168,34 @@ public sealed class InvestmentStrategy : Entity
         }
 
         Raise(new InvestmentStrategyRealPercentagesRecalculatedDomainEvent(Id, TotalCurrentAmount, updatedAtUtc));
+    }
+
+    public Result<IReadOnlyCollection<InvestedCashRecord>> UpdateInvestedCashRecords(
+        IReadOnlyCollection<KeyValuePair<string, decimal>> investedCashRecords, DateTime now)
+    {
+        foreach (KeyValuePair<string, decimal> record in investedCashRecords)
+        {
+            InvestedCashRecord? existingRecord =
+                _investedCashHistories.Find(i => i.MonthlyBudgetExpenseId == record.Key);
+
+            if (existingRecord != null)
+            {
+                existingRecord.UpdateAmount(record.Value, now);
+            }
+            else
+            {
+                var newRecord = InvestedCashRecord.Create(
+                    Id,
+                    record.Key,
+                    record.Value,
+                    now);
+
+                _investedCashHistories.Add(newRecord);
+            }
+        }
+
+        Raise(new InvestmentStrategyBalanceUpdatedDomainEvent(Id, now));
+        
+        return Result.Success(InvestedCashHistories);
     }
 }

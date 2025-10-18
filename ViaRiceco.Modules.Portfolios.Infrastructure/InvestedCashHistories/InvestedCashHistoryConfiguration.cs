@@ -4,9 +4,9 @@ using ViaRiceco.Modules.Portfolios.Domain.InvestedCashHistories;
 
 namespace ViaRiceco.Modules.Portfolios.Infrastructure.InvestedCashHistories;
 
-internal sealed class InvestedCashHistoryConfiguration : IEntityTypeConfiguration<InvestedCashHistory>
+internal sealed class InvestedCashHistoryConfiguration : IEntityTypeConfiguration<InvestedCashRecord>
 {
-    public void Configure(EntityTypeBuilder<InvestedCashHistory> builder)
+    public void Configure(EntityTypeBuilder<InvestedCashRecord> builder)
     {
         builder.HasKey(ic => ic.Id);
 

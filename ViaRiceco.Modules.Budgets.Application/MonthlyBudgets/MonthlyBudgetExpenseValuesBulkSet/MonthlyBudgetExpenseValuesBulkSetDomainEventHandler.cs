@@ -21,28 +21,19 @@ public sealed class MonthlyBudgetExpenseValuesBulkSetDomainEventHandler(
         IReadOnlyCollection<MonthlyBudgetExpenseWithExpense> investmentExpenses = 
             await monthlyBudgetExpenseRepository.GetByIdsWithInvestmentExpensesAsync(monthlyBudgetExpenseIds, cancellationToken);
 
-        var valueUpdatesLookup = domainEvent.ExpenseValueUpdates.ToDictionary(
-            update => update.MonthlyBudgetExpenseId, 
-            update => update.Value);
-        
-        // Only publish integration event if there are investment expenses to process
         if (investmentExpenses.Count > 0)
         {
-            // Get the single InvestmentStrategyId (all expenses will have the same one)
             string? investmentStrategyId = investmentExpenses.First().InvestmentStrategyId;
 
-            // Build integration event data for Investment expenses
             var expenseValueUpdates = investmentExpenses
                 .Select(expense => new ExpenseValueUpdateIntegrationModel(
                     expense.MonthlyBudgetExpenseId,
-                    valueUpdatesLookup[expense.MonthlyBudgetExpenseId],
-                    expense.ExpenseId))
+                    expense.Value))
                 .ToList();
 
             var integrationEvent = new MonthlyBudgetExpenseValuesBulkSetIntegrationEvent(
                 domainEvent.Id,
                 domainEvent.OccurredOnUtc,
-                domainEvent.MonthlyBudgetId,
                 investmentStrategyId,
                 expenseValueUpdates);
 

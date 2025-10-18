@@ -2,9 +2,9 @@ using ViaRiceco.Common.Domain.Models;
 
 namespace ViaRiceco.Modules.Portfolios.Domain.InvestedCashHistories;
 
-public sealed class InvestedCashHistory : Entity
+public sealed class InvestedCashRecord : Entity
 {
-    private InvestedCashHistory()
+    private InvestedCashRecord()
     {
     }
 
@@ -12,13 +12,13 @@ public sealed class InvestedCashHistory : Entity
     public string MonthlyBudgetExpenseId { get; private set; } = string.Empty;
     public decimal Amount { get; private set; }
 
-    public static InvestedCashHistory Create(
+    public static InvestedCashRecord Create(
         string investmentStrategyId,
         string monthlyBudgetExpenseId,
         decimal amount,
         DateTime createdAtUtc)
     {
-        var investedCashHistory = new InvestedCashHistory
+        var investedCashHistory = new InvestedCashRecord
         {
             Id = $"ich_{Guid.NewGuid()}",
             InvestmentStrategyId = investmentStrategyId,

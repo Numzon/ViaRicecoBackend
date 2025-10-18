@@ -6,13 +6,13 @@ namespace ViaRiceco.Modules.Portfolios.Infrastructure.InvestedCashHistories;
 
 internal sealed class InvestedCashHistoryRepository(PortfoliosDbContext context) : IInvestedCashHistoryRepository
 {
-    public Task<InvestedCashHistory?> GetAsync(string id, CancellationToken cancellationToken = default)
+    public Task<InvestedCashRecord?> GetAsync(string id, CancellationToken cancellationToken = default)
     {
         return context.InvestedCashHistories
             .FirstOrDefaultAsync(ic => ic.Id == id, cancellationToken);
     }
 
-    public Task<InvestedCashHistory?> GetByInvestmentStrategyAndMonthlyBudgetExpenseAsync(
+    public Task<InvestedCashRecord?> GetByInvestmentStrategyAndMonthlyBudgetExpenseAsync(
         string investmentStrategyId, 
         string monthlyBudgetExpenseId, 
         CancellationToken cancellationToken = default)
@@ -23,7 +23,7 @@ internal sealed class InvestedCashHistoryRepository(PortfoliosDbContext context)
                                cancellationToken);
     }
 
-    public async Task<IReadOnlyCollection<InvestedCashHistory>> GetByInvestmentStrategyAsync(
+    public async Task<IReadOnlyCollection<InvestedCashRecord>> GetByInvestmentStrategyAsync(
         string investmentStrategyId, 
         CancellationToken cancellationToken = default)
     {
@@ -41,14 +41,14 @@ internal sealed class InvestedCashHistoryRepository(PortfoliosDbContext context)
             .SumAsync(ic => ic.Amount, cancellationToken);
     }
 
-    public void Insert(InvestedCashHistory investedCashHistory)
+    public void Insert(InvestedCashRecord investedCashRecord)
     {
-        context.InvestedCashHistories.Add(investedCashHistory);
+        context.InvestedCashHistories.Add(investedCashRecord);
     }
 
-    public void Delete(InvestedCashHistory investedCashHistory)
+    public void Delete(InvestedCashRecord investedCashRecord)
     {
-        context.InvestedCashHistories.Remove(investedCashHistory);
+        context.InvestedCashHistories.Remove(investedCashRecord);
     }
 }
 

@@ -18,11 +18,9 @@ public sealed class Investment : Entity
     public decimal RealPortfolioPercentage { get; private set; }
 
     public IReadOnlyCollection<PurchaseRecord> PurchaseRecords => _purchaseRecords.AsReadOnly();
-
-    // Calculated property: sum of PurchaseRecords total prices
+    
     public decimal InvestedAmount => _purchaseRecords.Sum(pr => pr.TotalPrice);
-
-    // Calculated property: difference between current and invested amounts
+    
     public decimal CurrentInvestedDifference => CurrentAmount - InvestedAmount;
 
     public static Investment Create(
@@ -112,8 +110,8 @@ public sealed class Investment : Entity
         PurchaseRecord purchaseRecord = createResult.Value;
         _purchaseRecords.Add(purchaseRecord);
         UpdatedAtUtc = createdAtUtc;
-
-        Raise(new PurchaseRecordAddedToInvestmentDomainEvent(Id, InvestmentStrategyId, purchaseRecord.TotalPrice, createdAtUtc));
+        
+        Raise(new InvestmentStrategyBalanceUpdatedDomainEvent(InvestmentStrategyId,  createdAtUtc));
 
         return Result.Success(purchaseRecord);
     }
@@ -129,7 +127,7 @@ public sealed class Investment : Entity
         _purchaseRecords.Remove(purchaseRecord);
         UpdatedAtUtc = updatedAtUtc;
 
-        Raise(new PurchaseRecordRemovedFromInvestmentDomainEvent(Id, updatedAtUtc));
+        Raise(new InvestmentStrategyBalanceUpdatedDomainEvent(Id, updatedAtUtc));
 
         return Result.Success();
     }

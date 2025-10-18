@@ -217,8 +217,7 @@ public sealed class InvestmentTests : BaseTest
 
         // Assert
         result.IsSuccess.Should().BeTrue();
-        PurchaseRecordAddedToInvestmentDomainEvent domainEvent = AssertDomainEventWasPublished<PurchaseRecordAddedToInvestmentDomainEvent>(investment);
-        domainEvent.InvestmentId.Should().Be(investment.Id);
+        InvestmentStrategyBalanceUpdatedDomainEvent domainEvent = AssertDomainEventWasPublished<InvestmentStrategyBalanceUpdatedDomainEvent>(investment);
         domainEvent.CreatedAtUtc.Should().Be(purchaseCreatedAtUtc);
     }
 
