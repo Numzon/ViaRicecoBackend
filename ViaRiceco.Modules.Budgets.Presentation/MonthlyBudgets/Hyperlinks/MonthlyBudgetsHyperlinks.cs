@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Http;
 using ViaRiceco.Common.Application.Services.Hyperlinks;
 using ViaRiceco.Common.Application.Services.Hyperlinks.Models;
 using ViaRiceco.Common.Domain.Enumerations;
+using ViaRiceco.Modules.Budgets.Presentation.MonthlyBudgetExpenses;
 
 namespace ViaRiceco.Modules.Budgets.Presentation.MonthlyBudgets.Hyperlinks;
 

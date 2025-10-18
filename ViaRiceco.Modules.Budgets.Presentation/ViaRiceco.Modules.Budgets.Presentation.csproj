@@ -7,9 +7,5 @@
       <ProjectReference Include="..\ViaRiceco.Modules.Portfolios.IntegrationEvents\ViaRiceco.Modules.Portfolios.IntegrationEvents.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="MonthlyBudgetExpenses\" />
-    </ItemGroup>
-
 </Project>
 

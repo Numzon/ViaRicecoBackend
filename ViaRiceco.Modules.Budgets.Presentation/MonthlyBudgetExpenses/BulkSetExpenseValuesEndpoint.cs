@@ -9,7 +9,7 @@ using ViaRiceco.Common.Presentation.Results;
 using ViaRiceco.Modules.Budgets.Application.MonthlyBudgetExpenses.BulkSetExpenseValues;
 using ViaRiceco.Modules.Budgets.Presentation.Enumerations;
 
-namespace ViaRiceco.Modules.Budgets.Presentation.MonthlyBudgets;
+namespace ViaRiceco.Modules.Budgets.Presentation.MonthlyBudgetExpenses;
 
 internal sealed class BulkSetExpenseValuesEndpoint(ISender sender)
     : Ep.Req<BulkSetExpenseValuesEndpoint.Request>.Res<Result>
