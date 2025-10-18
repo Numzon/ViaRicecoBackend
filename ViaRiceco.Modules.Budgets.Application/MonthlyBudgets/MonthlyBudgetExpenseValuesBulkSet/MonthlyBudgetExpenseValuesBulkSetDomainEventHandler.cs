@@ -31,7 +31,7 @@ public sealed class MonthlyBudgetExpenseValuesBulkSetDomainEventHandler(
                     expense.Value))
                 .ToList();
 
-            var integrationEvent = new MonthlyBudgetExpenseValuesBulkSetIntegrationEvent(
+            var integrationEvent = new MonthlyBudgetExpenseValuesBulkUpdateIntegrationEvent(
                 domainEvent.Id,
                 domainEvent.OccurredOnUtc,
                 investmentStrategyId,

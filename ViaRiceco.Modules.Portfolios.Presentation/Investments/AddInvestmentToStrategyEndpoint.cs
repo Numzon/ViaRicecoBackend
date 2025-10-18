@@ -10,7 +10,7 @@ using ViaRiceco.Common.Application.Services.Hyperlinks;
 using ViaRiceco.Common.Domain.Models;
 using ViaRiceco.Common.Presentation.Abstractions.Headers;
 using ViaRiceco.Common.Presentation.Results;
-using ViaRiceco.Modules.Portfolios.Application.InvestmentStrategies.AddInvestmentToStrategy;
+using ViaRiceco.Modules.Portfolios.Application.Investments.CreateInvestment;
 using ViaRiceco.Modules.Portfolios.Application.InvestmentStrategies.Models;
 using ViaRiceco.Modules.Portfolios.Presentation.Enumerations;
 using ViaRiceco.Modules.Portfolios.Presentation.InvestmentStrategies.Hyperlinks;
@@ -40,7 +40,7 @@ internal sealed class AddInvestmentToStrategyEndpoint(ISender sender, IHyperlink
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-        var command = new AddInvestmentToStrategyCommand(req.Id, req.InvestmentName);
+        var command = new CreateInvestmentCommand(req.Id, req.InvestmentName);
         Result<InvestmentStrategyDto> result = await sender.Send(command, ct);
 
         if (!result.IsSuccess)

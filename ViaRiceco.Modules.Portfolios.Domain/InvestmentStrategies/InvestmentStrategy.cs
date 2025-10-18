@@ -195,6 +195,8 @@ public sealed class InvestmentStrategy : Entity
             }
         }
 
+        UpdateUninvestedAmount(now);
+        
         Raise(new InvestmentStrategyBalanceUpdatedDomainEvent(Id, now));
 
         return Result.Success(InvestedCashRecords);

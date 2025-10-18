@@ -4,15 +4,15 @@ using ViaRiceco.Modules.Budgets.IntegrationEvents.MonthlyBudgets;
 using ViaRiceco.Modules.Portfolios.Application.Abstractions.Data;
 using ViaRiceco.Modules.Portfolios.Domain.InvestmentStrategies;
 
-namespace ViaRiceco.Modules.Portfolios.Presentation.InvestmentStrategies;
+namespace ViaRiceco.Modules.Portfolios.Presentation.InvestedCashRecords;
 
-internal sealed class MonthlyBudgetExpenseValuesBulkSetIntegrationEventHandler(
+internal sealed class MonthlyBudgetExpenseValuesBulkUpdateIntegrationEventHandler(
     IInvestmentStrategyRepository investmentStrategyRepository,
     IUnitOfWork unitOfWork,
     TimeProvider timeProvider)
-    : IntegrationEventHandler<MonthlyBudgetExpenseValuesBulkSetIntegrationEvent>
+    : IntegrationEventHandler<MonthlyBudgetExpenseValuesBulkUpdateIntegrationEvent>
 {
-    public override async Task Handle(MonthlyBudgetExpenseValuesBulkSetIntegrationEvent integrationEvent,
+    public override async Task Handle(MonthlyBudgetExpenseValuesBulkUpdateIntegrationEvent integrationEvent,
         CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrEmpty(integrationEvent.InvestmentStrategyId))

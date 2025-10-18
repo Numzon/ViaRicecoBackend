@@ -50,7 +50,7 @@ public static class PortfoliosModule
     
     public static void ConfigureConsumers(IRegistrationConfigurator registrationConfigurator)
     {
-        registrationConfigurator.AddConsumer<IntegrationEventConsumer<MonthlyBudgetExpenseValuesBulkSetIntegrationEvent>>();
+        registrationConfigurator.AddConsumer<IntegrationEventConsumer<MonthlyBudgetExpenseValuesBulkUpdateIntegrationEvent>>();
     }
     
     private static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)

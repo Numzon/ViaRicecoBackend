@@ -2,7 +2,7 @@ using ViaRiceco.Common.Application.EventBus;
 
 namespace ViaRiceco.Modules.Budgets.IntegrationEvents.MonthlyBudgets;
 
-public sealed class MonthlyBudgetExpenseValuesBulkSetIntegrationEvent(
+public sealed class MonthlyBudgetExpenseValuesBulkUpdateIntegrationEvent(
     Guid id,
     DateTime occurredOnUtc,
     string? investmentStrategyId,

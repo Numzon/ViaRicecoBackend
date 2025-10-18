@@ -11,7 +11,7 @@ using ViaRiceco.Common.Domain.Models;
 using ViaRiceco.Common.Presentation.Abstractions.Headers;
 using ViaRiceco.Common.Presentation.Enumerations;
 using ViaRiceco.Common.Presentation.Results;
-using ViaRiceco.Modules.Portfolios.Application.Investments.RemoveInvestmentFromStrategy;
+using ViaRiceco.Modules.Portfolios.Application.Investments.RemoveInvestment;
 using ViaRiceco.Modules.Portfolios.Application.InvestmentStrategies.Models;
 using ViaRiceco.Modules.Portfolios.Presentation.Enumerations;
 using ViaRiceco.Modules.Portfolios.Presentation.InvestmentStrategies.Hyperlinks;
@@ -41,7 +41,7 @@ internal sealed class RemoveInvestmentFromStrategyEndpoint(ISender sender, IHype
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-        var command = new RemoveInvestmentFromStrategyCommand(req.Id, req.InvestmentId);
+        var command = new RemoveInvestmentCommand(req.Id, req.InvestmentId);
         Result<InvestmentStrategyDto> result = await sender.Send(command, ct);
 
         if (!result.IsSuccess)

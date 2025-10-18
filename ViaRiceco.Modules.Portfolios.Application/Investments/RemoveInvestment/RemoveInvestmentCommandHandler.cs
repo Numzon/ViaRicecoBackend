@@ -7,19 +7,19 @@ using ViaRiceco.Modules.Portfolios.Application.Abstractions.Data;
 using ViaRiceco.Modules.Portfolios.Application.InvestmentStrategies.Models;
 using ViaRiceco.Modules.Portfolios.Domain.InvestmentStrategies;
 
-namespace ViaRiceco.Modules.Portfolios.Application.Investments.RemoveInvestmentFromStrategy;
+namespace ViaRiceco.Modules.Portfolios.Application.Investments.RemoveInvestment;
 
-public sealed record RemoveInvestmentFromStrategyCommand(
+public sealed record RemoveInvestmentCommand(
     string InvestmentStrategyId,
     string InvestmentId) : ICommand<InvestmentStrategyDto>;
 
-internal sealed class RemoveInvestmentFromStrategyCommandHandler(
+internal sealed class RemoveInvestmentCommandHandler(
     IInvestmentStrategyRepository repository,
     IUnitOfWork unitOfWork,
     TimeProvider timeProvider)
-    : ICommandHandler<RemoveInvestmentFromStrategyCommand, InvestmentStrategyDto>
+    : ICommandHandler<RemoveInvestmentCommand, InvestmentStrategyDto>
 {
-    public async Task<Result<InvestmentStrategyDto>> Handle(RemoveInvestmentFromStrategyCommand request, CancellationToken cancellationToken)
+    public async Task<Result<InvestmentStrategyDto>> Handle(RemoveInvestmentCommand request, CancellationToken cancellationToken)
     {
         InvestmentStrategy? strategy = await repository.GetAsync(request.InvestmentStrategyId, cancellationToken);
 
@@ -58,9 +58,9 @@ internal sealed class RemoveInvestmentFromStrategyCommandHandler(
 }
 
 [UsedImplicitly]
-internal sealed class RemoveInvestmentFromStrategyCommandValidator : AbstractValidator<RemoveInvestmentFromStrategyCommand>
+internal sealed class RemoveInvestmentCommandValidator : AbstractValidator<RemoveInvestmentCommand>
 {
-    public RemoveInvestmentFromStrategyCommandValidator()
+    public RemoveInvestmentCommandValidator()
     {
         RuleFor(x => x.InvestmentStrategyId)
             .NotEmpty()

@@ -8,19 +8,19 @@ using ViaRiceco.Modules.Portfolios.Application.InvestmentStrategies.Models;
 using ViaRiceco.Modules.Portfolios.Domain.Investments;
 using ViaRiceco.Modules.Portfolios.Domain.InvestmentStrategies;
 
-namespace ViaRiceco.Modules.Portfolios.Application.InvestmentStrategies.AddInvestmentToStrategy;
+namespace ViaRiceco.Modules.Portfolios.Application.Investments.CreateInvestment;
 
-public sealed record AddInvestmentToStrategyCommand(
+public sealed record CreateInvestmentCommand(
     string InvestmentStrategyId,
     string InvestmentName) : ICommand<InvestmentStrategyDto>;
 
-internal sealed class AddInvestmentToStrategyCommandHandler(
+internal sealed class CreateInvestmentCommandHandler(
     IInvestmentStrategyRepository repository,
     IUnitOfWork unitOfWork,
     TimeProvider timeProvider)
-    : ICommandHandler<AddInvestmentToStrategyCommand, InvestmentStrategyDto>
+    : ICommandHandler<CreateInvestmentCommand, InvestmentStrategyDto>
 {
-    public async Task<Result<InvestmentStrategyDto>> Handle(AddInvestmentToStrategyCommand request, CancellationToken cancellationToken)
+    public async Task<Result<InvestmentStrategyDto>> Handle(CreateInvestmentCommand request, CancellationToken cancellationToken)
     {
         InvestmentStrategy? strategy = await repository.GetAsync(request.InvestmentStrategyId, cancellationToken);
 
@@ -61,9 +61,9 @@ internal sealed class AddInvestmentToStrategyCommandHandler(
 }
 
 [UsedImplicitly]
-internal sealed class AddInvestmentToStrategyCommandValidator : AbstractValidator<AddInvestmentToStrategyCommand>
+internal sealed class CreateInvestmentCommandValidator : AbstractValidator<CreateInvestmentCommand>
 {
-    public AddInvestmentToStrategyCommandValidator()
+    public CreateInvestmentCommandValidator()
     {
         RuleFor(x => x.InvestmentStrategyId)
             .NotEmpty()
