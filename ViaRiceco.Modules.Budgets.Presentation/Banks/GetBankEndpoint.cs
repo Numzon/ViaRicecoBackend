@@ -23,7 +23,8 @@ internal sealed class GetBankEndpoint(ISender sender, IHyperlinkService hyperlin
     [UsedImplicitly]
     internal sealed class Request : BaseAcceptHeader
     {
-        public string Id { get; init; } = string.Empty;
+        public string Id { get; init; }
+        public string? Fields { get; init; }
     }
 
     public override void Configure()
@@ -48,7 +49,7 @@ internal sealed class GetBankEndpoint(ISender sender, IHyperlinkService hyperlin
             return;
         }
         
-        ExpandoObject shapedObject = ShapeDataWithConditionalLinks(result.Value, req.IncludeLinks, result.Value.Id);
+        ExpandoObject shapedObject = ShapeDataWithConditionalLinks(result.Value, req.IncludeLinks, result.Value.Id, req.Fields);
         
         await Send.ResultAsync(Results.Ok(shapedObject));
     }

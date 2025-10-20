@@ -80,6 +80,12 @@ internal sealed class SettlementPeriodRepository(AccountingDbContext context) : 
             .AnyAsync(sp => sp.Year > year || sp.Year == year && sp.Month > month, cancellationToken);
     }
 
+    public Task<bool> HasDraftPeriodAsync(CancellationToken cancellationToken = default)
+    {
+        return context.SettlementPeriods
+            .AnyAsync(sp => sp.IsDraft, cancellationToken);
+    }
+
     public Task<int> CountAsync(string? search, int? month, int? year, CancellationToken cancellationToken = default)
     {
         int? searchYear = null;

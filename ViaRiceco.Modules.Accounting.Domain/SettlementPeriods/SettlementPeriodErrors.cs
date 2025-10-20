@@ -27,4 +27,7 @@ public static class SettlementPeriodErrors
 
     public static Error CannotSetAsNonRecentDraft(int month, int year) =>
         Error.Conflict("SettlementPeriod.CannotSetAsNonRecentDraft", $"Cannot set settlement period {month:D2}/{year} as draft. Only the most recent settlement period can be set as draft");
+
+    public static Error DraftPeriodExists() =>
+        Error.Conflict("SettlementPeriod.DraftPeriodExists", "Cannot create a new settlement period while there is an existing draft period. Finalize the draft period first");
 }

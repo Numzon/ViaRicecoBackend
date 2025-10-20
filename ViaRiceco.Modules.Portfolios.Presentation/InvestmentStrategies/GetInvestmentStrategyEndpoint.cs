@@ -18,13 +18,17 @@ using ViaRiceco.Modules.Portfolios.Presentation.InvestmentStrategies.Hyperlinks;
 
 namespace ViaRiceco.Modules.Portfolios.Presentation.InvestmentStrategies;
 
-internal sealed class GetInvestmentStrategyEndpoint(ISender sender, IHyperlinkService hyperlinkService, IDataShapingService dataShapingService)
+internal sealed class GetInvestmentStrategyEndpoint(
+    ISender sender,
+    IHyperlinkService hyperlinkService,
+    IDataShapingService dataShapingService)
     : Ep.Req<GetInvestmentStrategyEndpoint.Request>.Res<Result<InvestmentStrategyDto>>
 {
     [UsedImplicitly]
     internal sealed class Request : BaseAcceptHeader
     {
         public string Id { get; init; }
+        public string? Fields { get; init; }
     }
 
     public override void Configure()
@@ -32,7 +36,7 @@ internal sealed class GetInvestmentStrategyEndpoint(ISender sender, IHyperlinkSe
         Get("/portfolios/investment-strategies/{id}");
         AllowAnonymous();
         Description(d => d.WithName(nameof(GetInvestmentStrategyEndpoint)));
-        
+
         Options(x => x
             .WithVersionSet(CustomVersionSets.InvestmentStrategies)
             .MapToApiVersion(1.0));
@@ -48,16 +52,20 @@ internal sealed class GetInvestmentStrategyEndpoint(ISender sender, IHyperlinkSe
             await Send.ResultAsync(ApiResults.Problem(result));
             return;
         }
-        
-        ExpandoObject shapedObject = ShapeDataWithConditionalLinks(result.Value, req.IncludeLinks, result.Value.Id);
-        
+
+        ExpandoObject shapedObject =
+            ShapeDataWithConditionalLinks(result.Value, req.IncludeLinks, result.Value.Id, req.Fields);
+
         await Send.ResultAsync(Results.Ok(shapedObject));
     }
 
-    private ExpandoObject ShapeDataWithConditionalLinks(InvestmentStrategyDto data, bool includeLinks, string investmentStrategyId, string? fields = null)
+    private ExpandoObject ShapeDataWithConditionalLinks(InvestmentStrategyDto data, bool includeLinks,
+        string investmentStrategyId, string? fields = null)
     {
         return includeLinks
-            ? dataShapingService.ShapeData(data, fields, InvestmentStrategiesHyperlinks.CreateInvestmentStrategyItemLinks(hyperlinkService, investmentStrategyId))
+            ? dataShapingService.ShapeData(data, fields,
+                InvestmentStrategiesHyperlinks.CreateInvestmentStrategyItemLinks(hyperlinkService,
+                    investmentStrategyId))
             : dataShapingService.ShapeData(data, fields);
     }
 }

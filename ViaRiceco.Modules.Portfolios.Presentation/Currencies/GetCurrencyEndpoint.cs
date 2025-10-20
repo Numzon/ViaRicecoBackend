@@ -17,13 +17,17 @@ using ViaRiceco.Modules.Portfolios.Presentation.Currencies.Hyperlinks;
 
 namespace ViaRiceco.Modules.Portfolios.Presentation.Currencies;
 
-internal sealed class GetCurrencyEndpoint(ISender sender, IHyperlinkService hyperlinkService, IDataShapingService dataShapingService)
+internal sealed class GetCurrencyEndpoint(
+    ISender sender,
+    IHyperlinkService hyperlinkService,
+    IDataShapingService dataShapingService)
     : Ep.Req<GetCurrencyEndpoint.Request>.Res<Result<CurrencyDto>>
 {
     [UsedImplicitly]
     internal sealed class Request : BaseAcceptHeader
     {
         public string Id { get; init; }
+        public string? Fields { get; init; }
     }
 
     public override void Configure()
@@ -31,7 +35,7 @@ internal sealed class GetCurrencyEndpoint(ISender sender, IHyperlinkService hype
         Get("/portfolios/currencies/{id}");
         AllowAnonymous();
         Description(d => d.WithName(nameof(GetCurrencyEndpoint)));
-        
+
         Options(x => x
             .WithVersionSet(CustomVersionSets.Currencies)
             .MapToApiVersion(1.0));
@@ -47,16 +51,19 @@ internal sealed class GetCurrencyEndpoint(ISender sender, IHyperlinkService hype
             await Send.ResultAsync(ApiResults.Problem(result));
             return;
         }
-        
-        ExpandoObject shapedObject = ShapeDataWithConditionalLinks(result.Value, req.IncludeLinks, result.Value.Id);
-        
+
+        ExpandoObject shapedObject =
+            ShapeDataWithConditionalLinks(result.Value, req.IncludeLinks, result.Value.Id, req.Fields);
+
         await Send.ResultAsync(Results.Ok(shapedObject));
     }
 
-    private ExpandoObject ShapeDataWithConditionalLinks(CurrencyDto data, bool includeLinks, string currencyId, string? fields = null)
+    private ExpandoObject ShapeDataWithConditionalLinks(CurrencyDto data, bool includeLinks, string currencyId,
+        string? fields = null)
     {
         return includeLinks
-            ? dataShapingService.ShapeData(data, fields, CurrenciesHyperlinks.CreateCurrencyItemLinks(hyperlinkService, currencyId))
+            ? dataShapingService.ShapeData(data, fields,
+                CurrenciesHyperlinks.CreateCurrencyItemLinks(hyperlinkService, currencyId))
             : dataShapingService.ShapeData(data, fields);
     }
 }

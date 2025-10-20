@@ -10,6 +10,7 @@ public interface ISettlementPeriodRepository
     Task<bool> ExistsByMonthAndYearAsync(int month, int year, string excludeId, CancellationToken cancellationToken = default);
     Task<SettlementPeriod?> GetMostRecentAsync(CancellationToken cancellationToken = default);
     Task<bool> IsNewerPeriodExistsAsync(int month, int year, CancellationToken cancellationToken = default);
+    Task<bool> HasDraftPeriodAsync(CancellationToken cancellationToken = default);
     Task<int> CountAsync(string? search, int? month, int? year, CancellationToken cancellationToken = default);
     void Insert(SettlementPeriod settlementPeriod);
     void Delete(SettlementPeriod settlementPeriod);

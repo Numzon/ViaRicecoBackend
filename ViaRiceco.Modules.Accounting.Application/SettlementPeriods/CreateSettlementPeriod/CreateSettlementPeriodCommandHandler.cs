@@ -20,21 +20,17 @@ internal sealed class CreateSettlementPeriodCommandHandler(
     public async Task<Result<SettlementPeriodDto>> Handle(CreateSettlementPeriodCommand request,
         CancellationToken cancellationToken)
     {
-        if (request.Month is < 1 or > 12)
-        {
-            return Result.Failure<SettlementPeriodDto>(SettlementPeriodErrors.InvalidMonth(request.Month));
-        }
-
-        if (request.Year is < 1900 or > 2100)
-        {
-            return Result.Failure<SettlementPeriodDto>(SettlementPeriodErrors.InvalidYear(request.Year));
-        }
-
         bool exists = await repository.ExistsByMonthAndYearAsync(request.Month, request.Year, cancellationToken);
         if (exists)
         {
             return Result.Failure<SettlementPeriodDto>(
                 SettlementPeriodErrors.AlreadyExists(request.Month, request.Year));
+        }
+
+        bool hasDraftPeriod = await repository.HasDraftPeriodAsync(cancellationToken);
+        if (hasDraftPeriod)
+        {
+            return Result.Failure<SettlementPeriodDto>(SettlementPeriodErrors.DraftPeriodExists());
         }
 
         var settlementPeriod = SettlementPeriod.Create(request.Month, request.Year, timeProvider.UtcNow());
