@@ -6,10 +6,10 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using ViaRiceco.Common.Domain.Models;
 using ViaRiceco.Common.Presentation.Results;
-using ViaRiceco.Modules.Accounting.Application.SettlementPeriods.RemoveTax;
+using ViaRiceco.Modules.Accounting.Application.Taxes.RemoveTax;
 using ViaRiceco.Modules.Accounting.Presentation.Enumerations;
 
-namespace ViaRiceco.Modules.Accounting.Presentation.SettlementPeriods;
+namespace ViaRiceco.Modules.Accounting.Presentation.Taxes;
 
 internal sealed class RemoveTaxEndpoint(ISender sender)
     : Ep.Req<RemoveTaxEndpoint.Request>.Res<Result>
@@ -36,3 +36,4 @@ internal sealed class RemoveTaxEndpoint(ISender sender)
         await Send.ResultAsync(result.Match(Results.NoContent, ApiResults.Problem));
     }
 }
+

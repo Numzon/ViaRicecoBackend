@@ -2,7 +2,7 @@ using Bogus;
 using FluentAssertions;
 using ViaRiceco.Common.Domain.Models;
 using ViaRiceco.Modules.Accounting.Application.Incomes.AddIncome;
-using ViaRiceco.Modules.Accounting.Application.SettlementPeriods.AddTax;
+using ViaRiceco.Modules.Accounting.Application.Taxes.AddTax;
 using ViaRiceco.Modules.Accounting.Application.SettlementPeriods.CreateSettlementPeriod;
 using ViaRiceco.Modules.Accounting.Application.SettlementPeriods.Models;
 using ViaRiceco.Modules.Accounting.Application.TaxTypes.CreateTaxType;

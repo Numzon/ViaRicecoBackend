@@ -11,29 +11,29 @@ using ViaRiceco.Common.Domain.Models;
 using ViaRiceco.Common.Presentation.Abstractions.Headers;
 using ViaRiceco.Common.Presentation.Enumerations;
 using ViaRiceco.Common.Presentation.Results;
-using ViaRiceco.Modules.Accounting.Application.SettlementPeriods.AddTax;
 using ViaRiceco.Modules.Accounting.Application.SettlementPeriods.Models;
+using ViaRiceco.Modules.Accounting.Application.Taxes.UpdateTax;
 using ViaRiceco.Modules.Accounting.Presentation.Enumerations;
-using ViaRiceco.Modules.Accounting.Presentation.SettlementPeriods.Hyperlinks;
+using ViaRiceco.Modules.Accounting.Presentation.Taxes.Hyperlinks;
 
-namespace ViaRiceco.Modules.Accounting.Presentation.SettlementPeriods;
+namespace ViaRiceco.Modules.Accounting.Presentation.Taxes;
 
-internal sealed class AddTaxEndpoint(ISender sender, IHyperlinkService hyperlinkService, IDataShapingService dataShapingService)
-    : Ep.Req<AddTaxEndpoint.Request>.Res<Result<TaxDto>>
+internal sealed class UpdateTaxEndpoint(ISender sender, IHyperlinkService hyperlinkService, IDataShapingService dataShapingService)
+    : Ep.Req<UpdateTaxEndpoint.Request>.Res<Result<TaxDto>>
 {
     [UsedImplicitly]
     internal sealed class Request : BaseAcceptHeader
     {
         public string SettlementPeriodId { get; init; }
+        public string TaxId { get; init; }
         public decimal Value { get; init; }
-        public string TaxTypeId { get; init; }
     }
 
     public override void Configure()
     {
-        Post("/accounting/settlement-periods/{settlementPeriodId}/taxes");
+        Put("/accounting/settlement-periods/{settlementPeriodId}/taxes/{taxId}");
         AllowAnonymous();
-        Description(d => d.WithName(nameof(AddTaxEndpoint)));
+        Description(d => d.WithName(nameof(UpdateTaxEndpoint)));
         
         Options(x => x
             .WithVersionSet(CustomVersionSets.SettlementPeriods)
@@ -42,7 +42,7 @@ internal sealed class AddTaxEndpoint(ISender sender, IHyperlinkService hyperlink
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-        var command = new AddTaxCommand(req.SettlementPeriodId, req.Value, req.TaxTypeId);
+        var command = new UpdateTaxCommand(req.SettlementPeriodId, req.TaxId, req.Value);
         Result<TaxDto> result = await sender.Send(command, ct);
 
         if (!result.IsSuccess)
@@ -50,16 +50,17 @@ internal sealed class AddTaxEndpoint(ISender sender, IHyperlinkService hyperlink
             await Send.ResultAsync(ApiResults.Problem(result));
             return;
         }
-        
+
         ExpandoObject shapedObject = ShapeDataWithConditionalLinks(result.Value, req.IncludeLinks, req.SettlementPeriodId, result.Value.Id);
-        
+
         await Send.ResultAsync(Results.Ok(shapedObject));
     }
 
     private ExpandoObject ShapeDataWithConditionalLinks(TaxDto data, bool includeLinks, string settlementPeriodId, string taxId)
     {
         return includeLinks
-            ? dataShapingService.ShapeData(data, null, SettlementPeriodsHyperlinks.CreateTaxItemLinks(hyperlinkService, settlementPeriodId, taxId))
+            ? dataShapingService.ShapeData(data, null, TaxesHyperlinks.CreateTaxItemLinks(hyperlinkService, settlementPeriodId, taxId))
             : dataShapingService.ShapeData(data, null);
     }
 }
+

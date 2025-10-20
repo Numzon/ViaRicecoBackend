@@ -9,7 +9,7 @@ using ViaRiceco.Modules.Accounting.Domain.SettlementPeriods;
 using ViaRiceco.Modules.Accounting.Domain.Taxes;
 using ViaRiceco.Modules.Accounting.Domain.TaxTypes;
 
-namespace ViaRiceco.Modules.Accounting.Application.SettlementPeriods.AddTax;
+namespace ViaRiceco.Modules.Accounting.Application.Taxes.AddTax;
 
 public sealed record AddTaxCommand(string SettlementPeriodId, decimal Value, string TaxTypeId) : ICommand<TaxDto>;
 
@@ -69,3 +69,4 @@ internal sealed class AddTaxCommandValidator : AbstractValidator<AddTaxCommand>
             .WithMessage("Tax value must be greater than zero");
     }
 }
+

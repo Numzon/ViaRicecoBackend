@@ -4,7 +4,7 @@ using ViaRiceco.Common.Domain.Models;
 using ViaRiceco.Modules.Accounting.Application.Abstractions.Data;
 using ViaRiceco.Modules.Accounting.Domain.SettlementPeriods;
 
-namespace ViaRiceco.Modules.Accounting.Application.SettlementPeriods.RemoveTax;
+namespace ViaRiceco.Modules.Accounting.Application.Taxes.RemoveTax;
 
 public sealed record RemoveTaxCommand(string SettlementPeriodId, string TaxId) : ICommand;
 
@@ -34,3 +34,4 @@ internal sealed class RemoveTaxCommandHandler(
         return Result.Success();
     }
 }
+
