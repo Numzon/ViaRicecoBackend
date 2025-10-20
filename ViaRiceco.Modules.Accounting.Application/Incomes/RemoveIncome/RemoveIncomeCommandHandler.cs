@@ -4,7 +4,7 @@ using ViaRiceco.Common.Domain.Models;
 using ViaRiceco.Modules.Accounting.Application.Abstractions.Data;
 using ViaRiceco.Modules.Accounting.Domain.SettlementPeriods;
 
-namespace ViaRiceco.Modules.Accounting.Application.SettlementPeriods.RemoveIncome;
+namespace ViaRiceco.Modules.Accounting.Application.Incomes.RemoveIncome;
 
 public sealed record RemoveIncomeCommand(string SettlementPeriodId, string IncomeId) : ICommand;
 
@@ -34,3 +34,4 @@ internal sealed class RemoveIncomeCommandHandler(
         return Result.Success();
     }
 }
+

@@ -8,17 +8,17 @@ using ViaRiceco.Modules.Accounting.Application.SettlementPeriods.Models;
 using ViaRiceco.Modules.Accounting.Domain.Incomes;
 using ViaRiceco.Modules.Accounting.Domain.SettlementPeriods;
 
-namespace ViaRiceco.Modules.Accounting.Application.SettlementPeriods.AddIncome;
+namespace ViaRiceco.Modules.Accounting.Application.Incomes.UpdateIncome;
 
-public sealed record AddIncomeCommand(string SettlementPeriodId, decimal Value) : ICommand<IncomeDto>;
+public sealed record UpdateIncomeCommand(string SettlementPeriodId, string IncomeId, decimal Value) : ICommand<IncomeDto>;
 
-internal sealed class AddIncomeCommandHandler(
+internal sealed class UpdateIncomeCommandHandler(
     ISettlementPeriodRepository repository,
     IUnitOfWork unitOfWork,
     TimeProvider timeProvider)
-    : ICommandHandler<AddIncomeCommand, IncomeDto>
+    : ICommandHandler<UpdateIncomeCommand, IncomeDto>
 {
-    public async Task<Result<IncomeDto>> Handle(AddIncomeCommand request, CancellationToken cancellationToken)
+    public async Task<Result<IncomeDto>> Handle(UpdateIncomeCommand request, CancellationToken cancellationToken)
     {
         SettlementPeriod? settlementPeriod = await repository.GetAsync(request.SettlementPeriodId, cancellationToken);
 
@@ -27,10 +27,15 @@ internal sealed class AddIncomeCommandHandler(
             return Result.Failure<IncomeDto>(SettlementPeriodErrors.NotFound(request.SettlementPeriodId));
         }
 
-        Income income = settlementPeriod.AddIncome(request.Value, timeProvider.UtcNow());
-        
+        Result<Income> result = settlementPeriod.UpdateIncome(request.IncomeId, request.Value, timeProvider.UtcNow());
+        if (!result.IsSuccess)
+        {
+            return Result.Failure<IncomeDto>(result.Error);
+        }
+
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
+        Income income = result.Value;
         var incomeDto = new IncomeDto(income.Id, income.Value, income.CreatedAtUtc, income.UpdatedAtUtc);
 
         return incomeDto;
@@ -38,16 +43,21 @@ internal sealed class AddIncomeCommandHandler(
 }
 
 [UsedImplicitly]
-internal sealed class AddIncomeCommandValidator : AbstractValidator<AddIncomeCommand>
+internal sealed class UpdateIncomeCommandValidator : AbstractValidator<UpdateIncomeCommand>
 {
-    public AddIncomeCommandValidator()
+    public UpdateIncomeCommandValidator()
     {
         RuleFor(x => x.SettlementPeriodId)
             .NotEmpty()
             .WithMessage("Settlement period ID is required");
+
+        RuleFor(x => x.IncomeId)
+            .NotEmpty()
+            .WithMessage("Income ID is required");
 
         RuleFor(x => x.Value)
             .GreaterThan(0)
             .WithMessage("Income value must be greater than zero");
     }
 }
+

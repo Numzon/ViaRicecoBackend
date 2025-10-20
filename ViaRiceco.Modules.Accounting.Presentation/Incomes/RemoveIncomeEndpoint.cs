@@ -6,10 +6,10 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using ViaRiceco.Common.Domain.Models;
 using ViaRiceco.Common.Presentation.Results;
-using ViaRiceco.Modules.Accounting.Application.SettlementPeriods.RemoveIncome;
+using ViaRiceco.Modules.Accounting.Application.Incomes.RemoveIncome;
 using ViaRiceco.Modules.Accounting.Presentation.Enumerations;
 
-namespace ViaRiceco.Modules.Accounting.Presentation.SettlementPeriods;
+namespace ViaRiceco.Modules.Accounting.Presentation.Incomes;
 
 internal sealed class RemoveIncomeEndpoint(ISender sender)
     : Ep.Req<RemoveIncomeEndpoint.Request>.Res<Result>
@@ -36,3 +36,4 @@ internal sealed class RemoveIncomeEndpoint(ISender sender)
         await Send.ResultAsync(result.Match(Results.NoContent, ApiResults.Problem));
     }
 }
+

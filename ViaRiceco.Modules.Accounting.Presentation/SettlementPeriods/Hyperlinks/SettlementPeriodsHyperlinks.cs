@@ -3,6 +3,7 @@ using ViaRiceco.Common.Application.Services.Hyperlinks;
 using ViaRiceco.Common.Application.Services.Hyperlinks.Models;
 using ViaRiceco.Common.Domain.Enumerations;
 using ViaRiceco.Common.Presentation.Abstractions.Collections;
+using ViaRiceco.Modules.Accounting.Presentation.Incomes;
 
 namespace ViaRiceco.Modules.Accounting.Presentation.SettlementPeriods.Hyperlinks;
 
@@ -53,16 +54,6 @@ public static class SettlementPeriodsHyperlinks
         }
 
         return hyperlinks.ToArray();
-    }
-
-    public static Hyperlink[] CreateIncomeItemLinks(IHyperlinkService hyperlinkService, string settlementPeriodId, string incomeId)
-    {
-        return
-        [
-            hyperlinkService.Create(nameof(UpdateIncomeEndpoint), RelationshipTypes.Update, HttpMethods.Put, new { settlementPeriodId, incomeId }),
-            hyperlinkService.Create(nameof(RemoveIncomeEndpoint), RelationshipTypes.Delete, HttpMethods.Delete, new { settlementPeriodId, incomeId }),
-            hyperlinkService.Create(nameof(GetSettlementPeriodEndpoint), RelationshipTypes.Parent, HttpMethods.Get, new { id = settlementPeriodId })
-        ];
     }
 
     public static Hyperlink[] CreateTaxItemLinks(IHyperlinkService hyperlinkService, string settlementPeriodId, string taxId)

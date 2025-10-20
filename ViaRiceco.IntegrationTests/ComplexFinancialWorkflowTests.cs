@@ -1,8 +1,8 @@
 using FluentAssertions;
 using ViaRiceco.Common.Domain.Models;
 using ViaRiceco.IntegrationTests.Abstractions;
+using ViaRiceco.Modules.Accounting.Application.Incomes.UpdateIncome;
 using ViaRiceco.Modules.Accounting.Application.SettlementPeriods.GetSettlementPeriod;
-using ViaRiceco.Modules.Accounting.Application.SettlementPeriods.UpdateIncome;
 using ViaRiceco.Modules.Accounting.Application.TaxTypes.Models;
 using ViaRiceco.Modules.Budgets.Application.Expenses.GetExpenses;
 using ViaRiceco.Modules.Budgets.Application.Expenses.Models;

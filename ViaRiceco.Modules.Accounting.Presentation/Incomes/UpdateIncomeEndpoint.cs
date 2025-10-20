@@ -11,28 +11,29 @@ using ViaRiceco.Common.Domain.Models;
 using ViaRiceco.Common.Presentation.Abstractions.Headers;
 using ViaRiceco.Common.Presentation.Enumerations;
 using ViaRiceco.Common.Presentation.Results;
-using ViaRiceco.Modules.Accounting.Application.SettlementPeriods.AddIncome;
+using ViaRiceco.Modules.Accounting.Application.Incomes.UpdateIncome;
 using ViaRiceco.Modules.Accounting.Application.SettlementPeriods.Models;
 using ViaRiceco.Modules.Accounting.Presentation.Enumerations;
-using ViaRiceco.Modules.Accounting.Presentation.SettlementPeriods.Hyperlinks;
+using ViaRiceco.Modules.Accounting.Presentation.Incomes.Hyperlinks;
 
-namespace ViaRiceco.Modules.Accounting.Presentation.SettlementPeriods;
+namespace ViaRiceco.Modules.Accounting.Presentation.Incomes;
 
-internal sealed class AddIncomeEndpoint(ISender sender, IHyperlinkService hyperlinkService, IDataShapingService dataShapingService)
-    : Ep.Req<AddIncomeEndpoint.Request>.Res<Result<IncomeDto>>
+internal sealed class UpdateIncomeEndpoint(ISender sender, IHyperlinkService hyperlinkService, IDataShapingService dataShapingService)
+    : Ep.Req<UpdateIncomeEndpoint.Request>.Res<Result<IncomeDto>>
 {
     [UsedImplicitly]
     internal sealed class Request : BaseAcceptHeader
     {
         public string SettlementPeriodId { get; init; }
+        public string IncomeId { get; init; }
         public decimal Value { get; init; }
     }
 
     public override void Configure()
     {
-        Post("/accounting/settlement-periods/{settlementPeriodId}/incomes");
+        Put("/accounting/settlement-periods/{settlementPeriodId}/incomes/{incomeId}");
         AllowAnonymous();
-        Description(d => d.WithName(nameof(AddIncomeEndpoint)));
+        Description(d => d.WithName(nameof(UpdateIncomeEndpoint)));
         
         Options(x => x
             .WithVersionSet(CustomVersionSets.SettlementPeriods)
@@ -41,7 +42,7 @@ internal sealed class AddIncomeEndpoint(ISender sender, IHyperlinkService hyperl
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-        var command = new AddIncomeCommand(req.SettlementPeriodId, req.Value);
+        var command = new UpdateIncomeCommand(req.SettlementPeriodId, req.IncomeId, req.Value);
         Result<IncomeDto> result = await sender.Send(command, ct);
 
         if (!result.IsSuccess)
@@ -49,16 +50,17 @@ internal sealed class AddIncomeEndpoint(ISender sender, IHyperlinkService hyperl
             await Send.ResultAsync(ApiResults.Problem(result));
             return;
         }
-        
+
         ExpandoObject shapedObject = ShapeDataWithConditionalLinks(result.Value, req.IncludeLinks, req.SettlementPeriodId, result.Value.Id);
-        
+
         await Send.ResultAsync(Results.Ok(shapedObject));
     }
 
     private ExpandoObject ShapeDataWithConditionalLinks(IncomeDto data, bool includeLinks, string settlementPeriodId, string incomeId)
     {
         return includeLinks
-            ? dataShapingService.ShapeData(data, null, SettlementPeriodsHyperlinks.CreateIncomeItemLinks(hyperlinkService, settlementPeriodId, incomeId))
+            ? dataShapingService.ShapeData(data, null, IncomesHyperlinks.CreateIncomeItemLinks(hyperlinkService, settlementPeriodId, incomeId))
             : dataShapingService.ShapeData(data, null);
     }
 }
+
