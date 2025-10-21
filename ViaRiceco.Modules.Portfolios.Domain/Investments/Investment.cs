@@ -33,7 +33,7 @@ public sealed class Investment : Entity
             Id = $"i_{Guid.NewGuid()}",
             Name = name,
             InvestmentStrategyId = investmentStrategyId,
-            ModelPortfolioPercentage = 0, // Default to 0%, set later via UpdateInvestmentsModelPercentages
+            ModelPortfolioPercentage = 0, 
             CurrentAmount = 0,
             RealPortfolioPercentage = 0,
             CreatedAtUtc = createdAtUtc

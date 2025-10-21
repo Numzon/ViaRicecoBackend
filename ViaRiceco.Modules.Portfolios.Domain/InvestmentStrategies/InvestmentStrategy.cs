@@ -15,9 +15,9 @@ public sealed class InvestmentStrategy : Entity
     {
     }
 
-    public string FinancialGoalId { get; private set; } = string.Empty; // Only root financial goals (parentId == null)
-    public string InvestmentStrategyTypeId { get; private set; } = string.Empty; // Used for grouping and filtering
-    public decimal UninvestedAmount { get; private set; } // Free amount that can be used to buy new assets
+    public string FinancialGoalId { get; private set; } = string.Empty; 
+    public string InvestmentStrategyTypeId { get; private set; } = string.Empty; 
+    public decimal UninvestedAmount { get; private set; } 
 
     public IReadOnlyCollection<Investment> Investments => _investments.AsReadOnly();
     public IReadOnlyCollection<InvestedCashRecord> InvestedCashRecords => _investedCashRecords.AsReadOnly();
