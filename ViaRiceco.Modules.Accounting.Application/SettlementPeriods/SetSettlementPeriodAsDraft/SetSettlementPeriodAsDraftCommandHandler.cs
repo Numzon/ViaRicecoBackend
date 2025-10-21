@@ -22,7 +22,6 @@ internal sealed class SetSettlementPeriodAsDraftCommandHandler(
             return Result.Failure(SettlementPeriodErrors.NotFound(request.Id));
         }
 
-        // Check if this is the most recent settlement period
         bool isNewerPeriodExists = await repository.IsNewerPeriodExistsAsync(
             settlementPeriod.Month, 
             settlementPeriod.Year, 

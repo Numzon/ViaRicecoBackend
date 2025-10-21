@@ -28,7 +28,6 @@ internal sealed class DeleteSettlementPeriodCommandHandler(
             return Result.Failure(SettlementPeriodErrors.CannotDeleteWithData());
         }
 
-        // Raise domain event before deletion
         settlementPeriod.PrepareForDeletion(timeProvider.UtcNow());
 
         repository.Delete(settlementPeriod);

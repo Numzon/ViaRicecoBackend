@@ -28,7 +28,6 @@ internal sealed class AddTaxCommandHandler(
             return Result.Failure<TaxDto>(SettlementPeriodErrors.NotFound(request.SettlementPeriodId));
         }
 
-        // Verify tax type exists
         TaxType? taxType = await taxTypeRepository.GetAsync(request.TaxTypeId, cancellationToken);
         if (taxType is null)
         {
@@ -43,7 +42,6 @@ internal sealed class AddTaxCommandHandler(
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        // Get the most recently added tax
         Tax addedTax = settlementPeriod.Taxes.OrderByDescending(t => t.CreatedAtUtc).First();
         var taxDto = new TaxDto(addedTax.Id, addedTax.Value, addedTax.TaxTypeId, addedTax.CreatedAtUtc, addedTax.UpdatedAtUtc);
 
