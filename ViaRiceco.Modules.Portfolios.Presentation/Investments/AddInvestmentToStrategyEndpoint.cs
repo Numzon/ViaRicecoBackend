@@ -23,13 +23,13 @@ internal sealed class AddInvestmentToStrategyEndpoint(ISender sender, IHyperlink
     [UsedImplicitly]
     internal sealed class Request : BaseAcceptHeader
     {
-        public string Id { get; init; }
+        public string InvestmentStrategyId { get; init; }
         public string InvestmentName { get; init; }
     }
 
     public override void Configure()
     {
-        Post("/portfolios/investment-strategies/{id}/investments");
+        Post("/portfolios/investment-strategies/{investmentStrategyId}/investments");
         AllowAnonymous();
         Description(d => d.WithName(nameof(AddInvestmentToStrategyEndpoint)));
         
@@ -40,7 +40,7 @@ internal sealed class AddInvestmentToStrategyEndpoint(ISender sender, IHyperlink
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-        var command = new CreateInvestmentCommand(req.Id, req.InvestmentName);
+        var command = new CreateInvestmentCommand(req.InvestmentStrategyId, req.InvestmentName);
         Result<InvestmentStrategyDto> result = await sender.Send(command, ct);
 
         if (!result.IsSuccess)

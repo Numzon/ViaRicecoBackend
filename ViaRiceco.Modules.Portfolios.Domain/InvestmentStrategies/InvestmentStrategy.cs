@@ -96,51 +96,61 @@ public sealed class InvestmentStrategy : Entity
         return Result.Success();
     }
 
-    public Result UpdateInvestmentsModelPercentages(
-        Dictionary<string, decimal> investmentPercentages,
+    public Result UpdateInvestmentsModelPercentages(IDictionary<string, decimal> investmentPercentages,
         DateTime updatedAtUtc)
     {
-        if (!InvestmentStrategySpecification.AllInvestmentsExist(this, investmentPercentages.Keys))
+        var percentagesList = investmentPercentages.ToList();
+        var investmentIds = percentagesList.Select(p => p.Key).ToList();
+
+        if (!InvestmentStrategySpecification.AllInvestmentsExist(this, investmentIds))
         {
             var existingIds = _investments.Select(i => i.Id).ToHashSet();
-            var missingIds = investmentPercentages.Keys.Except(existingIds).ToList();
+            var missingIds = investmentIds.Except(existingIds).ToList();
             return Result.Failure(InvestmentStrategyErrors.InvestmentNotFound(missingIds[0]));
         }
 
-        // Validate individual percentages are between 0-100%
-        if (investmentPercentages.Values.Any(percentage => percentage < 0 || percentage > 100))
+        if (percentagesList.Any(p => p.Value < 0 || p.Value > 100))
         {
             return Result.Failure(InvestmentStrategyErrors.ModelPortfolioPercentageMustBeBetween0And100());
         }
 
-        // Business rule: Portfolio model percentages must sum to exactly 100%
-        if (!InvestmentStrategySpecification.DoModelPortfolioPercentagesSumTo100(investmentPercentages))
+        if (!InvestmentStrategySpecification.DoModelPortfolioPercentagesSumTo100(
+                percentagesList.Select(p => p.Value)))
         {
             return Result.Failure(InvestmentStrategyErrors.ModelPortfolioPercentagesMustSumTo100());
         }
 
-        // Update investments
-        foreach (KeyValuePair<string, decimal> kvp in investmentPercentages)
+        foreach (KeyValuePair<string, decimal> investmentPercentage in percentagesList)
         {
-            Investment investment = _investments.First(i => i.Id == kvp.Key);
-            investment.Update(investment.Name, kvp.Value, updatedAtUtc);
+            Investment investment = _investments.First(i => i.Id == investmentPercentage.Key);
+            investment.Update(investment.Name, investmentPercentage.Value, updatedAtUtc);
         }
 
         UpdatedAtUtc = updatedAtUtc;
         RecalculateRealPortfolioPercentages(updatedAtUtc);
 
-        Raise(new InvestmentStrategyModelPercentagesUpdatedDomainEvent(Id, investmentPercentages, updatedAtUtc));
+        RaiseInvestmentStrategyModelPercentagesUpdated(investmentPercentages, updatedAtUtc);
 
         return Result.Success();
     }
 
-    public void UpdateInvestmentCurrentAmounts(Dictionary<string, decimal> investmentCurrentAmounts,
+    private void RaiseInvestmentStrategyModelPercentagesUpdated(IDictionary<string, decimal> investmentPercentages,
         DateTime updatedAtUtc)
     {
-        foreach (KeyValuePair<string, decimal> kvp in investmentCurrentAmounts)
+        var models = investmentPercentages
+            .Select(x => new InvestmentPercentage(x.Key, x.Value))
+            .ToList();
+        
+        Raise(new InvestmentStrategyModelPercentagesUpdatedDomainEvent(Id, models, updatedAtUtc));
+    }
+
+    public void UpdateInvestmentCurrentAmounts(IDictionary<string, decimal> investmentCurrentAmounts,
+        DateTime updatedAtUtc)
+    {
+        foreach (KeyValuePair<string, decimal> investmentCurrentAmount in investmentCurrentAmounts)
         {
-            Investment? investment = _investments.Find(i => i.Id == kvp.Key);
-            investment?.UpdateCurrentAmount(kvp.Value, updatedAtUtc);
+            Investment? investment = _investments.Find(i => i.Id == investmentCurrentAmount.Key);
+            investment?.UpdateCurrentAmount(investmentCurrentAmount.Value, updatedAtUtc);
         }
 
         UpdatedAtUtc = updatedAtUtc;
@@ -171,13 +181,13 @@ public sealed class InvestmentStrategy : Entity
         Raise(new InvestmentStrategyRealPercentagesRecalculatedDomainEvent(Id, TotalCurrentAmount, updatedAtUtc));
     }
 
-    public Result<IReadOnlyCollection<InvestedCashRecord>> UpdateInvestedCashRecords(
-        IReadOnlyCollection<KeyValuePair<string, decimal>> investedCashRecords, DateTime now)
+    public void UpdateInvestedCashRecords(
+        IDictionary<string, decimal> investedCashRecords, DateTime now)
     {
         foreach (KeyValuePair<string, decimal> record in investedCashRecords)
         {
             InvestedCashRecord? existingRecord =
-_investedCashRecords.Find(i => i.MonthlyBudgetExpenseId == record.Key);
+                _investedCashRecords.Find(i => i.MonthlyBudgetExpenseId == record.Key);
 
             if (existingRecord != null)
             {
@@ -196,15 +206,14 @@ _investedCashRecords.Find(i => i.MonthlyBudgetExpenseId == record.Key);
         }
 
         UpdateUninvestedAmount(now);
-        
-        Raise(new InvestmentStrategyBalanceUpdatedDomainEvent(Id, now));
 
-        return Result.Success(InvestedCashRecords);
+        Raise(new InvestmentStrategyBalanceUpdatedDomainEvent(Id, now));
     }
 
     public Result RemoveInvestedCashRecord(string monthlyBudgetExpenseId, DateTime now)
     {
-        InvestedCashRecord? investedCashRecord = _investedCashRecords.Find(i => i.MonthlyBudgetExpenseId == monthlyBudgetExpenseId);
+        InvestedCashRecord? investedCashRecord =
+            _investedCashRecords.Find(i => i.MonthlyBudgetExpenseId == monthlyBudgetExpenseId);
 
         if (investedCashRecord == null)
         {
@@ -258,13 +267,14 @@ _investedCashRecords.Find(i => i.MonthlyBudgetExpenseId == record.Key);
         }
 
         Result<PurchaseRecord> result =
-            investment.AddPurchaseRecord(purchaseDate, amount, pricePerUnit, currencyId, UninvestedAmount, currencyConvertValue, now);
+            investment.AddPurchaseRecord(purchaseDate, amount, pricePerUnit, currencyId, UninvestedAmount,
+                currencyConvertValue, now);
 
         if (result.IsFailure)
         {
             return result;
         }
-        
+
         UpdateUninvestedAmount(now);
 
         Raise(new InvestmentStrategyBalanceUpdatedDomainEvent(Id, now));
@@ -272,7 +282,7 @@ _investedCashRecords.Find(i => i.MonthlyBudgetExpenseId == record.Key);
         return Result.Success(result.Value);
     }
 
-    public Result<PurchaseRecord> UpdatePurchaseRecordOfGivenInvestment(  
+    public Result<PurchaseRecord> UpdatePurchaseRecordOfGivenInvestment(
         string investmentId,
         string purchaseRecordId,
         DateTime purchaseDate,
@@ -290,13 +300,14 @@ _investedCashRecords.Find(i => i.MonthlyBudgetExpenseId == record.Key);
         }
 
         Result<PurchaseRecord> result =
-            investment.UpdatePurchaseRecord(purchaseRecordId, purchaseDate, amount, pricePerUnit, currencyId, UninvestedAmount, currencyConvertValue, now);
-        
+            investment.UpdatePurchaseRecord(purchaseRecordId, purchaseDate, amount, pricePerUnit, currencyId,
+                UninvestedAmount, currencyConvertValue, now);
+
         if (result.IsFailure)
         {
             return result;
         }
-        
+
         UpdateUninvestedAmount(now);
 
         Raise(new InvestmentStrategyBalanceUpdatedDomainEvent(Id, now));

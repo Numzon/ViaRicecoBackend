@@ -7,9 +7,7 @@ using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using Quartz;
 using StackExchange.Redis;
-using ViaRiceco.Common.Application.Data;
 using ViaRiceco.Common.Application.EventBus;
-using ViaRiceco.Common.Infrastructure.Data;
 using ViaRiceco.Common.Infrastructure.EventBus;
 using ViaRiceco.Common.Infrastructure.Outbox;
 
@@ -32,8 +30,6 @@ public static class InfrastructureConfiguration
 
         NpgsqlDataSource npgsqlDataSource = new NpgsqlDataSourceBuilder(databaseConnectionString).Build();
         services.TryAddSingleton(npgsqlDataSource);
-
-        services.TryAddScoped<IDbConnectionFactory, DbConnectionFactory>();
 
         services.AddQuartz(configurator =>
         {

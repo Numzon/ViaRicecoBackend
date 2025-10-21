@@ -28,12 +28,11 @@ internal sealed class MonthlyBudgetExpenseValuesBulkUpdateIntegrationEventHandle
             return;
         }
 
-        var keyValueParis =
+        var dictionary =
             integrationEvent.ExpenseValueUpdates
-                .Select(x => new KeyValuePair<string, decimal>(x.MonthlyBudgetExpenseId, x.Value ?? 0m))
-                .ToList();
+                .ToDictionary(x => x.MonthlyBudgetExpenseId, x => x.Value ?? 0m);
 
-        strategy.UpdateInvestedCashRecords(keyValueParis, timeProvider.UtcNow());
+        strategy.UpdateInvestedCashRecords(dictionary, timeProvider.UtcNow());
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
     }

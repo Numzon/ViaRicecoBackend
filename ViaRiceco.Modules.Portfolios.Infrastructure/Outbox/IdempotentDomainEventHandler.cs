@@ -1,5 +1,4 @@
-﻿using ViaRiceco.Common.Application.Data;
-using ViaRiceco.Common.Application.Messaging;
+﻿using ViaRiceco.Common.Application.Messaging;
 using ViaRiceco.Common.Domain.Interfaces;
 using ViaRiceco.Common.Domain.Outbox;
 using ViaRiceco.Modules.Portfolios.Application.Abstractions.Data;

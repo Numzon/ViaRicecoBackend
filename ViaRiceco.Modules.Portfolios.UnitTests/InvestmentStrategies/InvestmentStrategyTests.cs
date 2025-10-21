@@ -303,7 +303,7 @@ public sealed class InvestmentStrategyTests : BaseTest
         Investment investment1 = addResult1.Value;
         Investment investment2 = addResult2.Value;
 
-        var newPercentages = new Dictionary<string, decimal>
+        IDictionary<string, decimal> newPercentages = new Dictionary<string, decimal>
         {
             { investment1.Id, 60m },
             { investment2.Id, 40m }
@@ -332,7 +332,7 @@ public sealed class InvestmentStrategyTests : BaseTest
         var strategy = InvestmentStrategy.Create(financialGoalId, investmentStrategyTypeId, uninvestedAmount, createdAtUtc);
         
         string nonExistentInvestmentId = $"i_{Guid.NewGuid()}";
-        var newPercentages = new Dictionary<string, decimal>
+        IDictionary<string, decimal> newPercentages = new Dictionary<string, decimal>
         {
             { nonExistentInvestmentId, 35m }
         };
@@ -364,7 +364,7 @@ public sealed class InvestmentStrategyTests : BaseTest
         Investment investment1 = addResult1.Value;
         Investment investment2 = addResult2.Value;
 
-        var newPercentages = new Dictionary<string, decimal>
+        IDictionary<string, decimal> newPercentages = new Dictionary<string, decimal>
         {
             { investment1.Id, 60m },
             { investment2.Id, 50m } // Total: 110%
@@ -397,7 +397,7 @@ public sealed class InvestmentStrategyTests : BaseTest
         Investment investment1 = addResult1.Value;
         Investment investment2 = addResult2.Value;
 
-        var newAmounts = new Dictionary<string, decimal>
+        IDictionary<string, decimal> newAmounts = new Dictionary<string, decimal>
         {
             { investment1.Id, 15000m },
             { investment2.Id, 12000m }
@@ -430,7 +430,7 @@ public sealed class InvestmentStrategyTests : BaseTest
         addResult.IsSuccess.Should().BeTrue();
         Investment investment = addResult.Value;
 
-        var newAmounts = new Dictionary<string, decimal>
+        IDictionary<string, decimal> newAmounts = new Dictionary<string, decimal>
         {
             { investment.Id, 15000m }
         };
@@ -547,7 +547,7 @@ public sealed class InvestmentStrategyTests : BaseTest
         Investment investment1 = addResult1.Value;
         Investment investment2 = addResult2.Value;
 
-        var newAmounts = new Dictionary<string, decimal>
+        IDictionary<string, decimal> newAmounts = new Dictionary<string, decimal>
         {
             { investment1.Id, 18000m }, // Current: 18,000
             { investment2.Id, 12000m }  // Current: 12,000
@@ -581,7 +581,7 @@ public sealed class InvestmentStrategyTests : BaseTest
         Investment investment1 = addResult1.Value;
         Investment investment2 = addResult2.Value;
 
-        var zeroAmounts = new Dictionary<string, decimal>
+        IDictionary<string, decimal> zeroAmounts = new Dictionary<string, decimal>
         {
             { investment1.Id, 0m },
             { investment2.Id, 0m }

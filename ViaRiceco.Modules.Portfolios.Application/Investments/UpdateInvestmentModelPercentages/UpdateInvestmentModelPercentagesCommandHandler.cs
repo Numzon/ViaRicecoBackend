@@ -11,7 +11,7 @@ namespace ViaRiceco.Modules.Portfolios.Application.Investments.UpdateInvestmentM
 
 public sealed record UpdateInvestmentModelPercentagesCommand(
     string InvestmentStrategyId,
-    Dictionary<string, decimal> InvestmentPercentages) : ICommand<InvestmentStrategyDto>;
+    IReadOnlyCollection<InvestmentModelPercentageDto> InvestmentPercentages) : ICommand<InvestmentStrategyDto>;
 
 internal sealed class UpdateInvestmentModelPercentagesCommandHandler(
     IInvestmentStrategyRepository repository,
@@ -19,16 +19,21 @@ internal sealed class UpdateInvestmentModelPercentagesCommandHandler(
     TimeProvider timeProvider)
     : ICommandHandler<UpdateInvestmentModelPercentagesCommand, InvestmentStrategyDto>
 {
-    public async Task<Result<InvestmentStrategyDto>> Handle(UpdateInvestmentModelPercentagesCommand request, CancellationToken cancellationToken)
+    public async Task<Result<InvestmentStrategyDto>> Handle(UpdateInvestmentModelPercentagesCommand request,
+        CancellationToken cancellationToken)
     {
         InvestmentStrategy? strategy = await repository.GetAsync(request.InvestmentStrategyId, cancellationToken);
 
         if (strategy is null)
         {
-            return Result.Failure<InvestmentStrategyDto>(InvestmentStrategyErrors.NotFound(request.InvestmentStrategyId));
+            return Result.Failure<InvestmentStrategyDto>(
+                InvestmentStrategyErrors.NotFound(request.InvestmentStrategyId));
         }
 
-        Result result = strategy.UpdateInvestmentsModelPercentages(request.InvestmentPercentages, timeProvider.UtcNow());
+        IDictionary<string, decimal> investmentPercentages =
+            request.InvestmentPercentages.ToDictionary(x => x.InvestmentId, x => x.Percentage);
+
+        Result result = strategy.UpdateInvestmentsModelPercentages(investmentPercentages, timeProvider.UtcNow());
 
         if (result.IsFailure)
         {
@@ -58,7 +63,8 @@ internal sealed class UpdateInvestmentModelPercentagesCommandHandler(
 }
 
 [UsedImplicitly]
-internal sealed class UpdateInvestmentModelPercentagesCommandValidator : AbstractValidator<UpdateInvestmentModelPercentagesCommand>
+internal sealed class
+    UpdateInvestmentModelPercentagesCommandValidator : AbstractValidator<UpdateInvestmentModelPercentagesCommand>
 {
     public UpdateInvestmentModelPercentagesCommandValidator()
     {
@@ -71,11 +77,19 @@ internal sealed class UpdateInvestmentModelPercentagesCommandValidator : Abstrac
             .NotEmpty()
             .WithMessage("Investment percentages are required");
 
-        RuleForEach(x => x.InvestmentPercentages.Values)
-            .InclusiveBetween(0, 100)
-            .WithMessage("Each investment percentage must be between 0 and 100");
+        RuleForEach(x => x.InvestmentPercentages)
+            .ChildRules(percentage =>
+            {
+                percentage.RuleFor(p => p.InvestmentId)
+                    .NotEmpty()
+                    .WithMessage("Investment ID is required");
 
-        RuleFor(x => x.InvestmentPercentages.Values.Sum())
+                percentage.RuleFor(p => p.Percentage)
+                    .InclusiveBetween(0, 100)
+                    .WithMessage("Investment percentage must be between 0 and 100");
+            });
+
+        RuleFor(x => x.InvestmentPercentages.Sum(p => p.Percentage))
             .LessThanOrEqualTo(100)
             .WithMessage("Total investment percentages cannot exceed 100%");
     }

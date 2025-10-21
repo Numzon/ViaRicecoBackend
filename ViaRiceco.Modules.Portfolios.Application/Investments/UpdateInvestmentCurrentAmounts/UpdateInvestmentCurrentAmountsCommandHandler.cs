@@ -11,7 +11,7 @@ namespace ViaRiceco.Modules.Portfolios.Application.Investments.UpdateInvestmentC
 
 public sealed record UpdateInvestmentCurrentAmountsCommand(
     string InvestmentStrategyId,
-    Dictionary<string, decimal> InvestmentCurrentAmounts) : ICommand<InvestmentStrategyDto>;
+    IReadOnlyCollection<InvestmentCurrentAmountDto> InvestmentCurrentAmounts) : ICommand<InvestmentStrategyDto>;
 
 internal sealed class UpdateInvestmentCurrentAmountsCommandHandler(
     IInvestmentStrategyRepository repository,
@@ -19,16 +19,22 @@ internal sealed class UpdateInvestmentCurrentAmountsCommandHandler(
     TimeProvider timeProvider)
     : ICommandHandler<UpdateInvestmentCurrentAmountsCommand, InvestmentStrategyDto>
 {
-    public async Task<Result<InvestmentStrategyDto>> Handle(UpdateInvestmentCurrentAmountsCommand request, CancellationToken cancellationToken)
+    public async Task<Result<InvestmentStrategyDto>> Handle(UpdateInvestmentCurrentAmountsCommand request,
+        CancellationToken cancellationToken)
     {
         InvestmentStrategy? strategy = await repository.GetAsync(request.InvestmentStrategyId, cancellationToken);
 
         if (strategy is null)
         {
-            return Result.Failure<InvestmentStrategyDto>(InvestmentStrategyErrors.NotFound(request.InvestmentStrategyId));
+            return Result.Failure<InvestmentStrategyDto>(
+                InvestmentStrategyErrors.NotFound(request.InvestmentStrategyId));
         }
 
-        strategy.UpdateInvestmentCurrentAmounts(request.InvestmentCurrentAmounts, timeProvider.UtcNow());
+        IDictionary<string, decimal> currentAmounts =
+            request.InvestmentCurrentAmounts
+                    .ToDictionary(x => x.InvestmentId, x => x.CurrentAmount);
+
+        strategy.UpdateInvestmentCurrentAmounts(currentAmounts, timeProvider.UtcNow());
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
@@ -53,7 +59,8 @@ internal sealed class UpdateInvestmentCurrentAmountsCommandHandler(
 }
 
 [UsedImplicitly]
-internal sealed class UpdateInvestmentCurrentAmountsCommandValidator : AbstractValidator<UpdateInvestmentCurrentAmountsCommand>
+internal sealed class
+    UpdateInvestmentCurrentAmountsCommandValidator : AbstractValidator<UpdateInvestmentCurrentAmountsCommand>
 {
     public UpdateInvestmentCurrentAmountsCommandValidator()
     {
@@ -66,8 +73,16 @@ internal sealed class UpdateInvestmentCurrentAmountsCommandValidator : AbstractV
             .NotEmpty()
             .WithMessage("Investment current amounts are required");
 
-        RuleForEach(x => x.InvestmentCurrentAmounts.Values)
-            .GreaterThanOrEqualTo(0)
-            .WithMessage("Each investment current amount must be greater than or equal to zero");
+        RuleForEach(x => x.InvestmentCurrentAmounts)
+            .ChildRules(amount =>
+            {
+                amount.RuleFor(a => a.InvestmentId)
+                    .NotEmpty()
+                    .WithMessage("Investment ID is required");
+
+                amount.RuleFor(a => a.CurrentAmount)
+                    .GreaterThanOrEqualTo(0)
+                    .WithMessage("Investment current amount must be greater than or equal to zero");
+            });
     }
 }

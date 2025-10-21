@@ -24,13 +24,13 @@ internal sealed class UpdateInvestmentCurrentAmountsEndpoint(ISender sender, IHy
     [UsedImplicitly]
     internal sealed class Request : BaseAcceptHeader
     {
-        public string Id { get; init; }
-        public Dictionary<string, decimal> InvestmentCurrentAmounts { get; init; }
+        public string InvestmentStrategyId { get; init; }
+        public List<InvestmentCurrentAmountDto> InvestmentCurrentAmounts { get; init; } = [];
     }
 
     public override void Configure()
     {
-        Put("/portfolios/investment-strategies/{id}/investment-amounts");
+        Put("/portfolios/investment-strategies/{investmentStrategyId}/investment-amounts");
         AllowAnonymous();
         Description(d => d.WithName(nameof(UpdateInvestmentCurrentAmountsEndpoint)));
         
@@ -41,7 +41,7 @@ internal sealed class UpdateInvestmentCurrentAmountsEndpoint(ISender sender, IHy
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-        var command = new UpdateInvestmentCurrentAmountsCommand(req.Id, req.InvestmentCurrentAmounts);
+        var command = new UpdateInvestmentCurrentAmountsCommand(req.InvestmentStrategyId, req.InvestmentCurrentAmounts);
         Result<InvestmentStrategyDto> result = await sender.Send(command, ct);
 
         if (!result.IsSuccess)

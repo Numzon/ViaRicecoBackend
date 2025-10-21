@@ -23,13 +23,13 @@ internal sealed class RemoveInvestmentFromStrategyEndpoint(ISender sender, IHype
     [UsedImplicitly]
     internal sealed class Request : BaseAcceptHeader
     {
+        public string InvestmentStrategyId { get; init; }
         public string Id { get; init; }
-        public string InvestmentId { get; init; }
     }
 
     public override void Configure()
     {
-        Delete("/portfolios/investment-strategies/{id}/investments/{investmentId}");
+        Delete("/portfolios/investment-strategies/{investmentStrategyId}/investments/{id}");
         AllowAnonymous();
         Description(d => d.WithName(nameof(RemoveInvestmentFromStrategyEndpoint)));
         
@@ -40,7 +40,7 @@ internal sealed class RemoveInvestmentFromStrategyEndpoint(ISender sender, IHype
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-        var command = new RemoveInvestmentCommand(req.Id, req.InvestmentId);
+        var command = new RemoveInvestmentCommand(req.InvestmentStrategyId, req.Id);
         Result<InvestmentStrategyDto> result = await sender.Send(command, ct);
 
         if (!result.IsSuccess)

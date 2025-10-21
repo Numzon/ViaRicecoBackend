@@ -132,25 +132,6 @@ public sealed class MonthlyBudget : Entity
         return Result.Success();
     }
 
-    public Result UpdateExpenseName(string expenseId, string newName, DateTime updatedAtUtc)
-    {
-        if (!IsDraft)
-        {
-            return Result.Success(); 
-        }
-
-        MonthlyBudgetExpense? expense = _expenses.Find(e => e.ExpenseId == expenseId);
-        if (expense == null)
-        {
-            return Result.Failure(MonthlyBudgetErrors.ExpenseNotFound(expenseId));
-        }
-
-        expense.UpdateExpenseName(newName, updatedAtUtc);
-        UpdatedAtUtc = updatedAtUtc;
-
-        return Result.Success();
-    }
-
     public Result RemoveExpense(string monthlyBudgetExpenseId, DateTime removedAtUtc)
     {
         if (!IsDraft)
