@@ -3,7 +3,6 @@ using ViaRiceco.Common.Domain.Models;
 using ViaRiceco.Common.Domain.Parameters;
 using ViaRiceco.Modules.Portfolios.Application.PurchaseRecords.Models;
 using ViaRiceco.Modules.Portfolios.Domain.PurchaseRecords;
-using ViaRiceco.Modules.Portfolios.Domain.InvestmentStrategies;
 using ViaRiceco.Modules.Portfolios.Domain.Investments;
 
 namespace ViaRiceco.Modules.Portfolios.Application.PurchaseRecords.GetPurchaseRecords;
@@ -23,26 +22,18 @@ public sealed record GetPurchaseRecordsQueryResponse(IReadOnlyCollection<Purchas
 
 internal sealed class GetPurchaseRecordsQueryHandler(
     IPurchaseRecordRepository repository,
-    IInvestmentStrategyRepository investmentStrategyRepository,
     IInvestmentRepository investmentRepository)
     : IQueryHandler<GetPurchaseRecordsQuery, GetPurchaseRecordsQueryResponse>
 {
     public async Task<Result<GetPurchaseRecordsQueryResponse>> Handle(GetPurchaseRecordsQuery request,
         CancellationToken cancellationToken)
     {
-        InvestmentStrategy? investmentStrategy = await investmentStrategyRepository.GetAsync(request.InvestmentStrategyId, cancellationToken);
-        if (investmentStrategy is null)
-        {
-            return Result.Failure<GetPurchaseRecordsQueryResponse>(InvestmentStrategyErrors.NotFound(request.InvestmentStrategyId));
-        }
+        bool investmentExists = await investmentRepository.ExistsWithStrategyAsync(
+            request.InvestmentId, 
+            request.InvestmentStrategyId, 
+            cancellationToken);
         
-        Investment? investment = await investmentRepository.GetAsync(request.InvestmentId, cancellationToken);
-        if (investment is null)
-        {
-            return Result.Failure<GetPurchaseRecordsQueryResponse>(InvestmentErrors.NotFound(request.InvestmentId));
-        }
-
-        if (investment.InvestmentStrategyId != request.InvestmentStrategyId)
+        if (!investmentExists)
         {
             return Result.Failure<GetPurchaseRecordsQueryResponse>(InvestmentErrors.NotFound(request.InvestmentId));
         }
@@ -76,7 +67,8 @@ internal sealed class GetPurchaseRecordsQueryHandler(
                 record.PricePerUnit,
                 record.TotalPrice,
                 record.CurrencyId,
-                record.InvestmentId)).ToList();
+                record.InvestmentId,
+                record.CurrencyConvertValue)).ToList();
 
         int totalCount = await repository.CountAsync(
             baseQueryParameters, 

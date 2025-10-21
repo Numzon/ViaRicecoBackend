@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using ViaRiceco.Common.Domain.Models;
 using ViaRiceco.Common.Presentation.Results;
-using ViaRiceco.Modules.Portfolios.Application.PurchaseRecords.RemovePurchaseRecordFromInvestment;
+using ViaRiceco.Modules.Portfolios.Application.PurchaseRecords.RemovePurchaseRecord;
 using ViaRiceco.Modules.Portfolios.Presentation.Enumerations;
 
 namespace ViaRiceco.Modules.Portfolios.Presentation.PurchaseRecords;
@@ -35,7 +35,7 @@ internal sealed class DeletePurchaseRecordEndpoint(ISender sender)
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-        var command = new RemovePurchaseRecordFromInvestmentCommand(req.InvestmentStrategyId, req.InvestmentId, req.Id);
+        var command = new RemovePurchaseRecordCommand(req.InvestmentStrategyId, req.InvestmentId, req.Id);
         Result result = await sender.Send(command, ct);
 
         if (!result.IsSuccess)

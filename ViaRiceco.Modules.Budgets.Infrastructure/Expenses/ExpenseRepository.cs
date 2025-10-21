@@ -19,6 +19,13 @@ internal sealed class ExpenseRepository(BudgetsDbContext context) : IExpenseRepo
             .ToListAsync(cancellationToken);
     }
 
+    public async Task<IReadOnlyCollection<Expense>> GetActiveExpensesAsync(CancellationToken cancellationToken = default)
+    {
+        return await context.Expenses
+            .Where(e => !e.IsArchived)
+            .ToListAsync(cancellationToken);
+    }
+
     public async Task<IReadOnlyCollection<Expense>> GetPageAsync(string? search, string orderBy, int page, int pageSize,
         string? expenseTypeId, CancellationToken cancellationToken = default)
     {

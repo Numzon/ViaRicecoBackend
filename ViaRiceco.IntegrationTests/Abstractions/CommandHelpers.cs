@@ -1,8 +1,8 @@
 using Bogus;
 using FluentAssertions;
 using ViaRiceco.Common.Domain.Models;
-using ViaRiceco.Modules.Accounting.Application.SettlementPeriods.AddIncome;
-using ViaRiceco.Modules.Accounting.Application.SettlementPeriods.AddTax;
+using ViaRiceco.Modules.Accounting.Application.Incomes.AddIncome;
+using ViaRiceco.Modules.Accounting.Application.Taxes.AddTax;
 using ViaRiceco.Modules.Accounting.Application.SettlementPeriods.CreateSettlementPeriod;
 using ViaRiceco.Modules.Accounting.Application.SettlementPeriods.Models;
 using ViaRiceco.Modules.Accounting.Application.TaxTypes.CreateTaxType;
@@ -147,7 +147,7 @@ internal static class CommandHelpers
 
         name ??= Faker.Commerce.ProductName();
 
-        var command = new CreateExpenseCommand(name, expenseTypeId);
+        var command = new CreateExpenseCommand(name, expenseTypeId, null);
         Result<ExpenseDto> result = await sender.Send(command);
 
         result.IsSuccess.Should().BeTrue();

@@ -205,6 +205,53 @@ namespace ViaRiceco.Modules.Portfolios.Infrastructure.Database.Migrations
                     b.ToTable("financial_goals", "portfolios");
                 });
 
+            modelBuilder.Entity("ViaRiceco.Modules.Portfolios.Domain.InvestedCashRecords.InvestedCashRecord", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("id");
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("amount");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at_utc");
+
+                    b.Property<string>("InvestmentStrategyId")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("investment_strategy_id");
+
+                    b.Property<string>("MonthlyBudgetExpenseId")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("monthly_budget_expense_id");
+
+                    b.Property<DateTime?>("UpdatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at_utc");
+
+                    b.HasKey("Id")
+                        .HasName("pk_invested_cash_records");
+
+                    b.HasIndex("InvestmentStrategyId")
+                        .HasDatabaseName("ix_invested_cash_records_investment_strategy_id");
+
+                    b.HasIndex("MonthlyBudgetExpenseId")
+                        .HasDatabaseName("ix_invested_cash_records_monthly_budget_expense_id");
+
+                    b.HasIndex("InvestmentStrategyId", "MonthlyBudgetExpenseId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_invested_cash_records_investment_strategy_id_monthly_budget");
+
+                    b.ToTable("invested_cash_records", "portfolios");
+                });
+
             modelBuilder.Entity("ViaRiceco.Modules.Portfolios.Domain.InvestmentStrategies.InvestmentStrategy", b =>
                 {
                     b.Property<string>("Id")
@@ -301,10 +348,6 @@ namespace ViaRiceco.Modules.Portfolios.Infrastructure.Database.Migrations
                         .HasColumnType("character varying(100)")
                         .HasColumnName("investment_strategy_id");
 
-                    b.Property<string>("InvestmentStrategyId1")
-                        .HasColumnType("character varying(100)")
-                        .HasColumnName("investment_strategy_id1");
-
                     b.Property<decimal>("ModelPortfolioPercentage")
                         .HasPrecision(5, 2)
                         .HasColumnType("numeric(5,2)")
@@ -331,9 +374,6 @@ namespace ViaRiceco.Modules.Portfolios.Infrastructure.Database.Migrations
                     b.HasIndex("InvestmentStrategyId")
                         .HasDatabaseName("ix_investments_investment_strategy_id");
 
-                    b.HasIndex("InvestmentStrategyId1")
-                        .HasDatabaseName("ix_investments_investment_strategy_id1");
-
                     b.HasIndex("Name", "InvestmentStrategyId")
                         .IsUnique()
                         .HasDatabaseName("ix_investments_name_investment_strategy_id");
@@ -356,6 +396,11 @@ namespace ViaRiceco.Modules.Portfolios.Infrastructure.Database.Migrations
                     b.Property<DateTime>("CreatedAtUtc")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at_utc");
+
+                    b.Property<decimal?>("CurrencyConvertValue")
+                        .HasPrecision(18, 8)
+                        .HasColumnType("numeric(18,8)")
+                        .HasColumnName("currency_convert_value");
 
                     b.Property<string>("CurrencyId")
                         .IsRequired()
@@ -411,19 +456,24 @@ namespace ViaRiceco.Modules.Portfolios.Infrastructure.Database.Migrations
                         .HasConstraintName("fk_financial_goals_financial_goals_parent_id");
                 });
 
+            modelBuilder.Entity("ViaRiceco.Modules.Portfolios.Domain.InvestedCashRecords.InvestedCashRecord", b =>
+                {
+                    b.HasOne("ViaRiceco.Modules.Portfolios.Domain.InvestmentStrategies.InvestmentStrategy", null)
+                        .WithMany("InvestedCashRecords")
+                        .HasForeignKey("InvestmentStrategyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_invested_cash_records_investment_strategies_investment_stra");
+                });
+
             modelBuilder.Entity("ViaRiceco.Modules.Portfolios.Domain.Investments.Investment", b =>
                 {
                     b.HasOne("ViaRiceco.Modules.Portfolios.Domain.InvestmentStrategies.InvestmentStrategy", null)
-                        .WithMany()
+                        .WithMany("Investments")
                         .HasForeignKey("InvestmentStrategyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_investments_investment_strategies_investment_strategy_id");
-
-                    b.HasOne("ViaRiceco.Modules.Portfolios.Domain.InvestmentStrategies.InvestmentStrategy", null)
-                        .WithMany("Investments")
-                        .HasForeignKey("InvestmentStrategyId1")
-                        .HasConstraintName("fk_investments_investment_strategies_investment_strategy_id1");
                 });
 
             modelBuilder.Entity("ViaRiceco.Modules.Portfolios.Domain.PurchaseRecords.PurchaseRecord", b =>
@@ -438,6 +488,8 @@ namespace ViaRiceco.Modules.Portfolios.Infrastructure.Database.Migrations
 
             modelBuilder.Entity("ViaRiceco.Modules.Portfolios.Domain.InvestmentStrategies.InvestmentStrategy", b =>
                 {
+                    b.Navigation("InvestedCashRecords");
+
                     b.Navigation("Investments");
                 });
 

@@ -40,7 +40,8 @@ string messageBrokerConnectionString = builder.Configuration.GetConnectionString
 
 builder.Services.AddInfrastructure(DiagnosticsConfig.ServiceName,
     [
-        BudgetsModule.ConfigureConsumers
+        BudgetsModule.ConfigureConsumers,
+        PortfoliosModule.ConfigureConsumers
     ],
     databaseConnectionString, redisConnectionString, messageBrokerConnectionString);
 

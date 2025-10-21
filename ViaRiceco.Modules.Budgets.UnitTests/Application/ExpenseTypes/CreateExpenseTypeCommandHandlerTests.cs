@@ -1,5 +1,6 @@
 using FluentAssertions;
 using NSubstitute;
+using ViaRiceco.Common.Application.Extensions;
 using ViaRiceco.Common.Domain.Models;
 using ViaRiceco.Modules.Budgets.Application.Abstractions.Data;
 using ViaRiceco.Modules.Budgets.Application.ExpenseTypes.CreateExpenseType;
@@ -33,7 +34,7 @@ public sealed class CreateExpenseTypeCommandHandlerTests : BaseTest
         var command = new CreateExpenseTypeCommand(name);
 
         _repository.ExistsByNameAsync(name, Arg.Any<CancellationToken>()).Returns(false);
-        _timeProvider.GetUtcNow().Returns(createdAtUtc);
+        _timeProvider.UtcNow().Returns(createdAtUtc);
 
         // Act
         Result<ExpenseTypeDto> result = await _handler.Handle(command, CancellationToken.None);
@@ -77,7 +78,7 @@ public sealed class CreateExpenseTypeCommandHandlerTests : BaseTest
         var command = new CreateExpenseTypeCommand(name);
 
         _repository.ExistsByNameAsync(name, Arg.Any<CancellationToken>()).Returns(false);
-        _timeProvider.GetUtcNow().Returns(createdAtUtc);
+        _timeProvider.UtcNow().Returns(createdAtUtc);
 
         // Act
         await _handler.Handle(command, CancellationToken.None);
@@ -101,7 +102,7 @@ public sealed class CreateExpenseTypeCommandHandlerTests : BaseTest
         var command = new CreateExpenseTypeCommand(name);
 
         _repository.ExistsByNameAsync(name, Arg.Any<CancellationToken>()).Returns(false);
-        _timeProvider.GetUtcNow().Returns(createdAtUtc);
+        _timeProvider.UtcNow().Returns(createdAtUtc);
 
         // Act
         Result<ExpenseTypeDto> result = await _handler.Handle(command, CancellationToken.None);
@@ -144,7 +145,7 @@ public sealed class CreateExpenseTypeCommandHandlerTests : BaseTest
         var command = new CreateExpenseTypeCommand(name);
 
         _repository.ExistsByNameAsync(name, Arg.Any<CancellationToken>()).Returns(false);
-        _timeProvider.GetUtcNow().Returns(createdAtUtc);
+        _timeProvider.UtcNow().Returns(createdAtUtc);
 
         // Act
         Result<ExpenseTypeDto> result = await _handler.Handle(command, CancellationToken.None);
@@ -167,7 +168,7 @@ public sealed class CreateExpenseTypeCommandHandlerTests : BaseTest
         var command = new CreateExpenseTypeCommand(name);
 
         _repository.ExistsByNameAsync(name, Arg.Any<CancellationToken>()).Returns(false);
-        _timeProvider.GetUtcNow().Returns(createdAtUtc);
+        _timeProvider.UtcNow().Returns(createdAtUtc);
 
         // Act
         Result<ExpenseTypeDto> result = await _handler.Handle(command, CancellationToken.None);
@@ -186,7 +187,7 @@ public sealed class CreateExpenseTypeCommandHandlerTests : BaseTest
         var command = new CreateExpenseTypeCommand(name);
 
         _repository.ExistsByNameAsync(name, Arg.Any<CancellationToken>()).Returns(false);
-        _timeProvider.GetUtcNow().Returns(createdAtUtc);
+        _timeProvider.UtcNow().Returns(createdAtUtc);
 
         // Act
         Result<ExpenseTypeDto> result = await _handler.Handle(command, CancellationToken.None);

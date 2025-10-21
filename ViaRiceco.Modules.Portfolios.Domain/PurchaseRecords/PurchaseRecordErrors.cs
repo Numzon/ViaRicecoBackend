@@ -32,6 +32,10 @@ public static class PurchaseRecordErrors
         "PurchaseRecord.InsufficientUninvestedAmount", 
         $"Cannot create purchase record with total cost of {totalPrice:C}. Available uninvested amount is {uninvestedAmount:C}.");
 
+    public static Error InvalidCurrencyConvertValue(decimal currencyConvertValue) => Error.Validation(
+        "PurchaseRecord.InvalidCurrencyConvertValue", 
+        $"Currency convert value '{currencyConvertValue}' is invalid. Value must be greater than zero.");
+
     public static Error InvalidSortParameter(string? sort) => Error.Validation(
         "PurchaseRecord.InvalidSortParameter", 
         $"Invalid sort parameter: '{sort}'");

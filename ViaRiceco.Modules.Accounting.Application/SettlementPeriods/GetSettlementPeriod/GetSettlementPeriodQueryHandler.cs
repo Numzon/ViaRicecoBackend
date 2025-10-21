@@ -22,7 +22,8 @@ internal sealed class GetSettlementPeriodQueryHandler(ISettlementPeriodRepositor
         var settlementPeriodDto = new SettlementPeriodDto(
             settlementPeriod.Id, 
             settlementPeriod.Month, 
-            settlementPeriod.Year, 
+            settlementPeriod.Year,
+            settlementPeriod.IsDraft,
             settlementPeriod.TotalIncome,
             settlementPeriod.TotalTaxes,
             settlementPeriod.NetAmount,

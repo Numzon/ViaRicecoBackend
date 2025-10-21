@@ -23,5 +23,9 @@ public static class ExpenseTypeErrors
     public static Error InUse(string expenseTypeId) => Error.Conflict(
         "ExpenseType.InUse",
         $"Expense type with ID '{expenseTypeId}' cannot be deleted because it is in use by one or more expenses.");
+
+    public static Error CannotArchiveSystemDefined() => Error.Validation(
+        "ExpenseType.CannotArchiveSystemDefined",
+        "System-defined expense types cannot be archived.");
 }
 

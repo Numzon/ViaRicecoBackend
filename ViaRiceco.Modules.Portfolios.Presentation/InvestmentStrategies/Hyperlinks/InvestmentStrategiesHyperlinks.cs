@@ -14,7 +14,6 @@ public static class InvestmentStrategiesHyperlinks
         return
         [
             hyperlinkService.Create(nameof(GetInvestmentStrategyEndpoint), RelationshipTypes.Self, HttpMethods.Get, new { id }),
-            hyperlinkService.Create(nameof(UpdateInvestmentStrategyEndpoint), RelationshipTypes.Update, HttpMethods.Put, new { id }),
             hyperlinkService.Create(nameof(DeleteInvestmentStrategyEndpoint), RelationshipTypes.Delete, HttpMethods.Delete, new { id }),
             hyperlinkService.Create(nameof(GetInvestmentStrategiesEndpoint), RelationshipTypes.Collection, HttpMethods.Get),
             hyperlinkService.Create(nameof(AddInvestmentToStrategyEndpoint), "add-investment", HttpMethods.Post, new { id }),

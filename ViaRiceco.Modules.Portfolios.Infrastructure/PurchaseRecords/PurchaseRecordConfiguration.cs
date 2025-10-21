@@ -37,6 +37,10 @@ internal sealed class PurchaseRecordConfiguration : IEntityTypeConfiguration<Pur
                .IsRequired()
                .HasMaxLength(100);
 
+        builder.Property(pr => pr.CurrencyConvertValue)
+               .IsRequired(false)
+               .HasPrecision(18, 8); // High precision for currency conversion rates
+
         builder.Property(pr => pr.CreatedAtUtc)
                .IsRequired();
 

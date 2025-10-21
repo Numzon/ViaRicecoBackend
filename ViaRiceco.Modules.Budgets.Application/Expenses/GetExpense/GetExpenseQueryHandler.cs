@@ -20,7 +20,7 @@ internal sealed class GetExpenseQueryHandler(IExpenseRepository repository)
             return Result.Failure<ExpenseDto>(ExpenseErrors.NotFound(request.Id));
         }
 
-        var expenseDto = new ExpenseDto(expense.Id, expense.Name, expense.ExpenseTypeId);
+        var expenseDto = new ExpenseDto(expense.Id, expense.Name, expense.ExpenseTypeId, expense.BankId);
 
         return expenseDto;
     }

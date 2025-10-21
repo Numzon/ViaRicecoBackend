@@ -1,14 +1,13 @@
 ﻿using MassTransit;
+using MassTransit.Logging;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Quartz;
 using Npgsql;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
+using Quartz;
 using StackExchange.Redis;
-using ViaRiceco.Common.Application.Data;
 using ViaRiceco.Common.Application.EventBus;
-using ViaRiceco.Common.Infrastructure.Data;
 using ViaRiceco.Common.Infrastructure.EventBus;
 using ViaRiceco.Common.Infrastructure.Outbox;
 
@@ -31,8 +30,6 @@ public static class InfrastructureConfiguration
 
         NpgsqlDataSource npgsqlDataSource = new NpgsqlDataSourceBuilder(databaseConnectionString).Build();
         services.TryAddSingleton(npgsqlDataSource);
-
-        services.TryAddScoped<IDbConnectionFactory, DbConnectionFactory>();
 
         services.AddQuartz(configurator =>
         {
@@ -84,7 +81,8 @@ public static class InfrastructureConfiguration
                     .AddHttpClientInstrumentation()
                     .AddEntityFrameworkCoreInstrumentation()
                     .AddRedisInstrumentation()
-                    .AddNpgsql();
+                    .AddNpgsql()
+                    .AddSource(DiagnosticHeaders.DefaultListenerName);
 
                 tracing.AddOtlpExporter();
             });

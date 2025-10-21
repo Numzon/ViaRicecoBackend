@@ -3,6 +3,8 @@ using ViaRiceco.Common.Application.Services.Hyperlinks;
 using ViaRiceco.Common.Application.Services.Hyperlinks.Models;
 using ViaRiceco.Common.Domain.Enumerations;
 using ViaRiceco.Common.Presentation.Abstractions.Collections;
+using ViaRiceco.Modules.Accounting.Presentation.Incomes;
+using ViaRiceco.Modules.Accounting.Presentation.Taxes;
 
 namespace ViaRiceco.Modules.Accounting.Presentation.SettlementPeriods.Hyperlinks;
 
@@ -15,6 +17,8 @@ public static class SettlementPeriodsHyperlinks
             hyperlinkService.Create(nameof(GetSettlementPeriodEndpoint), RelationshipTypes.Self, HttpMethods.Get, new { id }),
             hyperlinkService.Create(nameof(DeleteSettlementPeriodEndpoint), RelationshipTypes.Delete, HttpMethods.Delete, new { id }),
             hyperlinkService.Create(nameof(GetSettlementPeriodsEndpoint), RelationshipTypes.Collection, HttpMethods.Get),
+            hyperlinkService.Create(nameof(FinalizeSettlementPeriodEndpoint), RelationshipTypes.Finalize, HttpMethods.Post, new { id }),
+            hyperlinkService.Create(nameof(SetSettlementPeriodAsDraftEndpoint), RelationshipTypes.SetAsDraft, HttpMethods.Post, new { id }),
             hyperlinkService.Create(nameof(AddIncomeEndpoint), "add-income", HttpMethods.Post, new { settlementPeriodId = id }),
             hyperlinkService.Create(nameof(AddTaxEndpoint), "add-tax", HttpMethods.Post, new { settlementPeriodId = id })
         ];
@@ -51,25 +55,5 @@ public static class SettlementPeriodsHyperlinks
         }
 
         return hyperlinks.ToArray();
-    }
-
-    public static Hyperlink[] CreateIncomeItemLinks(IHyperlinkService hyperlinkService, string settlementPeriodId, string incomeId)
-    {
-        return
-        [
-            hyperlinkService.Create(nameof(UpdateIncomeEndpoint), RelationshipTypes.Update, HttpMethods.Put, new { settlementPeriodId, incomeId }),
-            hyperlinkService.Create(nameof(RemoveIncomeEndpoint), RelationshipTypes.Delete, HttpMethods.Delete, new { settlementPeriodId, incomeId }),
-            hyperlinkService.Create(nameof(GetSettlementPeriodEndpoint), RelationshipTypes.Parent, HttpMethods.Get, new { id = settlementPeriodId })
-        ];
-    }
-
-    public static Hyperlink[] CreateTaxItemLinks(IHyperlinkService hyperlinkService, string settlementPeriodId, string taxId)
-    {
-        return
-        [
-            hyperlinkService.Create(nameof(UpdateTaxEndpoint), RelationshipTypes.Update, HttpMethods.Put, new { settlementPeriodId, taxId }),
-            hyperlinkService.Create(nameof(RemoveTaxEndpoint), RelationshipTypes.Delete, HttpMethods.Delete, new { settlementPeriodId, taxId }),
-            hyperlinkService.Create(nameof(GetSettlementPeriodEndpoint), RelationshipTypes.Parent, HttpMethods.Get, new { id = settlementPeriodId })
-        ];
     }
 }

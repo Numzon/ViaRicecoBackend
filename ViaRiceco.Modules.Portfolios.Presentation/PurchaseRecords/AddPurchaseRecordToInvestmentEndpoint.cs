@@ -10,7 +10,7 @@ using ViaRiceco.Common.Application.Services.Hyperlinks;
 using ViaRiceco.Common.Domain.Models;
 using ViaRiceco.Common.Presentation.Abstractions.Headers;
 using ViaRiceco.Common.Presentation.Results;
-using ViaRiceco.Modules.Portfolios.Application.PurchaseRecords.AddPurchaseRecordToInvestment;
+using ViaRiceco.Modules.Portfolios.Application.PurchaseRecords.AddPurchaseRecord;
 using ViaRiceco.Modules.Portfolios.Application.PurchaseRecords.Models;
 using ViaRiceco.Modules.Portfolios.Presentation.Enumerations;
 using ViaRiceco.Modules.Portfolios.Presentation.PurchaseRecords.Hyperlinks;
@@ -29,6 +29,7 @@ internal sealed class AddPurchaseRecordToInvestmentEndpoint(ISender sender, IHyp
         public decimal Amount { get; init; }
         public decimal PricePerUnit { get; init; }
         public string CurrencyId { get; init; }
+        public decimal? CurrencyConvertValue { get; init; }
     }
 
     public override void Configure()
@@ -50,7 +51,8 @@ internal sealed class AddPurchaseRecordToInvestmentEndpoint(ISender sender, IHyp
             req.PurchaseDate, 
             req.Amount, 
             req.PricePerUnit, 
-            req.CurrencyId);
+            req.CurrencyId,
+            req.CurrencyConvertValue);
             
         Result<PurchaseRecordDto> result = await sender.Send(command, ct);
 

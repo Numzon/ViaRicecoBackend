@@ -2,14 +2,14 @@ using FluentAssertions;
 using ViaRiceco.Common.Domain.Enumerations;
 using ViaRiceco.Common.Domain.Models;
 using ViaRiceco.IntegrationTests.Abstractions;
-using ViaRiceco.Modules.Accounting.Application.SettlementPeriods.AddIncome;
-using ViaRiceco.Modules.Accounting.Application.SettlementPeriods.AddTax;
+using ViaRiceco.Modules.Accounting.Application.Incomes.AddIncome;
+using ViaRiceco.Modules.Accounting.Application.Incomes.RemoveIncome;
 using ViaRiceco.Modules.Accounting.Application.SettlementPeriods.CreateSettlementPeriod;
 using ViaRiceco.Modules.Accounting.Application.SettlementPeriods.DeleteSettlementPeriod;
 using ViaRiceco.Modules.Accounting.Application.SettlementPeriods.GetSettlementPeriod;
 using ViaRiceco.Modules.Accounting.Application.SettlementPeriods.Models;
-using ViaRiceco.Modules.Accounting.Application.SettlementPeriods.RemoveIncome;
-using ViaRiceco.Modules.Accounting.Application.SettlementPeriods.RemoveTax;
+using ViaRiceco.Modules.Accounting.Application.Taxes.AddTax;
+using ViaRiceco.Modules.Accounting.Application.Taxes.RemoveTax;
 using ViaRiceco.Modules.Budgets.Application.Expenses.CreateExpense;
 using ViaRiceco.Modules.Budgets.Application.Expenses.DeleteExpense;
 using ViaRiceco.Modules.Budgets.Application.Expenses.GetExpense;
@@ -254,7 +254,7 @@ public sealed class EdgeCaseAndErrorHandlingTests : BaseIntegrationTest
         verifyAfterTaxResult.Value.NetAmount.Should().Be(4000); // Still equals income
 
         // 3. Test expense creation with invalid expense type
-        var createExpenseInvalidTypeCommand = new CreateExpenseCommand("Invalid Expense", "et_00000000-0000-0000-0000-000000000000");
+        var createExpenseInvalidTypeCommand = new CreateExpenseCommand("Invalid Expense", "et_00000000-0000-0000-0000-000000000000", null);
         Result<ExpenseDto> createExpenseResult = await Sender.Send(createExpenseInvalidTypeCommand);
         
         createExpenseResult.IsFailure.Should().BeTrue("Creating expense with invalid type should fail");

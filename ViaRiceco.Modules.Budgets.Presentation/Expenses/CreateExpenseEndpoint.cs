@@ -25,6 +25,7 @@ internal sealed class CreateExpenseEndpoint(ISender sender, IHyperlinkService hy
     {
         public string Name { get; init; } = string.Empty;
         public string ExpenseTypeId { get; init; } = string.Empty;
+        public string? BankId { get; init; }
     }
 
     public override void Configure()
@@ -40,7 +41,7 @@ internal sealed class CreateExpenseEndpoint(ISender sender, IHyperlinkService hy
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-        var command = new CreateExpenseCommand(req.Name, req.ExpenseTypeId);
+        var command = new CreateExpenseCommand(req.Name, req.ExpenseTypeId, req.BankId);
         Result<ExpenseDto> result = await sender.Send(command, ct);
 
         if (!result.IsSuccess)

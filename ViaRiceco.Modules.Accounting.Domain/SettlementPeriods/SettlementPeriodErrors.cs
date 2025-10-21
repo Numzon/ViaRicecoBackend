@@ -21,4 +21,13 @@ public static class SettlementPeriodErrors
 
     public static Error TaxTypeAlreadyExists(string taxTypeId) =>
         Error.Conflict("SettlementPeriod.TaxTypeAlreadyExists", $"A tax of type {taxTypeId} already exists in this settlement period. Only one tax per type is allowed per period");
+
+    public static Error CannotModifyFinalizedPeriod() =>
+        Error.Conflict("SettlementPeriod.CannotModifyFinalizedPeriod", "Cannot modify a finalized settlement period. Set it as draft first to make changes");
+
+    public static Error CannotSetAsNonRecentDraft(int month, int year) =>
+        Error.Conflict("SettlementPeriod.CannotSetAsNonRecentDraft", $"Cannot set settlement period {month:D2}/{year} as draft. Only the most recent settlement period can be set as draft");
+
+    public static Error DraftPeriodExists() =>
+        Error.Conflict("SettlementPeriod.DraftPeriodExists", "Cannot create a new settlement period while there is an existing draft period. Finalize the draft period first");
 }

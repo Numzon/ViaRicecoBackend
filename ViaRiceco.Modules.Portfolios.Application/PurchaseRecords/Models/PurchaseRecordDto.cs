@@ -7,4 +7,5 @@ public sealed record PurchaseRecordDto(
     decimal PricePerUnit,
     decimal TotalPrice,
     string CurrencyId,
-    string InvestmentId);
+    string InvestmentId,
+    decimal? CurrencyConvertValue);

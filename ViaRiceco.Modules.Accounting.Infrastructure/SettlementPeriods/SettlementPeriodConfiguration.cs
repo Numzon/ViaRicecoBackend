@@ -19,6 +19,10 @@ internal sealed class SettlementPeriodConfiguration : IEntityTypeConfiguration<S
         builder.Property(sp => sp.Year)
                .IsRequired();
 
+        builder.Property(sp => sp.IsDraft)
+               .IsRequired()
+               .HasDefaultValue(true); // New settlement periods start as drafts
+
         // Configure navigation properties for owned collections
         builder.OwnsMany(sp => sp.Incomes, incomes =>
         {
@@ -55,5 +59,8 @@ internal sealed class SettlementPeriodConfiguration : IEntityTypeConfiguration<S
         // Unique constraint on Month and Year combination
         builder.HasIndex(sp => new { sp.Month, sp.Year })
                .IsUnique();
+
+        // Index on IsDraft for efficient querying of draft/finalized periods
+        builder.HasIndex(sp => sp.IsDraft);
     }
 }

@@ -9,12 +9,14 @@ using ViaRiceco.Common.Infrastructure.Outbox;
 using ViaRiceco.Modules.Portfolios.Application.Abstractions.Data;
 using ViaRiceco.Modules.Portfolios.Domain.Currencies;
 using ViaRiceco.Modules.Portfolios.Domain.FinancialGoals;
+using ViaRiceco.Modules.Portfolios.Domain.InvestedCashRecords;
 using ViaRiceco.Modules.Portfolios.Domain.Investments;
 using ViaRiceco.Modules.Portfolios.Domain.InvestmentStrategies;
 using ViaRiceco.Modules.Portfolios.Domain.InvestmentStrategyTypes;
 using ViaRiceco.Modules.Portfolios.Domain.PurchaseRecords;
 using ViaRiceco.Modules.Portfolios.Infrastructure.Currencies;
 using ViaRiceco.Modules.Portfolios.Infrastructure.FinancialGoals;
+using ViaRiceco.Modules.Portfolios.Infrastructure.InvestedCashRecords;
 using ViaRiceco.Modules.Portfolios.Infrastructure.Investments;
 using ViaRiceco.Modules.Portfolios.Infrastructure.InvestmentStrategies;
 using ViaRiceco.Modules.Portfolios.Infrastructure.InvestmentStrategyTypes;
@@ -31,6 +33,7 @@ public sealed class PortfoliosDbContext(DbContextOptions<PortfoliosDbContext> op
     internal DbSet<InvestmentStrategy> InvestmentStrategies { get; set; }
     internal DbSet<Investment> Investments { get; set; }
     internal DbSet<PurchaseRecord> PurchaseRecords { get; set; }
+    internal DbSet<InvestedCashRecord> InvestedCashRecords { get; set; }
     internal DbSet<OutboxMessage> OutboxMessages { get; set; }
     internal DbSet<OutboxMessageConsumer> OutboxMessageConsumers { get; set; }
     
@@ -51,6 +54,7 @@ public sealed class PortfoliosDbContext(DbContextOptions<PortfoliosDbContext> op
         modelBuilder.ApplyConfiguration(new InvestmentStrategyConfiguration());
         modelBuilder.ApplyConfiguration(new InvestmentConfiguration());
         modelBuilder.ApplyConfiguration(new PurchaseRecordConfiguration());
+        modelBuilder.ApplyConfiguration(new InvestedCashRecordConfiguration());
     }
 
     public async Task<DbTransaction> BeginTransactionAsync(CancellationToken cancellationToken = default)

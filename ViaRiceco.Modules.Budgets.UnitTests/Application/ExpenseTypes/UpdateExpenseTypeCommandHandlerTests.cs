@@ -1,5 +1,6 @@
 using FluentAssertions;
 using NSubstitute;
+using ViaRiceco.Common.Application.Extensions;
 using ViaRiceco.Common.Domain.Models;
 using ViaRiceco.Modules.Budgets.Application.Abstractions.Data;
 using ViaRiceco.Modules.Budgets.Application.ExpenseTypes.Models;
@@ -113,7 +114,7 @@ public sealed class UpdateExpenseTypeCommandHandlerTests : BaseTest
         
         _repository.GetAsync(id, Arg.Any<CancellationToken>()).Returns(expenseType);
         _repository.ExistsByNameAsync(newName, id, Arg.Any<CancellationToken>()).Returns(false);
-        _timeProvider.GetUtcNow().Returns(updatedAtUtc);
+        _timeProvider.UtcNow().Returns(updatedAtUtc);
 
         // Act
         Result<ExpenseTypeDto> result = await _handler.Handle(command, CancellationToken.None);
@@ -147,7 +148,7 @@ public sealed class UpdateExpenseTypeCommandHandlerTests : BaseTest
         
         _repository.GetAsync(id, Arg.Any<CancellationToken>()).Returns(expenseType);
         _repository.ExistsByNameAsync(name, id, Arg.Any<CancellationToken>()).Returns(false);
-        _timeProvider.GetUtcNow().Returns(updatedAtUtc);
+        _timeProvider.UtcNow().Returns(updatedAtUtc);
 
         // Act
         Result<ExpenseTypeDto> result = await _handler.Handle(command, CancellationToken.None);
@@ -202,7 +203,7 @@ public sealed class UpdateExpenseTypeCommandHandlerTests : BaseTest
         
         _repository.GetAsync(id, Arg.Any<CancellationToken>()).Returns(expenseType);
         _repository.ExistsByNameAsync(newName, id, Arg.Any<CancellationToken>()).Returns(false);
-        _timeProvider.GetUtcNow().Returns(updatedAtUtc);
+        _timeProvider.UtcNow().Returns(updatedAtUtc);
 
         // Act
         Result<ExpenseTypeDto> result = await _handler.Handle(command, CancellationToken.None);
@@ -254,7 +255,7 @@ public sealed class UpdateExpenseTypeCommandHandlerTests : BaseTest
         
         _repository.GetAsync(id, Arg.Any<CancellationToken>()).Returns(expenseType);
         _repository.ExistsByNameAsync(newName, id, Arg.Any<CancellationToken>()).Returns(false);
-        _timeProvider.GetUtcNow().Returns(updatedAtUtc);
+        _timeProvider.UtcNow().Returns(updatedAtUtc);
 
         // Act
         Result<ExpenseTypeDto> result = await _handler.Handle(command, CancellationToken.None);

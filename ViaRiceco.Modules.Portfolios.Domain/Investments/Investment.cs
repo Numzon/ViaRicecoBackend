@@ -18,11 +18,9 @@ public sealed class Investment : Entity
     public decimal RealPortfolioPercentage { get; private set; }
 
     public IReadOnlyCollection<PurchaseRecord> PurchaseRecords => _purchaseRecords.AsReadOnly();
-
-    // Calculated property: sum of PurchaseRecords total prices
+    
     public decimal InvestedAmount => _purchaseRecords.Sum(pr => pr.TotalPrice);
-
-    // Calculated property: difference between current and invested amounts
+    
     public decimal CurrentInvestedDifference => CurrentAmount - InvestedAmount;
 
     public static Investment Create(
@@ -35,7 +33,7 @@ public sealed class Investment : Entity
             Id = $"i_{Guid.NewGuid()}",
             Name = name,
             InvestmentStrategyId = investmentStrategyId,
-            ModelPortfolioPercentage = 0, // Default to 0%, set later via UpdateInvestmentsModelPercentages
+            ModelPortfolioPercentage = 0, 
             CurrentAmount = 0,
             RealPortfolioPercentage = 0,
             CreatedAtUtc = createdAtUtc
@@ -93,6 +91,7 @@ public sealed class Investment : Entity
         decimal pricePerUnit,
         string currencyId,
         decimal uninvestedAmount,
+        decimal? currencyConvertValue,
         DateTime createdAtUtc)
     {
         Result<PurchaseRecord> createResult = PurchaseRecord.Create(
@@ -102,6 +101,7 @@ public sealed class Investment : Entity
             currencyId,
             Id,
             uninvestedAmount,
+            currencyConvertValue,
             createdAtUtc);
 
         if (createResult.IsFailure)
@@ -109,13 +109,10 @@ public sealed class Investment : Entity
             return createResult;
         }
 
-        PurchaseRecord purchaseRecord = createResult.Value;
-        _purchaseRecords.Add(purchaseRecord);
+        _purchaseRecords.Add(createResult.Value);
         UpdatedAtUtc = createdAtUtc;
-
-        Raise(new PurchaseRecordAddedToInvestmentDomainEvent(Id, InvestmentStrategyId, purchaseRecord.TotalPrice, createdAtUtc));
-
-        return Result.Success(purchaseRecord);
+        
+        return createResult;
     }
 
     public Result RemovePurchaseRecord(string purchaseRecordId, DateTime updatedAtUtc)
@@ -129,8 +126,35 @@ public sealed class Investment : Entity
         _purchaseRecords.Remove(purchaseRecord);
         UpdatedAtUtc = updatedAtUtc;
 
-        Raise(new PurchaseRecordRemovedFromInvestmentDomainEvent(Id, updatedAtUtc));
-
         return Result.Success();
+    }
+
+    public Result<PurchaseRecord> UpdatePurchaseRecord(
+        string purchaseRecordId,
+        DateTime purchaseDate,
+        decimal amount,
+        decimal pricePerUnit,
+        string currencyId,
+        decimal uninvestedAmount,
+        decimal? currencyConvertValue,
+        DateTime now)
+    {
+        PurchaseRecord? purchaseRecord = _purchaseRecords.Find(i => i.Id == purchaseRecordId);
+
+        if (purchaseRecord == null)
+        {
+            return Result.Failure<PurchaseRecord>(InvestmentErrors.PurchaseRecordNotFound(purchaseRecordId));
+        }
+        
+        Result<PurchaseRecord> result = purchaseRecord.Update(purchaseDate, amount, pricePerUnit, currencyId, uninvestedAmount, currencyConvertValue, now);
+        
+        if (result.IsFailure)
+        {
+            return result;
+        }
+        
+        UpdatedAtUtc = now;
+        
+        return result;
     }
 }

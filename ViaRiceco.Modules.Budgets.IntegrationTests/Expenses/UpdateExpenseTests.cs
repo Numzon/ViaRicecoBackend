@@ -25,11 +25,11 @@ public sealed class UpdateExpenseTests(IntegrationTestWebAppFactory factory) : B
         ExpenseTypeDto? expenseType = await createExpenseTypeResponse.Content.ReadFromJsonAsync<ExpenseTypeDto>();
 
         // Create expense
-        HttpResponseMessage createExpenseResponse = await client.PostAsJsonAsync("/api/budgets/expenses", new CreateExpenseCommand("Hotel Booking", expenseType!.Id));
+        HttpResponseMessage createExpenseResponse = await client.PostAsJsonAsync("/api/budgets/expenses", new CreateExpenseCommand("Hotel Booking", expenseType!.Id, null));
         ExpenseDto? createdExpense = await createExpenseResponse.Content.ReadFromJsonAsync<ExpenseDto>();
 
         string updatedName = "Updated Hotel Booking";
-        var updateRequest = new UpdateExpenseCommand(createdExpense!.Id, updatedName, expenseType.Id);
+        var updateRequest = new UpdateExpenseCommand(createdExpense!.Id, updatedName, expenseType.Id, null);
 
         // Act
         HttpResponseMessage response = await client.PutAsJsonAsync($"/api/budgets/expenses/{createdExpense.Id}", updateRequest);
@@ -60,11 +60,11 @@ public sealed class UpdateExpenseTests(IntegrationTestWebAppFactory factory) : B
         ExpenseTypeDto? officeExpenseType = await createOfficeExpenseTypeResponse.Content.ReadFromJsonAsync<ExpenseTypeDto>();
 
         // Create expense in travel expense type
-        HttpResponseMessage createExpenseResponse = await client.PostAsJsonAsync("/api/budgets/expenses", new CreateExpenseCommand("Equipment Purchase", travelExpenseType!.Id));
+        HttpResponseMessage createExpenseResponse = await client.PostAsJsonAsync("/api/budgets/expenses", new CreateExpenseCommand("Equipment Purchase", travelExpenseType!.Id, null));
         ExpenseDto? createdExpense = await createExpenseResponse.Content.ReadFromJsonAsync<ExpenseDto>();
 
         // Update expense to office expense type
-        var updateRequest = new UpdateExpenseCommand(createdExpense!.Id, "Equipment Purchase", officeExpenseType!.Id);
+        var updateRequest = new UpdateExpenseCommand(createdExpense!.Id, "Equipment Purchase", officeExpenseType!.Id, null);
 
         // Act
         HttpResponseMessage response = await client.PutAsJsonAsync($"/api/budgets/expenses/{createdExpense.Id}", updateRequest);
@@ -89,7 +89,7 @@ public sealed class UpdateExpenseTests(IntegrationTestWebAppFactory factory) : B
         ExpenseTypeDto? expenseType = await createExpenseTypeResponse.Content.ReadFromJsonAsync<ExpenseTypeDto>();
 
         string nonExistentId = "e_" + Faker.Random.Guid();
-        var updateRequest = new UpdateExpenseCommand(nonExistentId, "Updated Name", expenseType!.Id);
+        var updateRequest = new UpdateExpenseCommand(nonExistentId, "Updated Name", expenseType!.Id, null);
 
         // Act
         HttpResponseMessage response = await client.PutAsJsonAsync($"/api/budgets/expenses/{nonExistentId}", updateRequest);
@@ -110,12 +110,12 @@ public sealed class UpdateExpenseTests(IntegrationTestWebAppFactory factory) : B
         HttpResponseMessage createExpenseTypeResponse = await client.PostAsJsonAsync("/api/budgets/expense-types", new CreateExpenseTypeCommand("Travel"));
         ExpenseTypeDto? expenseType = await createExpenseTypeResponse.Content.ReadFromJsonAsync<ExpenseTypeDto>();
 
-        HttpResponseMessage createExpenseResponse = await client.PostAsJsonAsync("/api/budgets/expenses", new CreateExpenseCommand("Hotel Booking", expenseType!.Id));
+        HttpResponseMessage createExpenseResponse = await client.PostAsJsonAsync("/api/budgets/expenses", new CreateExpenseCommand("Hotel Booking", expenseType!.Id, null));
         ExpenseDto? createdExpense = await createExpenseResponse.Content.ReadFromJsonAsync<ExpenseDto>();
 
         // Try to update with non-existent expense type
         string nonExistentExpenseTypeId = "et_" + Faker.Random.Guid();
-        var updateRequest = new UpdateExpenseCommand(createdExpense!.Id, "Updated Name", nonExistentExpenseTypeId);
+        var updateRequest = new UpdateExpenseCommand(createdExpense!.Id, "Updated Name", nonExistentExpenseTypeId, null);
 
         // Act
         HttpResponseMessage response = await client.PutAsJsonAsync($"/api/budgets/expenses/{createdExpense.Id}", updateRequest);
@@ -137,12 +137,12 @@ public sealed class UpdateExpenseTests(IntegrationTestWebAppFactory factory) : B
         ExpenseTypeDto? expenseType = await createExpenseTypeResponse.Content.ReadFromJsonAsync<ExpenseTypeDto>();
 
         // Create two expenses
-        await client.PostAsJsonAsync("/api/budgets/expenses", new CreateExpenseCommand("Hotel Booking", expenseType!.Id));
-        HttpResponseMessage createSecondExpenseResponse = await client.PostAsJsonAsync("/api/budgets/expenses", new CreateExpenseCommand("Flight Tickets", expenseType.Id));
+        await client.PostAsJsonAsync("/api/budgets/expenses", new CreateExpenseCommand("Hotel Booking", expenseType!.Id, null));
+        HttpResponseMessage createSecondExpenseResponse = await client.PostAsJsonAsync("/api/budgets/expenses", new CreateExpenseCommand("Flight Tickets", expenseType.Id, null));
         ExpenseDto? secondExpense = await createSecondExpenseResponse.Content.ReadFromJsonAsync<ExpenseDto>();
 
         // Try to update second expense to have same name as first
-        var updateRequest = new UpdateExpenseCommand(secondExpense!.Id, "Hotel Booking", expenseType.Id);
+        var updateRequest = new UpdateExpenseCommand(secondExpense!.Id, "Hotel Booking", expenseType.Id, null);
 
         // Act
         HttpResponseMessage response = await client.PutAsJsonAsync($"/api/budgets/expenses/{secondExpense.Id}", updateRequest);
@@ -163,11 +163,11 @@ public sealed class UpdateExpenseTests(IntegrationTestWebAppFactory factory) : B
         HttpResponseMessage createExpenseTypeResponse = await client.PostAsJsonAsync("/api/budgets/expense-types", new CreateExpenseTypeCommand("Travel"));
         ExpenseTypeDto? expenseType = await createExpenseTypeResponse.Content.ReadFromJsonAsync<ExpenseTypeDto>();
 
-        HttpResponseMessage createExpenseResponse = await client.PostAsJsonAsync("/api/budgets/expenses", new CreateExpenseCommand("Hotel Booking", expenseType!.Id));
+        HttpResponseMessage createExpenseResponse = await client.PostAsJsonAsync("/api/budgets/expenses", new CreateExpenseCommand("Hotel Booking", expenseType!.Id, null));
         ExpenseDto? createdExpense = await createExpenseResponse.Content.ReadFromJsonAsync<ExpenseDto>();
 
         // Update expense with same name
-        var updateRequest = new UpdateExpenseCommand(createdExpense!.Id, "Hotel Booking", expenseType.Id);
+        var updateRequest = new UpdateExpenseCommand(createdExpense!.Id, "Hotel Booking", expenseType.Id, null);
 
         // Act
         HttpResponseMessage response = await client.PutAsJsonAsync($"/api/budgets/expenses/{createdExpense.Id}", updateRequest);
@@ -191,10 +191,10 @@ public sealed class UpdateExpenseTests(IntegrationTestWebAppFactory factory) : B
         HttpResponseMessage createExpenseTypeResponse = await client.PostAsJsonAsync("/api/budgets/expense-types", new CreateExpenseTypeCommand("Travel"));
         ExpenseTypeDto? expenseType = await createExpenseTypeResponse.Content.ReadFromJsonAsync<ExpenseTypeDto>();
 
-        HttpResponseMessage createExpenseResponse = await client.PostAsJsonAsync("/api/budgets/expenses", new CreateExpenseCommand("Hotel Booking", expenseType!.Id));
+        HttpResponseMessage createExpenseResponse = await client.PostAsJsonAsync("/api/budgets/expenses", new CreateExpenseCommand("Hotel Booking", expenseType!.Id, null));
         ExpenseDto? createdExpense = await createExpenseResponse.Content.ReadFromJsonAsync<ExpenseDto>();
 
-        var updateRequest = new UpdateExpenseCommand(createdExpense!.Id, string.Empty, expenseType.Id);
+        var updateRequest = new UpdateExpenseCommand(createdExpense!.Id, string.Empty, expenseType.Id, null);
 
         // Act
         HttpResponseMessage response = await client.PutAsJsonAsync($"/api/budgets/expenses/{createdExpense.Id}", updateRequest);
@@ -219,11 +219,11 @@ public sealed class UpdateExpenseTests(IntegrationTestWebAppFactory factory) : B
         ExpenseTypeDto? officeExpenseType = await createOfficeExpenseTypeResponse.Content.ReadFromJsonAsync<ExpenseTypeDto>();
 
         // Create expense in travel expense type
-        HttpResponseMessage createExpenseResponse = await client.PostAsJsonAsync("/api/budgets/expenses", new CreateExpenseCommand("Equipment Purchase", travelExpenseType!.Id));
+        HttpResponseMessage createExpenseResponse = await client.PostAsJsonAsync("/api/budgets/expenses", new CreateExpenseCommand("Equipment Purchase", travelExpenseType!.Id, null));
         ExpenseDto? createdExpense = await createExpenseResponse.Content.ReadFromJsonAsync<ExpenseDto>();
 
         // Move expense to office expense type with same name (should be allowed)
-        var updateRequest = new UpdateExpenseCommand(createdExpense!.Id, "Equipment Purchase", officeExpenseType!.Id);
+        var updateRequest = new UpdateExpenseCommand(createdExpense!.Id, "Equipment Purchase", officeExpenseType!.Id, null);
 
         // Act
         HttpResponseMessage response = await client.PutAsJsonAsync($"/api/budgets/expenses/{createdExpense.Id}", updateRequest);

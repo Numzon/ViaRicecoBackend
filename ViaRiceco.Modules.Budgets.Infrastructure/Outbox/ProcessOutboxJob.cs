@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Quartz;
 using ViaRiceco.Common.Application.EventBus;
+using ViaRiceco.Common.Application.Extensions;
 using ViaRiceco.Common.Application.Messaging;
 using ViaRiceco.Common.Domain.Interfaces;
 using ViaRiceco.Common.Domain.Outbox;
@@ -50,7 +51,15 @@ internal sealed class ProcessOutboxJob(
 
                     using IServiceScope scope = serviceScopeFactory.CreateScope();
 
-                    await PublishDomainEventAsync(domainEvent, scope.ServiceProvider, context.CancellationToken);
+                    IEnumerable<IDomainEventHandler> domainEventHandlers = DomainEventHandlersFactory.GetHandlers(
+                        domainEvent.GetType(),
+                        scope.ServiceProvider,
+                        Application.AssemblyReference.Assembly);
+
+                    foreach (IDomainEventHandler domainEventHandler in domainEventHandlers)
+                    {
+                        await domainEventHandler.Handle(domainEvent, CancellationToken.None);
+                    }
                 }
                 catch (Exception caughtException)
                 {
@@ -62,7 +71,7 @@ internal sealed class ProcessOutboxJob(
                     exception = caughtException;
                 }
 
-                outboxMessage.Update(timeProvider.GetUtcNow().DateTime, exception);
+                outboxMessage.Update(timeProvider.UtcNow(), exception);
             }
 
             await unitOfWork.SaveChangesAsync(context.CancellationToken);
@@ -71,22 +80,5 @@ internal sealed class ProcessOutboxJob(
 
         await transaction.CommitAsync(context.CancellationToken);
         logger.LogInformation("{Module} - Completed processing outbox messages", ModuleName);
-    }
-
-    private static async Task PublishDomainEventAsync(
-        IDomainEvent domainEvent,
-        IServiceProvider serviceProvider,
-        CancellationToken cancellationToken)
-    {
-        Type domainEventType = domainEvent.GetType();
-
-        Type handlerType = typeof(IDomainEventHandler<>).MakeGenericType(domainEventType);
-
-        object?[] handlers = serviceProvider.GetServices(handlerType).Where(h => h is not null).ToArray();
-
-        foreach (object handler in handlers)
-        {
-            await ((IDomainEventHandler)handler!).Handle(domainEvent, cancellationToken);
-        }
     }
 }

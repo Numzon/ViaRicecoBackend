@@ -129,6 +129,40 @@ namespace ViaRiceco.Modules.Budgets.Infrastructure.Database.Migrations
                     b.ToTable("outbox_message_consumers", "budgets");
                 });
 
+            modelBuilder.Entity("ViaRiceco.Modules.Budgets.Domain.Banks.Bank", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("id");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at_utc");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("name");
+
+                    b.Property<DateTime?>("UpdatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at_utc");
+
+                    b.HasKey("Id")
+                        .HasName("pk_banks");
+
+                    b.HasIndex("CreatedAtUtc")
+                        .HasDatabaseName("ix_banks_created_at_utc");
+
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasDatabaseName("ix_banks_name");
+
+                    b.ToTable("banks", "budgets");
+                });
+
             modelBuilder.Entity("ViaRiceco.Modules.Budgets.Domain.ExpenseTypes.ExpenseType", b =>
                 {
                     b.Property<string>("Id")
@@ -139,6 +173,10 @@ namespace ViaRiceco.Modules.Budgets.Infrastructure.Database.Migrations
                     b.Property<DateTime>("CreatedAtUtc")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at_utc");
+
+                    b.Property<bool>("IsArchived")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_archived");
 
                     b.Property<bool>("IsSystemDefined")
                         .ValueGeneratedOnAdd()
@@ -170,6 +208,7 @@ namespace ViaRiceco.Modules.Budgets.Infrastructure.Database.Migrations
                         {
                             Id = "et_db610449-8a5f-47d0-be6a-ec26e4945375",
                             CreatedAtUtc = new DateTime(2025, 9, 18, 18, 37, 0, 0, DateTimeKind.Utc),
+                            IsArchived = false,
                             IsSystemDefined = true,
                             Name = "Investment"
                         });
@@ -181,6 +220,11 @@ namespace ViaRiceco.Modules.Budgets.Infrastructure.Database.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)")
                         .HasColumnName("id");
+
+                    b.Property<string>("BankId")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("bank_id");
 
                     b.Property<DateTime>("CreatedAtUtc")
                         .HasColumnType("timestamp with time zone")
@@ -197,6 +241,12 @@ namespace ViaRiceco.Modules.Budgets.Infrastructure.Database.Migrations
                         .HasColumnType("character varying(100)")
                         .HasColumnName("investment_strategy_id");
 
+                    b.Property<bool>("IsArchived")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false)
+                        .HasColumnName("is_archived");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(200)
@@ -210,11 +260,17 @@ namespace ViaRiceco.Modules.Budgets.Infrastructure.Database.Migrations
                     b.HasKey("Id")
                         .HasName("pk_expenses");
 
+                    b.HasIndex("BankId")
+                        .HasDatabaseName("ix_expenses_bank_id");
+
                     b.HasIndex("ExpenseTypeId")
                         .HasDatabaseName("ix_expenses_expense_type_id");
 
                     b.HasIndex("InvestmentStrategyId")
                         .HasDatabaseName("ix_expenses_investment_strategy_id");
+
+                    b.HasIndex("IsArchived")
+                        .HasDatabaseName("ix_expenses_is_archived");
 
                     b.HasIndex("Name", "ExpenseTypeId")
                         .IsUnique()
@@ -223,14 +279,167 @@ namespace ViaRiceco.Modules.Budgets.Infrastructure.Database.Migrations
                     b.ToTable("expenses", "budgets");
                 });
 
+            modelBuilder.Entity("ViaRiceco.Modules.Budgets.Domain.MonthlyBudgetExpenses.MonthlyBudgetExpense", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("id");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at_utc");
+
+                    b.Property<string>("ExpenseId")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("expense_id");
+
+                    b.Property<string>("ExpenseName")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("expense_name");
+
+                    b.Property<string>("ExpenseTypeId")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("expense_type_id");
+
+                    b.Property<string>("ExpenseTypeName")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("expense_type_name");
+
+                    b.Property<string>("MonthlyBudgetId")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("monthly_budget_id");
+
+                    b.Property<DateTime?>("UpdatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at_utc");
+
+                    b.Property<decimal?>("Value")
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("value");
+
+                    b.HasKey("Id")
+                        .HasName("pk_monthly_budget_expenses");
+
+                    b.HasIndex("CreatedAtUtc")
+                        .HasDatabaseName("ix_monthly_budget_expenses_created_at_utc");
+
+                    b.HasIndex("ExpenseId")
+                        .HasDatabaseName("ix_monthly_budget_expenses_expense_id");
+
+                    b.HasIndex("ExpenseTypeId")
+                        .HasDatabaseName("ix_monthly_budget_expenses_expense_type_id");
+
+                    b.HasIndex("MonthlyBudgetId")
+                        .HasDatabaseName("ix_monthly_budget_expenses_monthly_budget_id");
+
+                    b.HasIndex("MonthlyBudgetId", "ExpenseId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_monthly_budget_expenses_monthly_budget_id_expense_id");
+
+                    b.ToTable("monthly_budget_expenses", "budgets");
+                });
+
+            modelBuilder.Entity("ViaRiceco.Modules.Budgets.Domain.MonthlyBudgets.MonthlyBudget", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("id");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at_utc");
+
+                    b.Property<bool>("IsDraft")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_draft");
+
+                    b.Property<int>("Month")
+                        .HasColumnType("integer")
+                        .HasColumnName("month");
+
+                    b.Property<decimal>("NetValue")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("decimal(18,2)")
+                        .HasDefaultValue(0m)
+                        .HasColumnName("net_value");
+
+                    b.Property<string>("SettlementPeriodId")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("settlement_period_id");
+
+                    b.Property<DateTime?>("UpdatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at_utc");
+
+                    b.Property<int>("Year")
+                        .HasColumnType("integer")
+                        .HasColumnName("year");
+
+                    b.HasKey("Id")
+                        .HasName("pk_monthly_budgets");
+
+                    b.HasIndex("CreatedAtUtc")
+                        .HasDatabaseName("ix_monthly_budgets_created_at_utc");
+
+                    b.HasIndex("IsDraft")
+                        .HasDatabaseName("ix_monthly_budgets_is_draft");
+
+                    b.HasIndex("NetValue")
+                        .HasDatabaseName("ix_monthly_budgets_net_value");
+
+                    b.HasIndex("SettlementPeriodId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_monthly_budgets_settlement_period_id");
+
+                    b.HasIndex("Month", "Year")
+                        .HasDatabaseName("ix_monthly_budgets_month_year");
+
+                    b.ToTable("monthly_budgets", "budgets");
+                });
+
             modelBuilder.Entity("ViaRiceco.Modules.Budgets.Domain.Expenses.Expense", b =>
                 {
+                    b.HasOne("ViaRiceco.Modules.Budgets.Domain.Banks.Bank", null)
+                        .WithMany()
+                        .HasForeignKey("BankId")
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("fk_expenses_banks_bank_id");
+
                     b.HasOne("ViaRiceco.Modules.Budgets.Domain.ExpenseTypes.ExpenseType", null)
                         .WithMany()
                         .HasForeignKey("ExpenseTypeId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired()
                         .HasConstraintName("fk_expenses_expense_types_expense_type_id");
+                });
+
+            modelBuilder.Entity("ViaRiceco.Modules.Budgets.Domain.MonthlyBudgetExpenses.MonthlyBudgetExpense", b =>
+                {
+                    b.HasOne("ViaRiceco.Modules.Budgets.Domain.MonthlyBudgets.MonthlyBudget", null)
+                        .WithMany("Expenses")
+                        .HasForeignKey("MonthlyBudgetId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_monthly_budget_expenses_monthly_budgets_monthly_budget_id");
+                });
+
+            modelBuilder.Entity("ViaRiceco.Modules.Budgets.Domain.MonthlyBudgets.MonthlyBudget", b =>
+                {
+                    b.Navigation("Expenses");
                 });
 #pragma warning restore 612, 618
         }

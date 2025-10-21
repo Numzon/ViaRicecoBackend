@@ -139,6 +139,12 @@ namespace ViaRiceco.Modules.Accounting.Infrastructure.Database.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at_utc");
 
+                    b.Property<bool>("IsDraft")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(true)
+                        .HasColumnName("is_draft");
+
                     b.Property<int>("Month")
                         .HasColumnType("integer")
                         .HasColumnName("month")
@@ -154,6 +160,9 @@ namespace ViaRiceco.Modules.Accounting.Infrastructure.Database.Migrations
 
                     b.HasKey("Id")
                         .HasName("pk_settlement_periods");
+
+                    b.HasIndex("IsDraft")
+                        .HasDatabaseName("ix_settlement_periods_is_draft");
 
                     b.HasIndex("Month", "Year")
                         .IsUnique()

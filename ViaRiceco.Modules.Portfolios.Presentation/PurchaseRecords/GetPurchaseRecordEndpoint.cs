@@ -18,7 +18,10 @@ using ViaRiceco.Modules.Portfolios.Presentation.PurchaseRecords.Hyperlinks;
 
 namespace ViaRiceco.Modules.Portfolios.Presentation.PurchaseRecords;
 
-internal sealed class GetPurchaseRecordEndpoint(ISender sender, IHyperlinkService hyperlinkService, IDataShapingService dataShapingService)
+internal sealed class GetPurchaseRecordEndpoint(
+    ISender sender,
+    IHyperlinkService hyperlinkService,
+    IDataShapingService dataShapingService)
     : Ep.Req<GetPurchaseRecordEndpoint.Request>.Res<Result<PurchaseRecordDto>>
 {
     [UsedImplicitly]
@@ -27,14 +30,16 @@ internal sealed class GetPurchaseRecordEndpoint(ISender sender, IHyperlinkServic
         public string InvestmentStrategyId { get; init; }
         public string InvestmentId { get; init; }
         public string Id { get; init; }
+        public string? Fields { get; init; }
     }
 
     public override void Configure()
     {
-        Get("/portfolios/investment-strategies/{investmentStrategyId}/investments/{investmentId}/purchase-records/{id}");
+        Get(
+            "/portfolios/investment-strategies/{investmentStrategyId}/investments/{investmentId}/purchase-records/{id}");
         AllowAnonymous();
         Description(d => d.WithName(nameof(GetPurchaseRecordEndpoint)));
-        
+
         Options(x => x
             .WithVersionSet(CustomVersionSets.PurchaseRecords)
             .MapToApiVersion(1.0));
@@ -50,16 +55,20 @@ internal sealed class GetPurchaseRecordEndpoint(ISender sender, IHyperlinkServic
             await Send.ResultAsync(ApiResults.Problem(result));
             return;
         }
-        
-        ExpandoObject shapedObject = ShapeDataWithConditionalLinks(result.Value, req.IncludeLinks, result.Value.Id, req.InvestmentId, req.InvestmentStrategyId);
-        
+
+        ExpandoObject shapedObject = ShapeDataWithConditionalLinks(result.Value, req.IncludeLinks, result.Value.Id,
+            req.InvestmentId, req.InvestmentStrategyId, req.Fields);
+
         await Send.ResultAsync(Results.Ok(shapedObject));
     }
 
-    private ExpandoObject ShapeDataWithConditionalLinks(PurchaseRecordDto data, bool includeLinks, string purchaseRecordId, string investmentId, string investmentStrategyId, string? fields = null)
+    private ExpandoObject ShapeDataWithConditionalLinks(PurchaseRecordDto data, bool includeLinks,
+        string purchaseRecordId, string investmentId, string investmentStrategyId, string? fields = null)
     {
         return includeLinks
-            ? dataShapingService.ShapeData(data, fields, PurchaseRecordsHyperlinks.CreatePurchaseRecordItemLinks(hyperlinkService, purchaseRecordId, investmentId, investmentStrategyId))
+            ? dataShapingService.ShapeData(data, fields,
+                PurchaseRecordsHyperlinks.CreatePurchaseRecordItemLinks(hyperlinkService, purchaseRecordId,
+                    investmentId, investmentStrategyId))
             : dataShapingService.ShapeData(data, fields);
     }
 }
